@@ -1,4 +1,4 @@
-.build/
+.scratch/
 *.aux
 *.log
 *.bbl

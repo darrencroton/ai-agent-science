@@ -63,7 +63,7 @@ Once the author has chosen, the manuscript moves from the scaffold's `article` c
 1. **Fetch the journal's official template bundle** (class, `.bst`, style files) and record the URL and the date fetched, in the preamble comment and in the journal. Templates are revised, and a journal's class files drift exactly as its policy pages do.
 2. **Build the template's own sample first**, in a scratch directory, before any manuscript text goes near it. A journal's class can fail on a current TeX, and the failure then looks like the author's error. Record every fix, and the class's **baseline warnings** (the set the sample itself produces), in the journal, so that a later build is judged by what it adds to them. Test the `.bst` the same way, with a citation: a broken style shows only when the first reference goes in.
 3. **Keep the unmodified originals** beside the manuscript, in `manuscript/template-reference/`, with the template's own guide.
-4. **`(cd manuscript && latexmk -C -outdir=../.build main.tex)` before the first build on the new class.** Stale `.aux` files survive a class switch and give misleading errors.
+4. **`(cd manuscript && latexmk -C main.tex)` before the first build on the new class.** Stale `.aux` files survive a class switch and give misleading errors.
 5. **Then switch the preamble.** Fixes go in the preamble, with a comment saying what each repairs, and never in the class file. A fix to the `.bst` is the one exception, because a `.bst` cannot be patched from the preamble: change the smallest thing, and keep the original beside it.
 
 Record the switch in `STATE.md` and the journal as for any other close.

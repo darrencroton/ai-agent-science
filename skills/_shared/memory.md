@@ -12,22 +12,22 @@ exist and get written. That is the whole mechanism.
 
 | File | Read | Lifespan | Holds |
 |---|---|---|---|
-| the working directory's agent-instruction file — `AGENTS.md` or `CLAUDE.md`, whichever the project uses (`/paper start` §5b) | automatically | stable | **an index only** — which `sci-paper-workspace*/` directories exist here and their short names; see **The workspace root** in `house-rules.md` |
-| `CLAUDE.md` (workspace root) | automatically, once inside it | stable | **how to behave, and where things are** — the installation path, the directory map, venue, build command, the pointer to `STATE.md` |
+| `AGENTS.md` (working directory; `/paper start` §5b) | automatically | stable | **an index only** — which `sci-paper-workspace*/` directories exist here and their short names; see **The workspace root** in `house-rules.md` |
+| `AGENTS.md` (workspace root) | automatically, once inside it | stable | **how to behave, and where things are** — the installation path, the directory map, venue, build command, the pointer to `STATE.md` |
 | `paper/STATE.md` | first action of every session | **only true today** | **where we are** — section status, what is settled, what is open, what to do next |
 | `paper/journal.md` | on demand | permanent | **how we got here** — dated entries: discussed, decided, changed, open |
 
-The split test: *will this still be true in three months?* Yes → `CLAUDE.md`.
+The split test: *will this still be true in three months?* Yes → `AGENTS.md`.
 No → `STATE.md`.
 
-`CLAUDE.md` holds no paper knowledge. Knowledge put there goes stale silently,
+`AGENTS.md` holds no paper knowledge. Knowledge put there goes stale silently,
 because nothing ever prompts a review of it.
 
 ---
 
 ## First action of every session
 
-**Find the workspace root first** — `CLAUDE.md` names it, and
+**Find the workspace root first** — `AGENTS.md` names it, and
 `house-rules.md` has the rule. Every path in this file is relative to it.
 
 Then read `paper/STATE.md` in full — all of it, without deciding whether to. It
@@ -152,3 +152,5 @@ that today happened.
 
 Do this even for a short session. A session that only answered a question still
 answered it.
+
+**There is no separate handoff file.** A request for a handoff, from the author or another tool, is met by steps 1 and 2 above. Stable how-we-work procedures go in the workspace `AGENTS.md`, as the split test says.

@@ -1,4 +1,6 @@
-.build/
+.scratch/
+manuscript/main.pdf
+paper/lit/pdf/
 *.aux
 *.log
 *.bbl

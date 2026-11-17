@@ -34,13 +34,13 @@ That is also why **the `ads.py` test is the confirmation, not a formality** — 
 failure it catches returns a plausible directory rather than an error. Do not
 proceed on an unconfirmed root, and never guess a path.
 
-**Two shortcuts before resolving anything.** A paper repo's own `CLAUDE.md`
+**Two shortcuts before resolving anything.** A paper repo's own `AGENTS.md`
 records the absolute install path, so in an existing workspace read it from
 there. And if `$SCIENCE_ROOT` is already set in the environment, trust it after
 the same `ads.py` test.
 
 **The one moment this genuinely matters** is the first `/paper start` in a
-brand-new paper directory: there is no `CLAUDE.md` yet, because the scaffold is
+brand-new paper directory: there is no `AGENTS.md` yet, because the scaffold is
 what writes it. If the root cannot be confirmed, say so and ask for the path
 rather than copying a partial skeleton or inventing a location (AQ15).
 
@@ -52,7 +52,7 @@ rather than copying a partial skeleton or inventing a location (AQ15).
 
 A paper is rarely written in an empty directory. The usual case is an existing
 science project — data, analysis code, its own git repo, often its own
-`CLAUDE.md` — with the paper as one part of it, and that project is different
+`AGENTS.md` — with the paper as one part of it, and that project is different
 from one paper to the next. So the paper's workspace is **`sci-paper-workspace/`
 (or `sci-paper-workspace-<suffix>/` where a second paper shares the project),
 its own git repository, isolated from the project around it** — and every path
@@ -62,10 +62,8 @@ in this file and in every skill is relative to it: the **workspace root**.
 first:
 
 1. If you are already working inside a `sci-paper-workspace*/` directory, that
-   is the workspace root. Its own `CLAUDE.md` confirms it.
-2. Otherwise, read the working directory's **agent-instruction file** — its
-   `AGENTS.md`, or its `CLAUDE.md` where that is what the project uses; the
-   project's own convention decides which, and `/paper start` §5b resolves it.
+   is the workspace root. Its own `AGENTS.md` confirms it.
+2. Otherwise, read the working directory's `AGENTS.md`.
    Look for the index block `/paper start` appends there, under *sci-paper
    workspaces in this project*, and match the paper being discussed by its
    **short name**, never by directory name — the directory can be renamed by hand at any time
@@ -79,12 +77,12 @@ first:
    recorded string" approach used to locate the installation above — then read
    each candidate's `STATE.md` header for its short name.
 4. Once resolved, **upsert only that one row of the index** if it was missing
-   or wrong, **where the index lives**: the project's agent-instruction file, or `<ws>/paper/CLAUDE-sci-paper.md` where the author declined that file (AQ3) or the subject is the project itself. Never create an index in the project's file that was deliberately kept out of it. Never rewrite the whole block: a second paper's row must survive
+   or wrong, **where the index lives**: the project's `AGENTS.md`, or `<ws>/paper/AGENTS-sci-paper.md` where the author declined that file (AQ3) or the subject is the project itself. Never create an index in the project's file that was deliberately kept out of it. Never rewrite the whole block: a second paper's row must survive
    the first paper's session touching the file.
 
 Work from the workspace root once found — `cd` into it, or prefix paths with
 it, but do not half-do one and half-do the other. `paper-voice/`, `paper/`,
-`manuscript/` and `.build/` are always directly inside it.
+`manuscript/` and `.scratch/` are always directly inside it.
 
 **It is never `.` and never the working directory itself.** Isolation is the
 point: the workspace is always its own repository and always one directory below
@@ -98,10 +96,10 @@ anything ai-agent-science does.
 workspace root** (except where the paper's subject is the project itself, below). `notes/`, `figures/` and `code/` are the author's project
 material, not ai-agent-science's, so they stay wherever the project already keeps
 them and under whatever they are already called — `analysis/`, `plots/`, a
-`notes/` at the project root. The workspace's own `CLAUDE.md` records the
+`notes/` at the project root. The workspace's own `AGENTS.md` records the
 resolved paths. A `% src:` anchor is written relative to the workspace root and
 normally points outside it now, so `% src: ../analysis/plot_lf.py:88
-(fit_break)` is the ordinary case, not the exception. The workspace's own `<ws>/notes/` (created on first capture) holds the author's captured words and, where the subject is the project, the paper's own notes; the author's project `notes/` stays read-only and untouched.
+(fit_break)` is the ordinary case, not the exception. The workspace's own `<ws>/notes/` (created on first capture) holds the author's captured words and, where the subject is the project, the paper's own notes; the author's project `notes/` stays read-only and untouched. Figures made for the paper (TikZ, diagrams, plots drawn for it) are the exception: they live in `<ws>/manuscript/figures/`, created when first needed.
 
 **`paper-voice/` is different: it is author-supplied, but for ai-agent-science's use,
 so it lives inside the workspace root, beside `paper/` rather than inside it.**
@@ -111,15 +109,17 @@ where it exists, `paper/voice.md` — the profile distilled from it — is
 consulted by `/paper draft` and `/paper frame` by default. Its absence changes
 nothing.
 
+**Core and local.** The core layout is what the skills create and name. A paper may add local files and directories for its own needs — pinned copies of inputs, an archive, a link to a subject repository, a review record. The workspace `AGENTS.md` directory map marks each row core or local, and no skill assumes a local item exists.
+
 **Nothing the author owns is ever moved to tidy the layout.** Not a note, not a
 figure, not a script. If the material sits somewhere awkward, say so and use it
 where it is.
 
-**When the paper's subject is the project itself** — a software or instrument repository that should hold nothing about a paper — the paper's own notes and figures live inside the workspace (`notes/`, `figures/`), and nothing is written into the subject's tracked files: the exclusion goes in its `.git/info/exclude`, and the index entry in `<ws>/paper/CLAUDE-sci-paper.md` (`start` §1a, §5b).
+**When the paper's subject is the project itself** — a software or instrument repository that should hold nothing about a paper — the paper's own notes live in `<ws>/notes/` and its figures in `<ws>/manuscript/figures/` (as for any paper's own figures), and nothing is written into the subject's tracked files: the exclusion goes in its `.git/info/exclude`, and the index entry in `<ws>/paper/AGENTS-sci-paper.md` (`start` §1a, §5b).
 
 **A workspace reached through a symbolic link** (kept on a synced volume, say) cannot reach the project by `../`, because `..` is the link target's parent. Link the project inside the workspace and write every path into it through that link; the exclude pattern then drops its trailing slash (`sci-paper-workspace*`) so that it matches a link.
 
-**These names belong to the workspace format, not to the toolkit, and keep their `sci-paper` spelling:** `sci-paper-workspace` (and `sci-paper-workspace*/`), `scipaper.sty`, the `<!-- sci-paper: begin -->`/`end` markers and the heading inside that block, `paper/CLAUDE-sci-paper.md`, and `SCI_PAPER_ADS_BASE`. They are written into live workspaces.
+**These names belong to the workspace format, not to the toolkit, and keep their `sci-paper` spelling:** `sci-paper-workspace` (and `sci-paper-workspace*/`), `scipaper.sty`, the `<!-- sci-paper: begin -->`/`end` markers and the heading inside that block, `paper/AGENTS-sci-paper.md`, and `SCI_PAPER_ADS_BASE`. They are written into live workspaces.
 
 ---
 
@@ -335,7 +335,7 @@ catches it.
 load-bearing claim. Connective and qualitative prose gets nothing — commenting
 every sentence buries the section diffs and devalues the marks that matter.
 
-**Pin a source that moves.** When the source is a repository that keeps changing — the paper's own subject — anchors are written against the version the paper describes: the workspace `CLAUDE.md` records that version (tag and commit), and each section file opens with a comment naming the version its anchors were read at and how to re-read them (`git -C <repo> show <tag>:<path>`). A session that finds the checkout has moved past it re-reads anchors at the tag.
+**Pin a source that moves.** When the source is a repository that keeps changing — the paper's own subject — anchors are written against the version the paper describes: the workspace `AGENTS.md` records that version (tag and commit), and each section file opens with a comment naming the version its anchors were read at and how to re-read them (`git -C <repo> show <tag>:<path>`). A session that finds the checkout has moved past it re-reads anchors at the tag.
 
 ---
 
@@ -370,7 +370,7 @@ The same applies to `paper/`: `journal.md` is append-only, and `STATE.md` is
 rewritten deliberately, not clobbered.
 
 It also applies to the index block in the working directory's
-agent-instruction file (**The workspace root**, above): a second paper's row
+`AGENTS.md` (**The workspace root**, above): a second paper's row
 in that index is exactly like another author's paragraph — upsert your own
 workspace's row, never rewrite the whole block. And where that file is a
 checked-in contract for the project rather than personal notes, it is someone

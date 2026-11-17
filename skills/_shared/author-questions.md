@@ -6,7 +6,7 @@ Every point where a skill asks the author is listed here once, with an id. **At 
 |---|---|---|---|---|
 | AQ1 | `paper` start, *Before anything* | A workspace already exists: what should be re-ingested? | Nothing. Read `STATE.md`, report where the paper stands, and do only what the caller asked | no |
 | AQ2 | `paper` start §1a | A second paper here: what suffix distinguishes its workspace? | The caller's short name for the paper; with none, stop (a default name could duplicate the first paper's) | no |
-| AQ3 | `paper` start §5b | May the index block go into the project's agent-instruction file (and which one, where both are real files; and where it is a checked-in contract)? | No. The index entry goes in `<ws>/paper/CLAUDE-sci-paper.md`, and the report says it must be read by hand | yes |
+| AQ3 | `paper` start §5b | May the index block go into the project's `AGENTS.md` (and, if there is none, may one be created; and where it is a checked-in contract)? | No. The index entry goes in `<ws>/paper/AGENTS-sci-paper.md`, and the report says it must be read by hand | yes |
 | AQ4 | `paper` start §5d | The paper's short name and author list | Short name: the caller's, else the working directory's name. Authors: the caller's, else left as the visible placeholder and reported | yes |
 | AQ5 | `paper` start §6 | Which journal? | Not decided: the plain `article` scaffold | yes |
 | AQ6 | `paper` start §7 | Is the proposed argument right? | The outline is written as proposed and is not settled: `STATE.md` *Argument* says it is awaiting the author | yes |

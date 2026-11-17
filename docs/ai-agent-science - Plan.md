@@ -1,9 +1,9 @@
 # ai-agent-science — Plan
 
-**Version:** 4.0
-**Date:** 2026-11-17
+**Version:** 4.1
+**Date:** 2026-11-18
 **Author:** Darren Croton (Swinburne), with Claude Opus 5
-**Status:** **stage 2a built** (2026-11-17, §14.5): the toolkit is renamed ai-agent-science, the paper skills are one `paper` skill with modes, `literature` is unbound from the paper, and the Mimic paper's lessons are folded in · P1–P3.5 built and validated · **P4's trace-check half built** (`/paper iterate`); P4's structural read, P5 and P6 are **stage 2b**, written against the Mimic paper
+**Status:** **stage 2a built** (2026-11-17, §14.5): the toolkit is renamed ai-agent-science, the paper skills are one `paper` skill with modes, `literature` is unbound from the paper, and the Mimic paper's lessons are folded in · P1–P3.5 built and validated · **P4's trace-check half built** (`/paper iterate`); P4's structural read, P5 and P6 are **stage 2b**, under way against the Mimic paper · **v4.1** (2026-11-18): the workspace layout and `AGENTS.md` only
 
 > **This document is the specification and the build record.** §1–§13 are the design and are the authority on what gets built. §14–§16 record what has actually been built, what was verified and how, which decisions are settled, and how the system is installed. There is no separate status document: if something matters and is durable, it is here. The toolkit was called sci-paper until v4.0; the old name survives in the workspace format's names (§4.1), in the history below, and in the records of §14.1–§14.4.
 
@@ -15,6 +15,7 @@
 > The design change is §4.1, the **workspace root**. Preparing the system for global installation exposed the assumption that the working directory *is* the paper — so in a real project directory `/paper-start` skipped the existing `CLAUDE.md` and `.gitignore` rather than merging into them, and left the workspace looking scaffolded while nothing pointed a session at `paper/STATE.md`. The paper now scaffolds into a named subdirectory of the working directory by default, with the root `CLAUDE.md` and `.gitignore` appended to. The layout *inside* the workspace is unchanged, so P1–P3 remain valid; §14.2 records that the new path is specified and not yet dogfooded.
 > **v3.0** (2026-08-31) — two design changes, worked through in conversation before being written here. **First, workspace isolation** (§4.1 rewritten): the workspace root from v2.0 is retired in favour of `sci-paper-workspace*/`, a fixed-name (glob-suffixed for a second paper), always-a-subdirectory, **independently git-initialised** directory that holds the entire sci-paper footprint. The working directory's own repo never sees it — one glob line in its `.gitignore` — so a paper's draft, memory and build litter can never pollute the project it is drawn from, regardless of how different that project is from one paper to the next. `notes/`, `figures/` and `code/` are unaffected: they stay in the working directory, found rather than placed, now always reached by a relative path that leaves the workspace. This is a strictly bigger version of the v2.0 change and it retires the `.` case entirely — collapsing the workspace onto the working directory is exactly the pollution being designed against. **Second, the voice profile** (new §7.7, `/paper-voice`): the author supplies past papers or style notes in a workspace-local `paper-voice/`, which is distilled once into `paper/voice.md` and then consulted by every drafting skill — a durable, per-paper, opt-in-by-existence style reference, distinct from the retired-in-v1's-predecessor idea of a system-wide author corpus (§15). Both changes touch the already-built, already-validated P1–P3 skills — `paper/` and `manuscript/` keep their internal shape and their own path references are unchanged, so the retrofit is a relocation (one directory deeper) rather than a rewrite. Reviewed by an external panel before landing (§14.2b); its confirmed findings are already folded into the files. Same-day addendum: the `.dogfood/quenching` acceptance fixture, a root-layout workspace that no longer matched this shape, was archived rather than migrated — §14's opening note and §14.2a say why, and `archive/dogfood-quenching/README.md` carries the same reasoning beside the material itself.
 > **v4.0** (2026-11-17) — stage 2a of the agentic-science architecture (`mimic/docs/dev/AGENTIC-SCIENCE-ARCHITECTURE.md`), built on 2026-11-17. The toolkit is renamed **ai-agent-science**, and this file with it (it was `sci-paper - Plan.md`). **The shape changed.** The three paper skills (`paper-start`, `paper-draft`, `paper-voice`) are one `paper` skill with modes — `start`, `draft`, `voice`, `venue`, `iterate` — behind a router (`skills/paper/SKILL.md`) that says what every mode reads first; each old skill's text moved into `skills/paper/modes/<mode>.md` so that its section numbers stay stable. `paper-lit` became `literature`, unbound from the paper (three bindings: in a paper workspace, in a named notebook, unbound), with a fifth mode, `provenance`; its `venue` mode moved into `paper`. **A recorded default for every author question** (`_shared/author-questions.md`) lets an unattended caller, such as a Campaign Manager acting under a brief, use the skills; at the keyboard nothing changes. **Then the Mimic paper's lessons were folded in** (items 1–12 of the Synthesis in that paper's `paper/toolkit-findings.md`): house-rule additions, the venue switch procedure and the first venue file (`_shared/venues/pasa.md`), the drafting-brief template and a many-sections path in `draft`, `iterate` as the independent trace check, `voice`'s fetch path, the release-history pass for software papers, and literature's web-source notes and provenance mode. **Two reversals and one refusal.** The owner reversed §3's "capture that — and only then": the author's words are now captured verbatim and dated by default (§3, §15). Every open question now carries the agent's recommendation (§5.4). And the implementation-plan workflow was **still declined**, although this change, unlike the original build, has a regression surface — workspaces already scaffolded and live under the old names — so the tests recorded in §14.5 stand in for it. **The workspace format's names were kept deliberately** (`sci-paper-workspace*`, `scipaper.sty`, the `<!-- sci-paper -->` index markers, `paper/CLAUDE-sci-paper.md`, `SCI_PAPER_ADS_BASE`), because they are written into live workspaces (§4.1). **The vehicle changed:** the remaining phases are tested against the Mimic paper (§11.2), and the `stc` converter paper is on hold. Stage 2a built the trace-check half of P4 (`/paper iterate`); P4's structural read, P5 and P6 are stage 2b, written against the Mimic paper (§11).
+> **v4.1** (2026-11-18) — changed in response to the Mimic paper. The workspace layout is simpler: the manuscript builds in place (`manuscript/main.pdf`, with `-outdir` gone), fetched full texts go in `paper/lit/pdf/` (gitignored), figures made for the paper go in `manuscript/figures/`, and `.build/` is renamed `.scratch/` and holds scratch only. The core layout is what the skills create; a paper may add local files, and its `AGENTS.md` directory map marks each row core or local. `paper/STATE.md` is the only handoff. The instruction file is `AGENTS.md` alone and the toolkit is harness-agnostic: the `CLAUDE.md` detection and symlink logic is removed, the format name `paper/CLAUDE-sci-paper.md` becomes `paper/AGENTS-sci-paper.md`, and the skills are described as usable from any harness that reads `SKILL.md` skills. The one live workspace, the Mimic paper's, was moved to this layout the same day.
 
 > **Where this sits.** ai-agent-science is the science-method home in the agentic-science architecture (`mimic/docs/dev/AGENTIC-SCIENCE-ARCHITECTURE.md`): scientific method, held apart from any subject (Mimic is one) and from orchestration (ai-agent-coder's engine, whose Campaign Manager is the unattended caller of §7). This Plan covers its paper and literature skills. `scope`, `findings`, `challenge` and the evidence-clause catalogue are stage 3 of that architecture's road and are not built.
 
@@ -24,7 +25,7 @@
 
 ## 1. What this is
 
-Two Claude Code skills — `paper`, one skill with modes, and `literature` — that take an astronomer's **notes, figures, tables and analysis code** and produce a **deliberately incomplete first draft** of a journal paper — holes marked, not smoothed over — and then support months of iteration on that draft: suggesting connections, searching the literature, finding supporting and contradicting work, filling references, and finally writing the Introduction and Conclusions once the body has something to introduce and conclude.
+Two agent skills, usable from any harness that reads `SKILL.md` skills — `paper`, one skill with modes, and `literature` — that take an astronomer's **notes, figures, tables and analysis code** and produce a **deliberately incomplete first draft** of a journal paper — holes marked, not smoothed over — and then support months of iteration on that draft: suggesting connections, searching the literature, finding supporting and contradicting work, filling references, and finally writing the Introduction and Conclusions once the body has something to introduce and conclude.
 
 It is designed for the way papers are actually written: **starting before the picture is complete, and letting the writing shape the result.**
 
@@ -64,38 +65,38 @@ The system is installed once (§16). Each paper gets a **workspace** scaffolded 
 
 ### 4.1 The workspace root, isolated
 
-A paper is almost never written in an empty directory. The normal case is an existing science project — data, analysis code, its own git repo and often its own `CLAUDE.md` — into which a paper is now being written, and that project is different from one paper to the next. So the workspace is **a fixed-name subdirectory of the working directory, and it is its own git repository** — `sci-paper-workspace/`, called the *workspace root*. Everything ai-agent-science creates or touches lives inside it; nothing about the working directory's own project or its own repo is affected beyond two additive lines.
+A paper is almost never written in an empty directory. The normal case is an existing science project — data, analysis code, its own git repo and often its own `AGENTS.md` — into which a paper is now being written, and that project is different from one paper to the next. So the workspace is **a fixed-name subdirectory of the working directory, and it is its own git repository** — `sci-paper-workspace/`, called the *workspace root*. Everything ai-agent-science creates or touches lives inside it; nothing about the working directory's own project or its own repo is affected beyond two additive lines.
 
 ```
 my-project/                      # the working directory — the author's, untouched
-├── CLAUDE.md                    # gets an appended sci-paper index block
+├── AGENTS.md                    # gets an appended sci-paper index block
 ├── .gitignore                   # gets one appended line: sci-paper-workspace*/
 ├── data/  src/  notes/  figures/  code/  ...   # untouched, found where they already are
 └── sci-paper-workspace/         # THE WORKSPACE ROOT — its own git repository
     ├── .git/
     ├── .gitignore                   # build-artefact lines, for this repo
-    ├── CLAUDE.md                    # this workspace's own detail
-    ├── paper-voice/  paper/  manuscript/  .build/
+    ├── AGENTS.md                    # this workspace's own detail
+    ├── paper-voice/  paper/  manuscript/  .scratch/
 ```
 
 Four things follow, and they are what keep this simple:
 
-- **Inside the workspace root, the layout is the same in every case** (§4.2). No skill needs to know anything about the project surrounding it; it reads the workspace root from the working directory's agent-instruction file and works relative to it.
+- **Inside the workspace root, the layout is the same in every case** (§4.2). No skill needs to know anything about the project surrounding it; it reads the workspace root from the working directory's `AGENTS.md` and works relative to it.
 - **The workspace root is always a subdirectory, never `.`.** The v2.0 design allowed the working directory itself to be the workspace when it held nothing but the paper. That case is retired: collapsing the workspace onto the working directory is exactly the pollution isolation exists to prevent, and removing it also removes a decision `/paper start` no longer has to make or the author has to be asked.
 - **It is git-isolated by default, not by convention.** `/paper start` always runs `git init` inside it (never a first commit — that stays the author's own decision, per ordinary git-safety practice) and always appends `sci-paper-workspace*/` to the working directory's own `.gitignore` — **in the same step**, so there is never a moment where `<ws>` is a git repository the working directory's own `git add -A` could stage as an embedded repository before the ignore line exists. The working directory's repo — if it has one — never sees a draft, a journal entry, a fetched PDF or a build artefact; the paper's own history lives entirely in its own repository, wherever the author later decides to push it, if anywhere.
 - **The name is fixed, with a glob for a second paper.** `sci-paper-workspace/` is not proposed or chosen at `/paper start` time — it is simply created. Where a working directory already holds one and a second, distinct paper is being started from the same project, `/paper start` asks for a short, distinguishing suffix and creates `sci-paper-workspace-<suffix>/` instead; the glob in `.gitignore` (`sci-paper-workspace*/`) covers every such variant without maintenance, and §4.1.1's resolution-by-short-name is what lets an author or a fresh session find the right one later even if it is renamed by hand (prefix preserved — see §4.1.1).
 
 **Author material is found, not placed, and now always reached by leaving the workspace.** `notes/`, `figures/` and `code/` belong to the author's project, not to ai-agent-science, so they stay exactly where they already are in the working directory — `analysis/`, `plots/`, a `notes/` at the project root, whatever the survey finds — and are referenced from inside the workspace by a relative path that crosses its boundary, `../notes/methods.md` or deeper. This was already true occasionally in v2.0 (§6.3's `../analysis/` anchor); isolation makes it the *only* case rather than one of two.
 
-**The two files at the working-directory root are the whole of the system's footprint outside the workspace**, and both are additive: an appended, delimited index block in the agent-instruction file and one appended line in `.gitignore`. Nothing else outside the workspace root is created, moved or modified — the author's project keeps its own shape. (Two cases below write neither file.)
+**The two files at the working-directory root are the whole of the system's footprint outside the workspace**, and both are additive: an appended, delimited index block in `AGENTS.md` and one appended line in `.gitignore`. Nothing else outside the workspace root is created, moved or modified — the author's project keeps its own shape. (Two cases below write neither file.)
 
-**The working directory's agent-instruction file is the load-bearing one, but it is an index, not the detail.** Which file that is belongs to the project, not to ai-agent-science: `AGENTS.md` where the project uses one - increasingly the norm, and read by Claude Code as well - otherwise `CLAUDE.md`, and never written through a `CLAUDE.md` that is a symlink to `AGENTS.md` (`/paper start` §5b resolves this; widened 2026-09-22, §15). It is what a new session reads automatically, so it is what tells that session which `sci-paper-workspace*/` directories exist here and what each is called. The detail — the directory map, the build command, the pointer to `paper/STATE.md` — lives in *that workspace's own* `CLAUDE.md`, which Claude Code's own directory-walking discovery loads automatically once a session is working inside it. A workspace that gets a `paper/` and a `manuscript/` but no index entry at the working-directory root looks scaffolded and is not: nothing tells a session starting at the project root that it exists. Where that file is a checked-in contract for the project — a gated workflow, a permissions table, contributor rules — the author is asked before anything is appended, and where they decline, or no author is present to ask (an unattended caller takes this default, AQ3), the index entry goes in `<ws>/paper/CLAUDE-sci-paper.md` instead and the report says it must be read by hand. That costs the automatic pointer a session starting at the project root would otherwise get.
+**The working directory's `AGENTS.md` is the load-bearing one, but it is an index, not the detail.** The instruction file is always `AGENTS.md`, which essentially every harness reads (no `CLAUDE.md` logic and no symlink handling: `AGENTS.md` alone is enough). It is what a new session reads automatically, so it is what tells that session which `sci-paper-workspace*/` directories exist here and what each is called. The detail — the directory map, the build command, the pointer to `paper/STATE.md` — lives in *that workspace's own* `AGENTS.md`, which a harness loads automatically once a session is working inside it. A workspace that gets a `paper/` and a `manuscript/` but no index entry at the working-directory root looks scaffolded and is not: nothing tells a session starting at the project root that it exists. Where the project has no `AGENTS.md`, or it is a checked-in contract for the project — a gated workflow, a permissions table, contributor rules — the author is asked before anything is created or appended, and where they decline, or no author is present to ask (an unattended caller takes this default, AQ3), the index entry goes in `<ws>/paper/AGENTS-sci-paper.md` instead and the report says it must be read by hand. That costs the automatic pointer a session starting at the project root would otherwise get.
 
-**When the paper's subject is the project itself** — a software or instrument repository that should hold nothing about a paper — the process is unchanged, but the footprint shrinks further and the notes and figures move. The paper's own `notes/` and `figures/` live inside the workspace, nothing is written into the subject's tracked files, the workspace's exclusion goes in the subject's `.git/info/exclude` rather than its tracked `.gitignore`, and the index entry is the `CLAUDE-sci-paper.md` form above, by default rather than as a fallback (`/paper start` §1b, §5b). The repository is then also a source, and a moving one: see *Pin a source that moves* (§6.4) and the workspace `CLAUDE.md`'s *Subject version* section (§5.1).
+**When the paper's subject is the project itself** — a software or instrument repository that should hold nothing about a paper — the process is unchanged, but the footprint shrinks further and the notes and figures move. The paper's own notes live in `<ws>/notes/` and its figures in `<ws>/manuscript/figures/`, nothing is written into the subject's tracked files, the workspace's exclusion goes in the subject's `.git/info/exclude` rather than its tracked `.gitignore`, and the index entry is the `AGENTS-sci-paper.md` form above, by default rather than as a fallback (`/paper start` §1b, §5b). The repository is then also a source, and a moving one: see *Pin a source that moves* (§6.4) and the workspace `AGENTS.md`'s *Subject version* section (§5.1).
 
 **A workspace reached through a symbolic link** — kept on a synced volume, say, as the Mimic paper's is (§11.2) — cannot reach the project by `../`, because `..` is the link target's parent. The project is linked inside the workspace and every path into it is written through that link, and the exclude pattern drops its trailing slash (`sci-paper-workspace*`) so that it matches a link.
 
-**The workspace format keeps its `sci-paper` names, deliberately, when the toolkit is ai-agent-science.** They belong to the format and not to the toolkit, and they are written into live workspaces and into the working directories' instruction files, which a rename of the toolkit must not strand: `sci-paper-workspace` (and the glob `sci-paper-workspace*/`), `scipaper.sty`, the `<!-- sci-paper: begin -->`/`end` markers with the heading inside that block, `paper/CLAUDE-sci-paper.md`, and the environment variable `SCI_PAPER_ADS_BASE`. `_shared/house-rules.md` (*The workspace root*) is the one list of them.
+**The workspace format keeps its `sci-paper` names, deliberately, when the toolkit is ai-agent-science.** They belong to the format and not to the toolkit, and they are written into live workspaces and into the working directories' instruction files, which a rename of the toolkit must not strand: `sci-paper-workspace` (and the glob `sci-paper-workspace*/`), `scipaper.sty`, the `<!-- sci-paper: begin -->`/`end` markers with the heading inside that block, `paper/AGENTS-sci-paper.md`, and the environment variable `SCI_PAPER_ADS_BASE`. `_shared/house-rules.md` (*The workspace root*) is the one list of them.
 
 ### 4.1.1 Resolving which workspace
 
@@ -103,7 +104,7 @@ Only matters once a working directory holds more than one `sci-paper-workspace*/
 
 The identity that matters is the **paper's short name** (`STATE.md`'s own header, §5.2), never the directory name — the directory can be renamed by hand at any time (`mv sci-paper-workspace sci-paper-workspace-quenching`) without breaking anything internal, because nothing inside a workspace references its own directory name; every internal and outward cross-reference is relative. **The one constraint on the rename: it must keep the `sci-paper-workspace` prefix.** Both the working directory's `.gitignore` glob and the fallback search below match on that prefix — rename to something that drops it (`quenching/`, say) and the workspace silently stops being ignored by the project's own repo and stops being found by resolution. Resolution, in order:
 
-1. Check the working directory's agent-instruction file (`AGENTS.md` or `CLAUDE.md`) for a short-name match in its index block.
+1. Check the working directory's `AGENTS.md` for a short-name match in its index block.
 2. If none matches — the index is stale, or the workspace was renamed, or it was never registered — glob the working directory for `sci-paper-workspace*/`, confirm each candidate by the same structural fingerprint used to locate the installation (§16.2's approach, applied here: `paper/STATE.md` and `manuscript/` both present), and match on the short name in each candidate's `STATE.md` header.
 3. Once found, **upsert only that one line** of the index — never rewrite the whole block, which would drop any other paper registered there. This is the same non-destructive discipline §7.2 requires of manuscript editing, applied to the one file every paper in the project shares.
 
@@ -114,11 +115,11 @@ Two workspaces sharing a short name is a hygiene problem for the author to avoid
 ```
 <workspace root>/             # sci-paper-workspace/, or sci-paper-workspace-<suffix>/ — its own git repo
 ├── .gitignore                 # build-artefact lines, for this repo
-├── CLAUDE.md                  # this workspace's own detail — directory map, build command, install path
+├── AGENTS.md                  # this workspace's own detail — directory map (each row core or local), build command, install path
 ├── paper-voice/                # AUTHOR-SUPPLIED, optional: past papers / style notes for THIS paper — §7.7
 ├── notes/                     # the author's words, captured by the agent as new dated notes (§3); created on first capture
 ├── paper/                     # AGENT-OWNED MEMORY
-│   ├── STATE.md               # living, ≤2 pages, rewritten each session
+│   ├── STATE.md               # living, ≤2 pages, rewritten each session; the entry point and the only handoff
 │   ├── journal.md             # append-only, dated
 │   ├── outline.md             # the argument spine — SOLE authority for the argument; /paper venue appends venue and structure
 │   ├── open-questions.md      # things needing an author decision, each with the agent's recommendation
@@ -126,27 +127,33 @@ Two workspaces sharing a short name is a hygiene problem for the author to avoid
 │   ├── drafting-brief.md      # only for drafting many sections at once (§7.2), from the skill's template
 │   ├── feature-map.md         # only for a software paper: each feature, its version, the section that covers it
 │   ├── ingest/                # only for a large subject repository: reading reports, an index and never a source
-│   ├── CLAUDE-sci-paper.md    # only where the instruction file is not touched: the index entry (§4.1)
+│   ├── AGENTS-sci-paper.md    # only where the instruction file is not touched: the index entry (§4.1)
 │   └── lit/                   # the literature notebook, format in _shared/notebook.md (§5.5)
 │       ├── index.md           # one line per paper or web source in play
 │       ├── <bibcode>.md       # deep notes, only for papers actually read
-│       └── web-<slug>.md      # a web source, with its fetch date and confidence
+│       ├── web-<slug>.md      # a web source, with its fetch date and confidence
+│       ├── reports/           # literature reports
+│       └── pdf/               # fetched full texts and .txt extracts; gitignored, never committed (copyright; size)
 ├── manuscript/
 │   ├── main.tex               # journal class + \input of sections
+│   ├── main.pdf               # built in place, with .aux/.bbl/.log beside it (all gitignored)
 │   ├── sections/*.tex
 │   ├── scipaper.sty         # the gap-marker package
+│   ├── figures/               # figures made for the paper (TikZ, diagrams, plots drawn for it); created when first needed
 │   ├── template-reference/    # only once a venue is chosen: the template's unmodified originals (§7.8)
 │   └── refs.bib               # verbatim exports only (§6.2, rule 2)
-└── .build/                    # gitignored: latexmk output, rendered pages, fetched PDFs
+└── .scratch/                  # gitignored, scratch only: EPS/PS conversions to look at, rendered pages, before/after lists, raw ADS replies, saved web pages
 ```
 
-Everything except `.build/` is committed **to the workspace's own repository** — a decision entirely local to this one paper and unrelated to whatever the working directory above it does with its own history. The diffs of `paper/` are the record of how the paper was thought through.
+The build is `(cd manuscript && latexmk -pdf -interaction=nonstopmode main.tex)`, which writes `manuscript/main.pdf`; nothing is built in `.scratch/`. **Core and local.** The tree above is the core, what the skills create and name. A paper may add local files and directories for its own needs (pinned copies of inputs, an archive, a link to a subject repository, a review record); the workspace `AGENTS.md` directory map marks each row core or local, and no skill assumes a local item exists.
 
-**`paper-voice/`, `paper/`, `manuscript/` and `.build/` always live in the workspace root**, which is always `sci-paper-workspace*/` (§4.1) — never `.`, never elsewhere. They are agent-owned, author-supplied-but-for-ai-agent-science's-use, or shared; they are created by `/paper start`; and their location relative to the workspace root is not negotiable, which is what keeps every skill's paths simple.
+Everything the workspace `.gitignore` does not name (`.scratch/`, the build output, `paper/lit/pdf/`) is committed **to the workspace's own repository** — a decision entirely local to this one paper and unrelated to whatever the working directory above it does with its own history. The diffs of `paper/` are the record of how the paper was thought through.
+
+**`paper-voice/`, `paper/`, `manuscript/` and `.scratch/` always live in the workspace root**, which is always `sci-paper-workspace*/` (§4.1) — never `.`, never elsewhere. They are agent-owned, author-supplied-but-for-ai-agent-science's-use, or shared; they are created by `/paper start` (`.scratch/` and `paper/lit/pdf/` when first needed); and their location relative to the workspace root is not negotiable, which is what keeps every skill's paths simple.
 
 **`paper-voice/` sits beside `paper/`, not inside it.** It is author-supplied material, like `notes/`, `figures/` and `code/` — but unlike those three, it is not part of the underlying research project and has nowhere else to be "found"; it exists only because the author assembled it specifically for ai-agent-science's use. Keeping it a sibling of `paper/` rather than nested inside it keeps `paper/`'s own label — agent-owned memory — literally true.
 
-**The author's other three directories are found, not placed, and now live outside the workspace root entirely** (§4.1) — the one exception is `notes/` inside the workspace, which holds the author's words captured by the agent (§3) and, where the paper's subject is the project itself, the paper's own notes. `notes/`, `figures/` and `code/` belong to the author's project, so they are used wherever they already are and under whatever they are already called — `analysis/` and `plots/` in the working directory above, a `notes/` at the project root, or nothing yet at all. They are created only when the material exists nowhere, and even then in the working directory, never inside `sci-paper-workspace*/` — creating them there would put author-owned project material inside the one directory that is supposed to hold only ai-agent-science's own footprint. Whatever the answer, the resolved paths are written into the workspace's own `CLAUDE.md`, and `% src:` anchors (§6.3) are written relative to the workspace root — so `% src: ../analysis/plot_lf.py:88 (fit_break)` is the ordinary case now, not the exception it was in v2.0.
+**The author's other three directories are found, not placed, and now live outside the workspace root entirely** (§4.1) — the one exception is `notes/` inside the workspace, which holds the author's words captured by the agent (§3) and, where the paper's subject is the project itself, the paper's own notes. Figures made for the paper (TikZ, diagrams, plots drawn for it) live in `manuscript/figures/`, created when first needed, in every case. `notes/`, `figures/` and `code/` belong to the author's project, so they are used wherever they already are and under whatever they are already called — `analysis/` and `plots/` in the working directory above, a `notes/` at the project root, or nothing yet at all. They are created only when the material exists nowhere, and even then in the working directory, never inside `sci-paper-workspace*/` — creating them there would put author-owned project material inside the one directory that is supposed to hold only ai-agent-science's own footprint. Whatever the answer, the resolved paths are written into the workspace's own `AGENTS.md`, and `% src:` anchors (§6.3) are written relative to the workspace root — so `% src: ../analysis/plot_lf.py:88 (fit_break)` is the ordinary case now, not the exception it was in v2.0.
 
 Nothing the author owns is ever moved to make the layout tidier. A directory map that describes a layout the author does not have is worse than no map, and a scaffold that relocates a week of someone's work to fit a diagram is the fastest way to lose them.
 
@@ -160,16 +167,18 @@ The single most important design decision, because it is what makes a new conver
 
 | File | Loaded | Lifespan | Contains |
 |---|---|---|---|
-| `CLAUDE.md` (working directory) | automatically, every session | stable — changes rarely | **an index**: which `sci-paper-workspace*/` directories exist here and their short names (§4.1.1) — nothing more; the detail lives one level down |
-| `CLAUDE.md` (workspace root) | automatically, once a session works inside the workspace | stable — changes rarely | **how to behave, and where things are**: the installation path, directory map, venue, build command, the pointer to `STATE.md`, and — only for a software or instrument paper — the *Subject version* the paper's anchors are pinned to (§6.4) |
+| `AGENTS.md` (working directory) | automatically, every session | stable — changes rarely | **an index**: which `sci-paper-workspace*/` directories exist here and their short names (§4.1.1) — nothing more; the detail lives one level down |
+| `AGENTS.md` (workspace root) | automatically, once a session works inside the workspace | stable — changes rarely | **how to behave, and where things are**: the installation path, directory map, venue, build command, the pointer to `STATE.md`, and — only for a software or instrument paper — the *Subject version* the paper's anchors are pinned to (§6.4) |
 | `paper/STATE.md` | first action of every session | **only true today** | **where we are**: section status, what's settled, what's open, next action, and what is currently in flux about the argument |
 | `paper/journal.md` | on demand | permanent archive | **how we got here**: dated entries, what was discussed, what was decided and why |
 
-The split test: *will this still be true in three months?* If yes it belongs in `CLAUDE.md`; if no it belongs in `STATE.md`. `CLAUDE.md` being two files rather than one (§4.1) is a scope split, not a third tier — both hold only rules and locations, never paper knowledge, and the same split test applies to deciding which of the two a given line belongs in: *does this describe the project, or this one workspace?*
+The split test: *will this still be true in three months?* If yes it belongs in `AGENTS.md`; if no it belongs in `STATE.md`. `AGENTS.md` being two files rather than one (§4.1) is a scope split, not a third tier — both hold only rules and locations, never paper knowledge, and the same split test applies to deciding which of the two a given line belongs in: *does this describe the project, or this one workspace?*
 
 **Why two tiers rather than one.** `STATE.md` is capped at two pages precisely so it can be read *in full, every time*, without thought. A single memory file either grows past the point where it is reliably read, or stays thin enough to be useless. The cap is the mechanism.
 
-**`CLAUDE.md` holds no paper knowledge.** Knowledge placed there goes stale silently, because nothing ever prompts a review of it. Rules only.
+**`AGENTS.md` holds no paper knowledge.** Knowledge placed there goes stale silently, because nothing ever prompts a review of it. Rules only.
+
+**`STATE.md` is the only handoff.** There is no separate handoff file: a request for a handoff, from the author or another tool, is met by the last-action steps (rewrite `STATE.md`, append to the journal), and stable how-we-work procedures go in the workspace `AGENTS.md`, as the split test already sorts them.
 
 ### 5.2 STATE.md
 
@@ -319,7 +328,7 @@ The capture rule of §3 was also reversed at this stage.
 
 **What a session actually looks like.**
 
-The commands below are shortcuts, **not an interface the author has to learn**. The workspace's own `CLAUDE.md` points every session at `STATE.md` (the working directory's own agent-instruction file holds only the index that finds that workspace, §4.1), so opening a terminal and typing *"where were we?"* or *"the z=2 run finished, here are the numbers"* works exactly as well as a slash command. The skills exist to carry technique, not to gate access.
+The commands below are shortcuts, **not an interface the author has to learn**. The workspace's own `AGENTS.md` points every session at `STATE.md` (the working directory's own `AGENTS.md` holds only the index that finds that workspace, §4.1), so opening a terminal and typing *"where were we?"* or *"the z=2 run finished, here are the numbers"* works exactly as well as a command, where the harness offers commands at all. The skills exist to carry technique, not to gate access.
 
 A normal working session, end to end:
 
@@ -343,15 +352,15 @@ Two skills. **`paper`** is one skill with modes — `start`, `draft`, `voice`, `
 
 ### 7.1 `/paper start` — ingest and orient
 
-Reads `notes/`, **looks at** every figure (PNG and PDF are read directly; EPS and PS are converted with `gs` into `.build/` first), reads any tables, reads `code/` if present. Where a workspace already exists it does none of this: it reads `STATE.md`, reports where the paper stands, and asks what is to be re-ingested (AQ1, unattended default: nothing).
+Reads `notes/`, **looks at** every figure (PNG and PDF are read directly; EPS and PS are converted with `gs` into `.scratch/` first), reads any tables, reads `code/` if present. Where a workspace already exists it does none of this: it reads `STATE.md`, reports where the paper stands, and asks what is to be re-ingested (AQ1, unattended default: nothing).
 
-Scaffolds the workspace: it creates `sci-paper-workspace*/` (§4.1 — always this name, never proposed or asked, a distinguishing suffix only if the working directory already holds one; AQ2), `git init`s it, copies the skeleton in (`paper/`, `paper-voice/`, `manuscript/`, the workspace's own `CLAUDE.md`), and wires the working directory by **appending to** its agent-instruction file and `.gitignore` — an index entry and a glob line, never the workspace's own detail, which is written into the workspace's own `CLAUDE.md` instead. If a venue is named it switches the manuscript to it (§7.8).
+Scaffolds the workspace: it creates `sci-paper-workspace*/` (§4.1 — always this name, never proposed or asked, a distinguishing suffix only if the working directory already holds one; AQ2), `git init`s it, copies the skeleton in (`paper/`, `paper-voice/`, `manuscript/`, the workspace's own `AGENTS.md`), and wires the working directory by **appending to** its `AGENTS.md` (creating it, with the author's permission, if absent) and `.gitignore` — an index entry and a glob line, never the workspace's own detail, which is written into the workspace's own `AGENTS.md` instead. If a venue is named it switches the manuscript to it (§7.8).
 
-**The append path is the normal one, not the edge case.** An existing project already has both root files, and a scaffold that merely declines to overwrite them leaves the workspace unwired: no index entry pointing at it, and `sci-paper-workspace*/` tracked in the project's own git history rather than isolated. The `CLAUDE.md` index block is delimited by `<!-- sci-paper: begin -->` / `<!-- sci-paper: end -->` markers, and a later run **upserts its own workspace's line rather than rewriting the whole block** (§4.1.1) — a second paper in the same project must not erase the first's entry. `.gitignore` gets only the line it is missing, and it is a glob (`sci-paper-workspace*/`) precisely so a later rename of the workspace never needs a second `.gitignore` edit to stay covered. Never a first commit inside the new workspace repository — that stays the author's decision, exactly as it would for any other repository.
+**The append path is the normal one, not the edge case.** An existing project already has both root files, and a scaffold that merely declines to overwrite them leaves the workspace unwired: no index entry pointing at it, and `sci-paper-workspace*/` tracked in the project's own git history rather than isolated. The `AGENTS.md` index block is delimited by `<!-- sci-paper: begin -->` / `<!-- sci-paper: end -->` markers, and a later run **upserts its own workspace's line rather than rewriting the whole block** (§4.1.1) — a second paper in the same project must not erase the first's entry. `.gitignore` gets only the line it is missing, and it is a glob (`sci-paper-workspace*/`) precisely so a later rename of the workspace never needs a second `.gitignore` edit to stay covered. Never a first commit inside the new workspace repository — that stays the author's decision, exactly as it would for any other repository.
 
 **The venue does not have to be decided yet.** Early on it usually is not. Absent a choice the scaffold uses a plain `article` class, and switching later is a `main.tex` preamble change plus a re-fetch — the prose does not care. Refusing to start until the author picks a journal would be exactly the wrong kind of gate. Asked which journal, the skill accepts "not decided yet" and, if the author does not know, names `/paper venue` and moves on (AQ5).
 
-**A software or instrument paper is a supported case** (`start` §1b). When little or nothing turns up in `notes/`, `figures/` and `code/`, the paper's subject may be the working directory itself, and the repository is then a source in its own right: README and agent instructions, machine-readable configuration, recorded runs and changelogs, the code, the tests, and the git history read with `--all`, because unmerged branches hold evidence the checked-out one does not. A large repository is read by parallel readers split by question, each writing a sourced report into `paper/ingest/` as it goes. Before a software paper's methods are drafted, the changelog and the tags or releases are read in order into `paper/feature-map.md` — each feature, the version that introduced it, where it lives, and the outline section that covers it — and a feature with no section is a question; on the Mimic paper this found five gaps that section-by-section drafting had missed. The workspace `CLAUDE.md` records the subject's pinned version (§6.4).
+**A software or instrument paper is a supported case** (`start` §1b). When little or nothing turns up in `notes/`, `figures/` and `code/`, the paper's subject may be the working directory itself, and the repository is then a source in its own right: README and agent instructions, machine-readable configuration, recorded runs and changelogs, the code, the tests, and the git history read with `--all`, because unmerged branches hold evidence the checked-out one does not. A large repository is read by parallel readers split by question, each writing a sourced report into `paper/ingest/` as it goes. Before a software paper's methods are drafted, the changelog and the tags or releases are read in order into `paper/feature-map.md` — each feature, the version that introduced it, where it lives, and the outline section that covers it — and a feature with no section is a question; on the Mimic paper this found five gaps that section-by-section drafting had missed. The workspace `AGENTS.md` records the subject's pinned version (§6.4).
 
 Returns, as a conversation rather than a gate:
 - a proposed **argument spine** → `paper/outline.md`
@@ -475,7 +484,7 @@ Until stage 2a this was `/paper-lit venue`, the fifth literature mode (§15). It
 
 **The novelty mode has to be able to deliver bad news.** Naming a paper that scoops the result is its *successful* outcome. This is stated in the skill because it is the mode most likely to be softened by a model trying to be encouraging, and it is the mode that saves the most time.
 
-**The mine mode** fetches the PDF where it can (§9.1) with `curl` to `.build/` in a paper, or to a temporary directory otherwise, then reads it natively, and records table rows, values and sample definitions into `<notebook>/<bibcode>.md` (`paper/lit/` in a paper), each **quoted with the page or table it came from** rather than presented as a clean extraction. A mined value becomes usable in the manuscript through the ordinary `% src:` trace (§6.2). One honest limit, stated in the skill and carried into any output: **values from tables and text are reliable; reading points off a published figure is a visual estimate and must be labelled as one.** It is never quoted as a measured value.
+**The mine mode** fetches the PDF where it can (§9.1) with `curl` to `paper/lit/pdf/` in a paper, `<notebook>/pdf/` with a named notebook, or a temporary directory otherwise (never committed), then reads it natively, and records table rows, values and sample definitions into `<notebook>/<bibcode>.md` (`paper/lit/` in a paper), each **quoted with the page or table it came from** rather than presented as a clean extraction. A mined value becomes usable in the manuscript through the ordinary `% src:` trace (§6.2). One honest limit, stated in the skill and carried into any output: **values from tables and text are reliable; reading points off a published figure is a visual estimate and must be labelled as one.** It is never quoted as a measured value.
 
 **The provenance mode** is the one place the web is a source in its own right. Provenance is often written only in comments and prose and not in any field, so the mode reads those, records each link with its source (a web source gets a web-source note, §5.5), and reports which links no public source records. It is run before a methods section asserts provenance, because a brief's account of where something came from is a lead and not a fact. Its evidence is the Mimic paper's questions of the form "who made this dataset, and with what", which the subject repository could not answer and only the author could.
 
@@ -506,7 +515,7 @@ Every candidate tool was tested against principle 3. All but one failed:
 |---|---|
 | figure conversion | **Not needed.** One `pdftoppm`/`gs` invocation, documented in the skill. PNG and PDF are read natively. |
 | LaTeX checking | **Not needed.** `latexmk` and the `.log` already report undefined citations and references and missing files, authoritatively. Gap collection is `grep`. |
-| PDF fetching | **Not needed.** `curl` to `.build/` (a temporary directory outside a paper), then read natively. |
+| PDF fetching | **Not needed.** `curl` to `paper/lit/pdf/` (`<notebook>/pdf/`, or a temporary directory when unbound), then read natively. |
 | repo scan / file classification | **Not needed.** glob, `ls`, Read. |
 | page rendering | **Not needed.** `latexmk` then `pdftoppm`. |
 | **ADS access** | **Built** — `tools/ads.py`, see below. |
@@ -544,11 +553,11 @@ The consequence, which should be stated plainly: **the entire value of this proj
 tools/ads.py             # the only script                              built
 skeleton/
 ├── root/                # appended into the working directory          built
-│   └── CLAUDE.md        #   the sci-paper index block, template; the one-line
+│   └── AGENTS.md        #   the sci-paper index block, template; the one-line
 │                        #   .gitignore entry is written by `start` §1a, not copied
 └── workspace/           # copied to become sci-paper-workspace*/       built
-    ├── CLAUDE.md        #   this workspace's own detail, template
-    ├── .gitignore       #   build-artefact lines
+    ├── AGENTS.md        #   this workspace's own detail, template
+    ├── .gitignore       #   build-artefact lines, .scratch/, paper/lit/pdf/
     ├── paper-voice/README.md
     ├── paper/            #   STATE, journal, outline, open-questions, lit/
     └── manuscript/       #   main.tex + scipaper.sty + an empty refs.bib
@@ -674,23 +683,22 @@ P4b, P5 and P6 all have acceptance criteria that cannot be met by reading a skil
 /Users/dcroton/Local/git-repos/mimic/sci-paper-workspace/
                     # a symbolic link into an iCloud-synced folder,
                     # /Users/dcroton/Documents/Science/projects/mimic-shared/sci-paper-workspace
-├── HANDOFF.md      # local, gitignored: the paper-side entry point
-├── paper/STATE.md  # where the paper stands
-├── paper/toolkit-findings.md  # what the toolkit got wrong while the paper was written
+├── paper/STATE.md  # where the paper stands: the entry point and the only handoff
+├── toolkit-findings.md  # what the toolkit got wrong while the paper was written
 └── ...
 ```
 
-Its `HANDOFF.md` is the paper-side entry point and says what to read first and what is next. Start a session there, not here, whenever the work is paper-shaped; start here for a change to this system that is already specified and needs no live run behind it. The workspace is the linked-workspace case of §4.1, and its subject, Mimic, is pinned to a release (§6.4).
+Its `paper/STATE.md` is the paper-side entry point and says what to read first and what is next. Start a session there, not here, whenever the work is paper-shaped; start here for a change to this system that is already specified and needs no live run behind it. The workspace is the linked-workspace case of §4.1, and its subject, Mimic, is pinned to a release (§6.4).
 
 **`stc` will start fresh.** Its first workspace was scaffolded on 2026-09-22, before any drafting, and the owner removed it on 2026-11-17 rather than migrate it; when that paper resumes it begins with `/paper start` on the current toolkit. The Mimic paper's workspace was migrated to the new names and rules on 2026-11-17 (its current documents updated, its history files untouched, and a full backup under the workspace's gitignored `archive/`).
 
-**Both outputs are expected from every sitting.** A session writes the paper *and* records what this system got wrong while doing it. That is not a side effect to tolerate; it is the only mechanism left for advancing §11, and it works. The `stc` run produced eleven findings, nine of them out of ordinary paper work rather than from inspecting the skills (its record is archived, local, at `docs/archive/sci-paper - Live-run findings (stc).md`). The Mimic paper's record is `paper/toolkit-findings.md` in its workspace, and the Synthesis at its end is what stage 2a built from (§14.5, §15). Durable outcomes land in §14 and §15 and the working record is then archived.
+**Both outputs are expected from every sitting.** A session writes the paper *and* records what this system got wrong while doing it. That is not a side effect to tolerate; it is the only mechanism left for advancing §11, and it works. The `stc` run produced eleven findings, nine of them out of ordinary paper work rather than from inspecting the skills (its record is archived, local, at `docs/archive/sci-paper - Live-run findings (stc).md`). The Mimic paper's record is `toolkit-findings.md` at its workspace root, and the Synthesis at its end is what stage 2a built from (§14.5, §15). Durable outcomes land in §14 and §15 and the working record is then archived.
 
 **What each remaining phase needs from the vehicle:**
 
 | Phase | Needs |
 |---|---|
-| **P4b** `/paper iterate`, the structural read | a **drafted body** — §7.3's moves run by hand against real prose. An outline is not enough. The Mimic paper's methods sections are drafted and trace-checked; the paper's focus is chosen once its evidence campaigns have reported (its `HANDOFF.md`) |
+| **P4b** `/paper iterate`, the structural read | a **drafted body** — §7.3's moves run by hand against real prose. An outline is not enough. The Mimic paper's methods sections and Section 7 (verification) are drafted and trace-checked, Section 7 also by an external panel; the owner's first full read (2026-11-18) is the first input to the structural read; the paper's focus is chosen once its evidence campaigns have reported (its `paper/STATE.md`) |
 | **P5** `/paper frame` + `/paper finish` | a **completed body**, and a venue actually chosen, since `/paper finish` needs a venue file written against a real one. The venue is PASA and `_shared/venues/pasa.md` exists (§7.6); the checklist is written against the paper's actual submission |
 | **P6** dogfood end to end | the paper going to submission |
 
@@ -1216,6 +1224,12 @@ argued at least once and in several cases repeatedly.
   - `literature` takes web sources, with a confidence, as notes of their own; the three export paths of Rule 2 are first-class; and provenance is a mode (item 6).
 - **The vehicle is the Mimic paper** (architecture decision 6), and `stc` is on hold (§11.2).
 
+**Settled at v4.1, 2026-11-18 (owner, from the Mimic paper)**
+
+- **The instruction file is `AGENTS.md` alone**, in the workspace and at the project root, and the toolkit is harness-agnostic. This supersedes the 2026-09-22 decision to follow the host's `AGENTS.md`/`CLAUDE.md` convention, and the format name `paper/CLAUDE-sci-paper.md` above becomes `paper/AGENTS-sci-paper.md`.
+- **`paper/STATE.md` is the only handoff.**
+- **The layout** of §4.2: the build in place, `paper/lit/pdf/`, `manuscript/figures/`, `.scratch/`, and a directory map that marks each row core or local.
+
 **Approaches already declined**
 
 - **An `implementation-plan` / `scoped-implementation` / `drift-audit` workflow
@@ -1285,7 +1299,7 @@ error. `cd -P` is required. A `$SCIENCE_ROOT` already set in the environment is 
 
 This matters at exactly one moment and it is easy to miss: **the first
 `/paper start` in a brand-new working directory.** Every later session finds the
-absolute path recorded in the `CLAUDE.md` block, which the scaffold writes. The
+absolute path recorded in the workspace `AGENTS.md`, which the scaffold writes. The
 first one has no block to read, so it must resolve the root itself or it cannot
 copy the skeleton at all.
 

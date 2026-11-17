@@ -275,19 +275,22 @@ author's call.
 
 *"Pull the numbers I can compare against."*
 
-**The fetch target.** In a paper, `.build/`, as in the commands below.
-Otherwise a temporary directory — `FETCH=$(mktemp -d)` — and `.build/` below
-reads as `"$FETCH"/`; never the current directory.
+**The fetch target.** `PDFDIR` below is `paper/lit/pdf` in a paper,
+`<notebook>/pdf` with a named notebook, and a temporary directory
+(`PDFDIR=$(mktemp -d)`) when unbound; never the current directory. Fetched
+full texts are never committed (copyright; size): the workspace `.gitignore`
+names `paper/lit/pdf/`, and a named notebook's `pdf/` gets its own
+(`printf '*\n' > "$PDFDIR/.gitignore"`) when it is first made.
 
 **The fetch ladder.** `esources` gives source *types*, not URLs, so retrieval is
 a ladder rather than a field lookup:
 
 ```sh
-mkdir -p .build
+mkdir -p "$PDFDIR"
 # 1. an arXiv id, which covers nearly everything in astronomy
-curl -sfL --max-time 60 -o '.build/2013MNRAS.436.3031V.pdf' https://arxiv.org/pdf/1305.2913
+curl -sfL --max-time 60 -o "$PDFDIR/2013MNRAS.436.3031V.pdf" https://arxiv.org/pdf/1305.2913
 # 2. otherwise the ADS link gateway, with a TYPE the record's esources lists
-curl -sfL --max-time 60 -o '.build/2013MNRAS.436.3031V.pdf' \
+curl -sfL --max-time 60 -o "$PDFDIR/2013MNRAS.436.3031V.pdf" \
   'https://ui.adsabs.harvard.edu/link_gateway/2013MNRAS.436.3031V/EPRINT_PDF'
 ```
 
@@ -305,7 +308,7 @@ paywall or a cookie wall answers `200` with HTML, sails past `-f`, and lands as
 a `.pdf` that is not one:
 
 ```sh
-head -c 4 '.build/<bibcode>.pdf'   # must print %PDF
+head -c 4 "$PDFDIR/<bibcode>.pdf"   # must print %PDF
 ```
 
 If it does not, the paper was not fetched. Say so and hand the author the

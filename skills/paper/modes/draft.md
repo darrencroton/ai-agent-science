@@ -105,7 +105,7 @@ check that against the caption, the notes, and the code that made it. A mismatch
 between any of them is a `\gap{q}` and a numbered question, never a silent
 resolution in favour of whichever seemed most likely.
 
-PDF and PNG are read directly. EPS and PS go through `gs` into `.build/` first,
+PDF and PNG are read directly. EPS and PS go through `gs` into `.scratch/` first,
 as `/paper start` step 3 shows — `pdftoppm` does not read EPS and simply fails
 on one.
 
@@ -143,23 +143,18 @@ reader sees lives in the `\section{}` line, not in the path.
   EPS or PS. Where a figure exists only as EPS/PS: first look for a sibling in
   an includable format and check it is the *same plot* — a `_old` or `_v2`
   sibling is often a different one, and this directory is normally untidy.
-  Otherwise convert it once, **alongside the original** — figures/, wherever
-  the survey found it, which is normally outside the workspace root (house rules, *The workspace root*) —
-  and say that you did:
+  Otherwise convert it once into `manuscript/figures/`, which `\graphicspath`
+  searches first, and say that you did (`<figures>` is wherever the survey
+  found the author's figures):
 
   ```sh
+  mkdir -p manuscript/figures
   gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dEPSCrop \
-     -sOutputFile=figures/fig.pdf figures/fig.eps
+     -sOutputFile=manuscript/figures/fig.pdf <figures>/fig.eps
   ```
 
-  **This is the one deliberate exception to "everything ai-agent-science creates
-  stays inside the workspace."** `\graphicspath` resolves relative to wherever
-  the author's figures already are, so a converted derivative has to sit in
-  that same directory or the build will not find it — putting it in
-  `.build/` instead would need a second `\graphicspath` entry for one figure,
-  which is more machinery than the problem is worth. Never overwrite an author
-  figure, and never choose between two versions of one figure without asking
-  which is current (AQ9).
+  The author's directory is never written to. Never choose between two
+  versions of one figure without asking which is current (AQ9).
 - Units and $h$-scalings are copied, never converted — `_shared/house-rules.md`.
 - Write the gap markers as you go, with a note that says what would fill them —
   `\gap{number}{need the value from run 3}`, not `\gap{number}{TBD}`.
@@ -223,7 +218,7 @@ build will catch a step later for no reason.
 From the workspace root:
 
 ```sh
-(cd manuscript && latexmk -pdf -interaction=nonstopmode -outdir=../.build main.tex)
+(cd manuscript && latexmk -pdf -interaction=nonstopmode main.tex)
 grep -rn '\\gap{' manuscript --include='*.tex'
 ```
 
@@ -237,7 +232,7 @@ error stops at the interactive `?` prompt and the build hangs until it is
 killed — and in `final` mode, where every `\gap` raises an error deliberately,
 that is the *normal* path rather than an unlucky one.
 
-The `.log` is the authority on undefined references and missing figure files —
+The PDF is `manuscript/main.pdf`, and the `.log` beside it is the authority on undefined references and missing figure files —
 do not re-derive it. **State the PDF's path at every build:** the author reads
 PDFs, not `.tex`. Report:
 
@@ -265,6 +260,6 @@ Update `paper/STATE.md` (this section's row, and *Next*) and append the
 
 ## 9. Many sections at once
 
-When several sections are drafted in parallel by subagents, the main session first writes `paper/drafting-brief.md` from `templates/drafting-brief.md`, gives each drafter one section and one question-id range, and keeps §6–§8 and every shared file to itself. Each drafter works to §1–§5. **Every drafted section then goes through `/paper iterate` before it is called drafted.**
+When several sections are drafted in parallel by fresh agents (subagents, or separate sessions where the harness has none), the main session first writes `paper/drafting-brief.md` from `templates/drafting-brief.md`, gives each drafter one section and one question-id range, and keeps §6–§8 and every shared file to itself. Each drafter works to §1–§5. **Every drafted section then goes through `/paper iterate` before it is called drafted.**
 
 **Models.** Use the strongest available for dense sections drafted from code, and a cheaper one for short or note-based sections.

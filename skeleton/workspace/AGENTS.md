@@ -24,29 +24,33 @@ commands are shortcuts, not an interface anyone has to learn.
 
 ## Directory map
 
-Author-owned paths are the ones this paper actually uses --- edit the rows below
-to match, and delete any that do not exist.
+The **Kind** column marks each row **core** (what the skills create and name) or
+**local** (this paper's own addition; no skill assumes a local item exists). Edit
+the author-owned rows to match what this paper actually uses, delete any that do
+not exist, and add a `local` row for anything else this paper keeps here.
 
-| Path | Owner | |
-|---|---|---|
-| `../notes/` | author | free-form markdown; never modified |
-| `notes/` | author (written by the agent) | the author's captured words, as new dated notes; created on first capture (where the paper's subject is the project itself, this is the paper's notes directory) |
-| `../figures/` | author | looked at, never regenerated |
-| `../code/` | author | read, never run |
-| `paper-voice/` | author | optional, for ai-agent-science's use only: past papers / style notes — see its own `README.md` |
-| `paper/` | agent | this workspace's memory: `STATE.md`, `journal.md`, `outline.md`, `open-questions.md`, `voice.md` (only if `paper-voice/` is used), `lit/` |
-| `manuscript/` | shared | the author edits this directly and constantly |
-| `.build/` | build | gitignored |
+| Path | Owner | Kind | |
+|---|---|---|---|
+| `../notes/` | author | core | free-form markdown; never modified |
+| `notes/` | author (written by the agent) | core | the author's captured words, as new dated notes; created on first capture (where the paper's subject is the project itself, this is the paper's notes directory) |
+| `../figures/` | author | core | looked at, never regenerated |
+| `../code/` | author | core | read, never run |
+| `paper-voice/` | author | core | optional, for ai-agent-science's use only: past papers / style notes — see its own `README.md` |
+| `paper/` | agent | core | this workspace's memory: `STATE.md`, `journal.md`, `outline.md`, `open-questions.md`, `voice.md` (only if `paper-voice/` is used), `lit/` (`index.md`, notes, `reports/`, and `pdf/`, the fetched full texts, gitignored) |
+| `manuscript/` | shared | core | the author edits this directly and constantly; `main.tex`, `sections/`, `refs.bib`, `scipaper.sty`, `figures/` (figures made for the paper, created when first needed) and the built `main.pdf` (gitignored) |
+| `.scratch/` | scratch | core | gitignored, scratch only: conversions to look at, rendered pages, raw replies |
 
-`paper-voice/`, `paper/`, `manuscript/` and `.build/` are always directly
+`paper-voice/`, `paper/`, `manuscript/` and `.scratch/` are always directly
 inside this workspace root. The author's own `notes/`, `figures/` and `code/`
 are found wherever the author's project already keeps them, which is normally
 one level up or deeper — the `../notes/` row above is the common case, not a
-fixed path; edit it to match wherever the survey actually found them. For a paper whose subject is the project itself, the paper's `notes/` and `figures/` are inside this workspace instead; delete the `../` rows.
+fixed path; edit it to match wherever the survey actually found them. For a paper whose subject is the project itself, the paper's own notes are in `notes/` here and its figures are in `manuscript/figures/`; delete the `../` rows.
 
-Everything except `.build/` is committed **to this workspace's own
+Everything `.gitignore` does not name is committed **to this workspace's own
 repository**. The diffs of `paper/` are the record of how the paper was
 thought through.
+
+`paper/STATE.md` is the only handoff (`memory.md`, *Last action of every session*).
 
 ## Subject version
 
@@ -61,11 +65,15 @@ switching the manuscript to it: see `<root>/skills/paper/modes/venue.md`, *Switc
 
 From this workspace root:
 
-    (cd manuscript && latexmk -pdf -interaction=nonstopmode -outdir=../.build main.tex)
+    (cd manuscript && latexmk -pdf -interaction=nonstopmode main.tex)
 
-Keep `-interaction=nonstopmode`. Without it a LaTeX error waits at the
+The PDF is `manuscript/main.pdf`. Keep `-interaction=nonstopmode`. Without it a LaTeX error waits at the
 interactive `?` prompt and the build hangs instead of failing.
 
 Draft mode is the default. Final mode is the `[final]` option on
 \usepackage{scipaper} in `main.tex`; it fails the build while any `\gap`
 remains.
+
+## Local additions
+
+Local procedures this paper adds go here. Delete this section if there are none.

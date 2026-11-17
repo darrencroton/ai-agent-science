@@ -37,6 +37,10 @@ Rule 2's preamble fix (house rules) applies: add a `\DeclareUnicodeCharacter` wi
 
 A manuscript may need others; add them here when found.
 
+## Build output
+
+`pas.cls` writes `main.tab` beside the build, so add `*.tab` to the workspace `.gitignore` when switching to PASA.
+
 ## Baseline warnings
 
 `pas.cls` emits overfull `\vbox` warnings of 42 to 797 pt on every page, from its output routine. The template's own guide produces the same set. Judge a build by the warnings it adds to these, not by the log being clean. Errors, undefined references and undefined citations are never baseline.

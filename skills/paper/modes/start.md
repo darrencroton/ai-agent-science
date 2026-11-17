@@ -18,7 +18,7 @@ directory above:
 ```sh
 ls paper/STATE.md 2>/dev/null                       # already inside a workspace
 find -L . -maxdepth 3 -path './sci-paper-workspace*/paper/STATE.md' 2>/dev/null  # at the working directory; -L follows a linked workspace
-grep -l 'sci-paper: begin' AGENTS.md CLAUDE.md .claude/CLAUDE.md 2>/dev/null
+grep -l 'sci-paper: begin' AGENTS.md 2>/dev/null
 ```
 
 **If any of these finds something, this is not a new paper for this project** —
@@ -66,8 +66,8 @@ directory itself** — a software or instrument paper. See §1b.
 ### 1a. Settle the workspace root before anything writes a path
 
 Do this now, not at §5. Everything after this point — the figure conversions in
-§3, `.build/`, every path in every later session — is relative to the workspace
-root, and a `.build/` created before the root is known is litter left in someone
+§3, `.scratch/`, every path in every later session — is relative to the workspace
+root, and a `.scratch/` created before the root is known is litter left in someone
 else's project directory.
 
 `_shared/house-rules.md` has the rule: the workspace root is always
@@ -114,7 +114,7 @@ them, since a bare write from here on that lands outside `<ws>` is exactly the
 isolation failure this design exists to prevent. `notes/`, `figures/`, `code/`
 and `data/` are the one deliberate exception: they are the author's own,
 outside `<ws>`, and stay addressed relative to the working directory as the
-survey found them (for a paper whose subject is the project itself, the paper's own `notes/` and `figures/` are inside `<ws>` instead, per §1b).
+survey found them (for a paper whose subject is the project itself, its notes are in `<ws>/notes/` and its figures in `<ws>/manuscript/figures/`, per §1b).
 
 Nothing the author owns moves into `<ws>`, then or later.
 
@@ -130,7 +130,7 @@ still keeps `notes/`, still has opinions and direction that belong in the
 paper, and may well make figures for it. What changes is only where *some* of
 the material lives — the repository is itself a source, alongside the notes.
 
-Worth reading, where they exist: the README and any `AGENTS.md`/`CLAUDE.md`
+Worth reading, where they exist: the README and any `AGENTS.md`
 (the rationale is usually there and nowhere else); machine-readable config,
 schemas or databases (precise, and often a table straight off); recorded runs,
 logs and changelogs (the nearest thing to results, and where real failures are
@@ -150,9 +150,9 @@ cannot, so check the README's claims against it rather than accepting them.
 
 **The release history is the feature map.** Before drafting a software paper's methods, read the changelog and the tags or releases in order into `paper/feature-map.md` — each feature, the version that introduced it, where it lives, and the outline section that covers it. A feature with no section is a question.
 
-**The paper's subject is also its own moving source.** `_shared/house-rules.md` has the two rules this brings, *When the paper's subject is the project itself* (where the paper's notes and figures live) and *Pin a source that moves*; at scaffold time the workspace `CLAUDE.md` records the subject's pinned version, tag and commit.
+**The paper's subject is also its own moving source.** `_shared/house-rules.md` has the two rules this brings, *When the paper's subject is the project itself* (where the paper's notes and figures live) and *Pin a source that moves*; at scaffold time the workspace `AGENTS.md` records the subject's pinned version, tag and commit.
 
-Record in the workspace `CLAUDE.md` where this paper's material actually is,
+Record in the workspace `AGENTS.md` where this paper's material actually is,
 as for any other paper (§5d).
 
 ## 2. Read the notes and any tables
@@ -175,14 +175,14 @@ A column whose header does not say its units is a question.
 
 Actually look at them. **PNG and PDF are opened and read directly** — a figure
 is a single page and needs no conversion. EPS and PS cannot be read, so those,
-and only those, get converted first — into `<ws>/.build/`, never into the
-working directory, since `.build/` is a workspace artefact and `<ws>`
+and only those, get converted first — into `<ws>/.scratch/`, never into the
+working directory, since `.scratch/` is a workspace artefact and `<ws>`
 already exists by this point (§1a):
 
 ```sh
-mkdir -p "<ws>/.build"
+mkdir -p "<ws>/.scratch"
 gs -q -dNOPAUSE -dBATCH -dEPSCrop -sDEVICE=png16m -r150 \
-   -sOutputFile="<ws>/.build/fig3.png" figures/fig3.eps
+   -sOutputFile="<ws>/.scratch/fig3.png" figures/fig3.eps
 ```
 
 `figures/fig3.eps` here is the illustrative case — substitute wherever the
@@ -195,12 +195,13 @@ page and hands back a mostly blank US-Letter image with the plot small in one
 corner — worse than an error, because it still looks like a figure. The line
 assumes a single-page EPS, which is what a plotting library writes; for a
 multi-page PostScript file put `%d` in the output name
-(`-sOutputFile="<ws>/.build/fig3-%d.png"`), drop `-dEPSCrop`, and look at each
+(`-sOutputFile="<ws>/.scratch/fig3-%d.png"`), drop `-dEPSCrop`, and look at each
 page.
 
 Rasterising a *built manuscript page* is a different job, done later from
 inside the workspace once it exists, and does need
-`pdftoppm -png -r 150 -singlefile .build/main.pdf .build/page1`, where
+`mkdir -p .scratch` and
+`pdftoppm -png -r 150 -singlefile manuscript/main.pdf .scratch/page1`, where
 `-singlefile` matters: without it the output lands at `page1-1.png` and the read
 fails.
 
@@ -258,10 +259,11 @@ mkdir -p "<ws>/manuscript/sections"
 Every part of that earns its place:
 
 - **`skeleton/workspace/.` mirrors the workspace root exactly** — its
-  `paper-voice/`, `paper/`, `manuscript/`, `CLAUDE.md` and `.gitignore` all land
+  `paper-voice/`, `paper/`, `manuscript/`, `AGENTS.md` and `.gitignore` all land
   directly in `<ws>/`, because that is the whole point of the skeleton being
-  laid out that way. `skeleton/root/CLAUDE.md` is a different template for a different
-  destination, and §5b places it instead.
+  laid out that way. `.scratch/`, `paper/lit/pdf/` and `manuscript/figures/` are
+  not in it: they are created when first needed. `skeleton/root/AGENTS.md` is a
+  different template for a different destination, and §5b places it instead.
 - **The loop** names what is already there. `cp -Rn` preserves existing files
   but does not report what it skipped, and §5d needs to know the difference.
 - **`-n`** is what makes "never overwrite" true rather than merely intended. A
@@ -284,39 +286,27 @@ directory, never inside `<ws>` (the author's captured words are the exception: t
 mkdir -p notes figures
 ```
 
-The one exception is a paper whose subject is the working directory itself (§1b): its own notes and figures go inside `<ws>`, per `_shared/house-rules.md`.
+The one exception is a paper whose subject is the working directory itself (§1b): its notes go in `<ws>/notes/` and its figures in `<ws>/manuscript/figures/`, per `_shared/house-rules.md`.
 
 Never move or copy the author's existing material to make the layout match a
 diagram.
 
-### 5b. Wire the working directory's agent-instruction file with an index
+### 5b. Wire the working directory's `AGENTS.md` with an index
 
-**The workspace's own `CLAUDE.md` is already done** — §5a's wholesale copy of
-`skeleton/workspace/.` placed it at `<ws>/CLAUDE.md` along with everything
+**The workspace's own `AGENTS.md` is already done** — §5a's wholesale copy of
+`skeleton/workspace/.` placed it at `<ws>/AGENTS.md` along with everything
 else; there is nothing further to do for it here beyond filling its
 placeholders at §5d. This step is only about the **working directory's** own
-instruction file, which is a different file with a different job: an index,
+`AGENTS.md`, which is a different file with a different job: an index,
 nothing more. Skip it and a session starting at the project root has no way to
 find the workspace, even though the workspace itself is fully wired.
 
-**Follow the host repository's convention — do not impose one.** Which file
-this is belongs to the project:
-
-```sh
-ls -l AGENTS.md CLAUDE.md .claude/CLAUDE.md 2>/dev/null
-```
-
-`AGENTS.md` where present, otherwise `CLAUDE.md`. Where one is a **symlink**
-to the other (`ls -l` is why the listing is long-form), append to the real
-file — writing through the link works but records the change against the wrong
-path in every later diff. Where neither exists, copy the skeleton's and fill
+Where `AGENTS.md` does not exist, ask to create it (AQ3) and copy the skeleton's, filling
 in `<ws>`'s row:
 
 ```sh
-cp -n "<root>/skeleton/root/CLAUDE.md" ./CLAUDE.md
+cp -n "<root>/skeleton/root/AGENTS.md" ./AGENTS.md
 ```
-
-Where both exist as independent real files, ask which is authoritative (AQ3).
 
 **Where the file is a checked-in contract** — a gated workflow, a permissions
 table, contributor rules — say what you are about to add and get a yes first (AQ3).
@@ -336,10 +326,13 @@ block, which would drop another paper's entry):
 | `sci-paper-workspace/` | quenching |
 
 Each workspace directory above is its own git repository and carries its own
-`CLAUDE.md` with the full detail — build command, directory map, install path,
+`AGENTS.md` with the full detail — build command, directory map, install path,
 the pointer to `paper/STATE.md`. Read that once inside the relevant workspace;
 this index exists only so a session starting here, at the project root, knows
-which sci-paper workspaces exist and what to call them.
+which sci-paper workspaces exist and what to call them. A workspace may be
+renamed by hand at any time — if this table is stale, match by the short name
+in the workspace's own `paper/STATE.md` instead of by directory name, and
+update just that one row.
 <!-- sci-paper: end -->
 ```
 
@@ -360,7 +353,7 @@ Three more things about that block:
   because the directory can be renamed by hand at any time.
 
 For a paper whose subject is the working directory itself (§1b), this is the default rather than the fallback, per `_shared/house-rules.md`: the subject's own files stay untouched. If the author would rather their instruction file were not touched at all (AQ3), the
-index entry goes in `<ws>/paper/CLAUDE-sci-paper.md` instead and they are told
+index entry goes in `<ws>/paper/AGENTS-sci-paper.md` instead and they are told
 it must be read manually. Say plainly that this costs the automatic pointer a session
 starting at the project root would otherwise get.
 
@@ -381,13 +374,13 @@ further edit to this file ever required.
 
 ### 5d. Placeholders
 
-Substitute the paper's short name, the author list (AQ4) and the resolved install
-path — **only in the files the copy actually created.** The placeholders also include the workspace `CLAUDE.md`'s *Subject version* section: fill it, or delete it for a paper whose subject is not a repository. A `main.tex` that was
+Substitute the paper's short name, the author list (AQ4: "Author list" in `main.tex`), the date in `paper/STATE.md` and the resolved install
+path — **only in the files the copy actually created.** The placeholders also include the workspace `AGENTS.md`'s *Subject version* section: fill it, or delete it for a paper whose subject is not a repository. A `main.tex` that was
 already there belongs to the author, has no placeholders left in it, and is not
 to be rewritten in the name of scaffolding. Say which files you left alone.
 
 **`\graphicspath` in `main.tex` is the one that bites.** It ships as
-`{{../../figures/}}` — two levels up from `manuscript/`, through the workspace
+`{{figures/}{../../figures/}}` — the paper's own `manuscript/figures/` first, then two levels up from `manuscript/`, through the workspace
 root and out into the working directory, which is where the survey normally
 finds `figures/` now that the workspace is always its own subdirectory. Where
 the survey found figures somewhere else, set the path *relative to
@@ -395,11 +388,11 @@ the survey found figures somewhere else, set the path *relative to
 back out to the working directory, exactly as in the default, and anything
 after that descends from there to wherever the survey actually found
 `figures/` — a `plots/` directory nested one level *inside* the working
-directory, at `<working directory>/analysis/plots/`, makes it
-`{{../../analysis/plots/}}`, not a third `../`, which would instead climb
+directory, at `<working directory>/analysis/plots/`, makes the second entry
+`../../analysis/plots/`, not a third `../`, which would instead climb
 *above* the working directory. Get this wrong and the first figure inclusion
 fails the build with a missing-file error that reads like a broken figure
-rather than a broken path. For a paper whose subject is the project itself, `figures/` is inside the workspace and the path is `{{../figures/}}`.
+rather than a broken path. For a paper whose subject is the project itself, the author's figures are the paper's own, in `manuscript/figures/`, and the path is `{{figures/}}`.
 
 ## 6. The venue
 

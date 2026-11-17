@@ -14,7 +14,7 @@ A section just drafted, or a section whose sources have moved (a new subject ver
 
 ## 2. Brief the checker
 
-A fresh subagent that did not draft the section, on a different model where one is available. **Read only, and it never runs code.** Fill in the template and send it:
+A fresh agent (a subagent, or a separate session where the harness has none) that did not draft the section, on a different model where one is available. **Read only, and it never runs code.** Fill in the template and send it:
 
 ```text
 You are an independent trace checker for one section of a journal manuscript. You did not write it. Find every place where the prose, a table cell, an equation or a citation says something its cited source does not support. Be sceptical: a trace that looks right but points at the wrong thing is the failure you exist to catch.
@@ -48,7 +48,7 @@ These are recipes, not tools.
 
 **Promises.** List the forward references to sections not yet drafted, with what each promises, so that each is checked when that section is drafted (`draft` §3): `grep -n '\\ref{sec:' manuscript/sections/*.tex`, then keep the labels of undrafted sections.
 
-**A move.** When text moves between files, list the `% src:` anchors and the `\gap` markers before and after, so "nothing lost" is checkable: `grep -h '% src:\|\\gap{' <files> | sort > .build/before.txt`, the same after into `.build/after.txt`, then `comm -3 .build/before.txt .build/after.txt`.
+**A move.** When text moves between files, list the `% src:` anchors and the `\gap` markers before and after, so "nothing lost" is checkable: `mkdir -p .scratch`, then `grep -h '% src:\|\\gap{' <files> | sort > .scratch/before.txt`, the same after into `.scratch/after.txt`, then `comm -3 .scratch/before.txt .scratch/after.txt`.
 
 ## 6. Close the session
 

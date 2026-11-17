@@ -23,8 +23,8 @@ improvise it.
 
 ## Picking the mode
 
-`/paper <mode> [args]`, or plain conversation. The commands are shortcuts, not
-an interface: this is a settled design rule, and the workspace's own `CLAUDE.md`
+`/paper <mode> [args]` where the harness offers commands, or plain conversation,
+which works everywhere. The commands are shortcuts, not an interface: this is a settled design rule, and the workspace's own `AGENTS.md`
 points every session at `paper/STATE.md`, so a session that was never given a
 command still starts in the right place. If the mode is unclear, ask (AQ16).
 
