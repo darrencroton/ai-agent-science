@@ -13,14 +13,14 @@ the running `SKILL.md`, and that resolves whether the skill is being read in
 this repo or through the symlinked skill catalogue of an installed agent home.
 
 **`skeleton/` and `tools/ads.py` are not.** They sit one level above `skills/`,
-so they need the installation root, which is written `<sci-paper>` wherever a
+so they need the installation root, which is written `<root>` wherever a
 skill refers to it. Resolve it once, at the start of the session that needs it:
 
 ```sh
 # <skill dir> is the directory holding the running SKILL.md
-SCI_PAPER=$(cd -P "<skill dir>/../.." && pwd -P)
-[ -f "$SCI_PAPER/tools/ads.py" ] && printf 'sci-paper: %s\n' "$SCI_PAPER" \
-  || printf 'sci-paper root not found from the skill path\n'
+SCIENCE_ROOT=$(cd -P "<skill dir>/../.." && pwd -P)
+[ -f "$SCIENCE_ROOT/tools/ads.py" ] && printf 'installation root: %s\n' "$SCIENCE_ROOT" \
+  || printf 'installation root not found from the skill path\n'
 ```
 
 **`cd -P` is not optional and plain `cd` is actively wrong here.** A skill is
@@ -36,13 +36,15 @@ proceed on an unconfirmed root, and never guess a path.
 
 **Two shortcuts before resolving anything.** A paper repo's own `CLAUDE.md`
 records the absolute install path, so in an existing workspace read it from
-there. And if `$SCI_PAPER` is already set in the environment, trust it after
+there. And if `$SCIENCE_ROOT` is already set in the environment, trust it after
 the same `ads.py` test.
 
-**The one moment this genuinely matters** is the first `/paper-start` in a
+**The one moment this genuinely matters** is the first `/paper start` in a
 brand-new paper directory: there is no `CLAUDE.md` yet, because the scaffold is
 what writes it. If the root cannot be confirmed, say so and ask for the path
-rather than copying a partial skeleton or inventing a location.
+rather than copying a partial skeleton or inventing a location (AQ15).
+
+**The installed copy is a managed clone that the agent home's setup updates.** Changes to the system are made in a development clone and reach the installed copy only through commit, push and setup — an edit made in the installed copy either stops the next update or is reverted by it.
 
 ---
 
@@ -63,8 +65,8 @@ first:
    is the workspace root. Its own `CLAUDE.md` confirms it.
 2. Otherwise, read the working directory's **agent-instruction file** — its
    `AGENTS.md`, or its `CLAUDE.md` where that is what the project uses; the
-   project's own convention decides which, and `/paper-start` §5b resolves it.
-   Look for the index block `/paper-start` appends there, under *sci-paper
+   project's own convention decides which, and `/paper start` §5b resolves it.
+   Look for the index block `/paper start` appends there, under *sci-paper
    workspaces in this project*, and match the paper being discussed by its
    **short name**, never by directory name — the directory can be renamed by hand at any time
    (nothing inside a workspace depends on its own directory name to function),
@@ -77,7 +79,7 @@ first:
    recorded string" approach used to locate the installation above — then read
    each candidate's `STATE.md` header for its short name.
 4. Once resolved, **upsert only that one row of the index** if it was missing
-   or wrong. Never rewrite the whole block: a second paper's row must survive
+   or wrong, **where the index lives**: the project's agent-instruction file, or `<ws>/paper/CLAUDE-sci-paper.md` where the author declined that file (AQ3) or the subject is the project itself. Never create an index in the project's file that was deliberately kept out of it. Never rewrite the whole block: a second paper's row must survive
    the first paper's session touching the file.
 
 Work from the workspace root once found — `cd` into it, or prefix paths with
@@ -85,33 +87,39 @@ it, but do not half-do one and half-do the other. `paper-voice/`, `paper/`,
 `manuscript/` and `.build/` are always directly inside it.
 
 **It is never `.` and never the working directory itself.** Isolation is the
-point: the workspace is always one directory below the project it draws from,
-always its own repository, and the project's own `.gitignore` excludes it by a
+point: the workspace is always its own repository and always one directory below
+the project it draws from (or, where the workspace is reached through a symbolic link, with the project linked inside it; see below), and the project's own `.gitignore` (for a subject repository, its `.git/info/exclude`) excludes it by a
 glob (`sci-paper-workspace*/`) so that holds regardless of a later rename —
 **provided the rename keeps the prefix**, per the resolution ladder above.
 Nothing about the working directory's own git history is ever touched by
-anything sci-paper does.
+anything ai-agent-science does.
 
-**The author's directories are found, not placed, and now live outside the
-workspace root.** `notes/`, `figures/` and `code/` are the author's project
-material, not sci-paper's, so they stay wherever the project already keeps
+**The author's directories are found, not placed, and live outside the
+workspace root** (except where the paper's subject is the project itself, below). `notes/`, `figures/` and `code/` are the author's project
+material, not ai-agent-science's, so they stay wherever the project already keeps
 them and under whatever they are already called — `analysis/`, `plots/`, a
 `notes/` at the project root. The workspace's own `CLAUDE.md` records the
 resolved paths. A `% src:` anchor is written relative to the workspace root and
 normally points outside it now, so `% src: ../analysis/plot_lf.py:88
-(fit_break)` is the ordinary case, not the exception.
+(fit_break)` is the ordinary case, not the exception. The workspace's own `<ws>/notes/` (created on first capture) holds the author's captured words and, where the subject is the project, the paper's own notes; the author's project `notes/` stays read-only and untouched.
 
-**`paper-voice/` is different: it is author-supplied, but for sci-paper's use,
+**`paper-voice/` is different: it is author-supplied, but for ai-agent-science's use,
 so it lives inside the workspace root, beside `paper/` rather than inside it.**
 It has nowhere else to be found, unlike `notes/`/`figures/`/`code/` — the
-author assembles it specifically for `/paper-voice` (see that skill), and
+author assembles it specifically for `/paper voice` (see that skill), and
 where it exists, `paper/voice.md` — the profile distilled from it — is
-consulted by `/paper-draft` and `/paper-frame` by default. Its absence changes
+consulted by `/paper draft` and `/paper frame` by default. Its absence changes
 nothing.
 
 **Nothing the author owns is ever moved to tidy the layout.** Not a note, not a
 figure, not a script. If the material sits somewhere awkward, say so and use it
 where it is.
+
+**When the paper's subject is the project itself** — a software or instrument repository that should hold nothing about a paper — the paper's own notes and figures live inside the workspace (`notes/`, `figures/`), and nothing is written into the subject's tracked files: the exclusion goes in its `.git/info/exclude`, and the index entry in `<ws>/paper/CLAUDE-sci-paper.md` (`start` §1a, §5b).
+
+**A workspace reached through a symbolic link** (kept on a synced volume, say) cannot reach the project by `../`, because `..` is the link target's parent. Link the project inside the workspace and write every path into it through that link; the exclude pattern then drops its trailing slash (`sci-paper-workspace*`) so that it matches a link.
+
+**These names belong to the workspace format, not to the toolkit, and keep their `sci-paper` spelling:** `sci-paper-workspace` (and `sci-paper-workspace*/`), `scipaper.sty`, the `<!-- sci-paper: begin -->`/`end` markers and the heading inside that block, `paper/CLAUDE-sci-paper.md`, and `SCI_PAPER_ADS_BASE`. They are written into live workspaces.
 
 ---
 
@@ -133,10 +141,7 @@ the established body; assembling the bibliography.
 - regenerate figures
 - silently change the strength of a claim while rewriting prose
 
-**One deliberate exception.** When the author says *"capture that"*, create a
-**new** note from what they just said — and only then. The rule exists to stop
-unrequested edits to the author's own words, not to force them to type before
-they can begin. Existing content is never touched.
+**Capture the author's words.** When the author states the paper's direction, decides something, or answers a question, write it **verbatim and dated** into a **new** note in the workspace's `notes/` (`<ws>/notes/`), without being asked, and point each file changed because of it at that note. Existing notes are still never edited. If the author says not to, don't. Decisions arrive in one line mid-turn, and a decision recorded only in the agent's paraphrase is the agent's, not the author's.
 
 **The other half of "never run it": say what to run.** On its own the
 prohibition turns "this number does not exist yet" into a dead end. So where a
@@ -144,6 +149,10 @@ value can only come from executing something, write the **exact command** that
 would produce it, mark the value `\gap{number}`, and note the command with the
 question in `paper/open-questions.md`. When the author runs it and records the
 output, that record is an ordinary `% src:` source like any other.
+
+### Found while reading
+
+**Writing from a repository audits its documentation.** Where a guide, comment or docstring disagrees with the code, the prose follows the code. The disagreement earns a `\gap{q}` in the manuscript only when it changes what the sentence says; otherwise it is an open question with no marker, still recorded, because it is real and it is the subject owner's to fix, not the paper's. The same goes for a quirk that is neither a disagreement nor a hole in the draft, such as a configuration key nothing reads. This concerns the subject's own documentation; a disagreement between the code and the **author's** notes keeps `draft`'s rule (always a `\gap{q}`).
 
 ---
 
@@ -162,6 +171,8 @@ One macro, five kinds:
 \gap{todo}{expand once the z=2 run finishes}
 ```
 
+The note is typeset, so LaTeX's special characters in it (`_`, `%`, `&`, `#`, `^`) are escaped, or the build fails on the marker meant to report a hole.
+
 Mode is a package option in `main.tex`:
 
 - `\usepackage{scipaper}` — **draft** (the default). Markers render loudly
@@ -172,7 +183,7 @@ Mode is a package option in `main.tex`:
 Switching is a one-word edit and it is visible in the diff.
 
 **Collecting the gaps is a grep, not a tool.** Available at any time, not only
-at `/paper-finish`:
+at `/paper finish`:
 
 ```sh
 grep -rn '\\gap{' manuscript --include='*.tex'
@@ -205,8 +216,10 @@ of:
 There is no third option. **Never write a number that cannot be traced.** The
 same applies to a citation: found and cited, or `\gap{cite}`.
 
+**A citation the paper adds for context**, beyond what its source cites, is welcome when confirmed to exist (ADS, or Rule 2's other paths). It is the paper's own choice and does not borrow the source's trace.
+
 **The legitimate sources are wider than the notes**, because in practice a
-result lives wherever the author put it:
+result lives wherever the author put it. (Anchors are written relative to the workspace root; the examples leave out the `../` that usually leads out of it to the author's own directories.)
 
 | Source | Anchor |
 |---|---|
@@ -215,15 +228,19 @@ result lives wherever the author put it:
 | a line in the analysis code | `% src: code/plot_lf.py:88 (fit_break)` |
 | a module-level constant in that code | `% src: code/plot_lf.py:12 (MSTAR_MIN)` |
 | a literature note | `% src: paper/lit/2020MNRAS.499.5732S.md table 2` |
+| an absence claim or a search | `% src: search <exact command> (<date>, <version>) -> none` |
+| a count made from a file | `% src: code/run.cfg (grep -c '^model_' -> 64)` |
+
+An absence claim ("no shipped module does X") rests on a search, not a line, so the search is written out and can be re-run. A count is a trace only when the anchor says how it was made and the items counted can be named; a count without its items cannot be checked and silently goes stale.
 
 A figure or a line of code is a first-class source. Marking the author's own
 figure-derived result as unknown because it is not written down in a note is a
 worse failure than any it prevents.
 
-**The draft is never a source.** `notes/`, `figures/`, `code/`, the author's
-tables and `paper/lit/` are where science comes from. A number or claim already
+**The draft is never a source.** `notes/` (including `<ws>/notes/`), `figures/`, `code/`, the author's
+tables, the subject repository at its pinned version and `paper/lit/` are where science comes from. A number or claim already
 in the manuscript is never evidence for another one: that is circular, and it is
-how a transcription error propagates.
+how a transcription error propagates. **Nor is anything an agent wrote about the sources** — a survey report, an ingest index, a brief's summary. These are indexes for finding a source; the `% src:` points at the file, commit or paper itself.
 
 **A value read off a figure is an estimate and is labelled as one** — the
 author's own figures as much as published ones. An exact value must trace to a
@@ -236,7 +253,9 @@ which convention the source used. Never convert.** A comparison silently made
 between $h^{-1}M_\odot$ and $M_\odot$ is the commonest way a comparison goes
 wrong, and it survives every proofread because both numbers are correct. The
 same holds for an IMF, a cosmology and an aperture: they travel with the
-number or the number is not usable.
+number or the number is not usable. The rule is about **values and conventions, not notation**: typesetting `Mpc/h` as $h^{-1}\,\mathrm{Mpc}$ is the same unit, and notation follows the paper's voice.
+
+**An inherited measurement keeps its version.** A tracked number measured on an earlier version than the one the paper describes is quoted with the version or date it was measured at, or is a `\gap{number}` with the command that would re-measure it; it is never presented as a property of the later version.
 
 **Code is read, never run.** A `% src:` anchor into `code/` points at a
 definition or a literal in the source; it never means anything was executed. A
@@ -258,7 +277,7 @@ legal path does not prevent a composed entry; it guarantees one.
 
 | The work | Path |
 |---|---|
-| anything ADS holds | `python3 <sci-paper>/tools/ads.py export '<bibcode>'` |
+| anything ADS holds | `python3 <root>/tools/ads.py export '<bibcode>'` |
 | an arXiv-only preprint | `curl -sfL 'https://arxiv.org/bibtex/<arxiv id>'` |
 | anything else with a DOI | `curl -sfLH 'Accept: application/x-bibtex' 'https://doi.org/<doi>'` |
 
@@ -270,9 +289,11 @@ out.
 version or the preprint the community reads; the journal version or the arXiv
 one whose section numbering the prose refers to; a specific revision. That is
 an editorial choice and it is theirs. Where they name it, use it; otherwise
-take the table's order and say in one line which record was used. Directing
+take the table's order and say in one line which record was used (AQ14). Directing
 *which* record is exported says nothing about *what it says*, which is not a
 decision at all.
+
+**A record that will not render is fixed in the preamble, never in `refs.bib`** — a `\DeclareUnicodeCharacter` or `\providecommand`, with a comment naming the record. A journal's own `.bst` or class fix is a venue fact and lives in `_shared/venues/<venue>.md`.
 
 ### Both rules are hard instructions, not gates
 
@@ -314,12 +335,14 @@ catches it.
 load-bearing claim. Connective and qualitative prose gets nothing — commenting
 every sentence buries the section diffs and devalues the marks that matter.
 
+**Pin a source that moves.** When the source is a repository that keeps changing — the paper's own subject — anchors are written against the version the paper describes: the workspace `CLAUDE.md` records that version (tag and commit), and each section file opens with a comment naming the version its anchors were read at and how to re-read them (`git -C <repo> show <tag>:<path>`). A session that finds the checkout has moved past it re-reads anchors at the tag.
+
 ---
 
 ## Voice
 
 **Where `paper/voice.md` exists, drafted and framed prose matches it.** It is
-written by `/paper-voice`, from whatever the author has put in `paper-voice/`,
+written by `/paper voice`, from whatever the author has put in `paper-voice/`,
 and it is opt-in by existence rather than a default every paper gets: no
 `paper-voice/`, no change in behaviour. Where it does exist, treat it the same
 way a `_shared/sections/<role>.md` rhetorical-moves file is treated — read
@@ -337,7 +360,7 @@ the project.
 
 **Edit in place and preserve author prose.** Never regenerate a section
 wholesale over existing text without showing what would be replaced and being
-told to go ahead.
+told to go ahead (AQ8).
 
 A single silent overwrite of a day's hand-editing ends the author's trust in
 the system permanently, and git making it *recoverable* does not make it

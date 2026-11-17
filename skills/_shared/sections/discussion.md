@@ -74,7 +74,7 @@ modelling paper overclaims.
 Every comparison to another paper is a real citation or a `\gap{cite}`. Never a
 remembered author-and-year. If the claim is "this was first shown by", that is a
 priority claim and it needs the actual first paper, which is what
-`/paper-lit` snowballing is for.
+`/literature` snowballing is for.
 
 ## What does not belong here
 

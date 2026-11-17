@@ -1,9 +1,4 @@
----
-name: paper-voice
-description: Distil examples of the author's own writing or style notes, kept in paper-voice/, into a durable per-paper voice profile that /paper-draft and /paper-frame then match by default. Use when the author has put past papers or style notes in paper-voice/ and wants them applied, or wants the profile refreshed after adding something new.
----
-
-# paper-voice
+# paper — mode: voice
 
 Not a pipeline step. Run this whenever `paper-voice/` has something in it the
 author wants applied — typically once, early, but just as validly months into
@@ -17,15 +12,10 @@ profile — its existence is the opt-in, nothing more.
 
 ## Before anything
 
-Work from the workspace root, which `CLAUDE.md` names and
-`_shared/house-rules.md` defines; every path below is relative to it.
+The router's *Before every mode* comes first (`SKILL.md`).
 
-Read `paper/STATE.md` in full first. Then, from the sci-paper installation
-(`../_shared/` relative to this skill):
-
-- `_shared/memory.md`
-- `_shared/house-rules.md` — its **Voice** section is what this skill's output
-  is for; read it here rather than have it restated.
+`_shared/house-rules.md`'s **Voice** section is what this skill's output is
+for; read it here rather than have it restated.
 
 ## 1. Read what is there
 
@@ -37,7 +27,7 @@ ls -R paper-voice/ 2>/dev/null
 has one — it explains what the directory is for, not what the author's voice
 is — so its presence alone is not a signal that the author has put anything
 here yet. If the only thing present is that `README.md`, treat it the same as
-empty: say so and stop, there is nothing to distil, and creating a profile
+empty: say so and stop (unless the author has asked the agent to choose the papers, below), there is nothing to distil, and creating a profile
 from nothing (or from the directory's own instructions to the author) would be
 inventing a voice rather than observing one.
 
@@ -45,6 +35,8 @@ Read everything else in it, in full — past papers (PDF, read natively),
 freeform notes on style or convention, whatever the author put there. This is read-only
 material; nothing here is ever modified, and nothing outside `paper-voice/` is
 ever written by this step except `paper/voice.md` itself.
+
+**When the author asks the agent to choose the papers** (AQ10), the agent assembles the corpus itself, then reads it as above. Search ADS by first author (`first_author:"<Surname, I>" property:refereed`, or `orcid:`) with the literature skill's tool, and **choose by these criteria, written into the report**: prefer single- and few-author papers, the genre being written, recent work, and cited work; exclude theses and large-collaboration papers, because not every first-author paper is the author's prose. **Fetch the arXiv versions** into `paper-voice/`, named by bibcode, by the literature skill's fetch ladder: copy-editing changes spelling and punctuation, so the author's own habits survive only in the preprint.
 
 ## 2. Distil, with examples
 
@@ -84,7 +76,7 @@ currently in `paper-voice/`, not a history of past runs.
 ```markdown
 # Voice profile
 
-_Distilled: <date>, from: <what was read in paper-voice/>_
+_Distilled: <date>, from: <what was read in paper-voice/, each source with the version read: preprint or journal>_
 
 ## Sentence and paragraph
 <concrete, with a quoted example per pattern>
@@ -106,7 +98,7 @@ resolve rather than resolved here>
 This paper follows <venue>'s own conventions for referencing style and
 document requirements. Where `_shared/venues/<venue>.md` exists, see that —
 these are venue rules, not voice, and are not restated here. Where a venue is
-chosen but that file does not exist yet (it is a later phase, §9.2), note here
+chosen but that file does not exist yet, note here
 only the venue's name and any convention the author has stated directly; do
 not invent or guess the rest.
 
@@ -121,8 +113,10 @@ Leave out the **Venue** section entirely if no venue is chosen yet.
 
 In conversation: what was read, the handful of patterns that came out of it
 concretely enough to be worth stating, and anything the sources disagreed
-about. Say plainly that `/paper-draft` and `/paper-frame` will now apply this
+about. Say plainly that `/paper draft` and `/paper frame` will now apply this
 by default for the rest of this paper.
+
+**Then resolve the profile's disagreements with the author in one round**: each as a question with a recommendation (format in `_shared/memory.md`), so that one reply settles them and `voice.md` is updated to match (AQ17).
 
 ## 5. Close the session
 

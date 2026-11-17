@@ -53,7 +53,7 @@ into a paragraph at the end of the section is a caveat the reader skips.
 
 **Order results by the argument, not by the order the figures were made.**
 `paper/outline.md` sets the order. If the outline's order and the figure
-numbering disagree, say so and ask — do not silently renumber the author's
+numbering disagree, say so and ask (AQ18) — do not silently renumber the author's
 figures.
 
 ## Figures and tables

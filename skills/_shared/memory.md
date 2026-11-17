@@ -12,8 +12,8 @@ exist and get written. That is the whole mechanism.
 
 | File | Read | Lifespan | Holds |
 |---|---|---|---|
-| the working directory's agent-instruction file — `AGENTS.md` or `CLAUDE.md`, whichever the project uses (`/paper-start` §5b) | automatically | stable | **an index only** — which `sci-paper-workspace*/` directories exist here and their short names; see **The workspace root** in `house-rules.md` |
-| `CLAUDE.md` (workspace root) | automatically, once inside it | stable | **how to behave, and where things are** — the sci-paper install path, the directory map, venue, build command, the pointer to `STATE.md` |
+| the working directory's agent-instruction file — `AGENTS.md` or `CLAUDE.md`, whichever the project uses (`/paper start` §5b) | automatically | stable | **an index only** — which `sci-paper-workspace*/` directories exist here and their short names; see **The workspace root** in `house-rules.md` |
+| `CLAUDE.md` (workspace root) | automatically, once inside it | stable | **how to behave, and where things are** — the installation path, the directory map, venue, build command, the pointer to `STATE.md` |
 | `paper/STATE.md` | first action of every session | **only true today** | **where we are** — section status, what is settled, what is open, what to do next |
 | `paper/journal.md` | on demand | permanent | **how we got here** — dated entries: discussed, decided, changed, open |
 
@@ -39,10 +39,10 @@ Then, only as the work requires:
   is the **sole authority** for the argument.
 - `paper/open-questions.md` — whenever a `\gap{q}` or an open decision comes up.
 - `paper/voice.md` — before drafting or framing any prose, if it exists. Written
-  by `/paper-voice`; absent for a paper that has not set one up, which changes
+  by `/paper voice`; absent for a paper that has not set one up, which changes
   nothing.
 - `paper/lit/index.md` — before any literature search, so the same paper is not
-  chased twice.
+  chased twice (format: `notebook.md`).
 - `paper/journal.md` — when the question is *why* something is the way it is.
   Search it; do not read it whole.
 
@@ -111,20 +111,20 @@ Nothing is ever edited in the journal. The correction is the newer entry.
 
 ## open-questions.md
 
-Three fields: an id, a status with its date, the question.
+Three fields — an id, a status with its date, the question — plus the agent's recommendation. Every question the agent opens carries its recommendation and what accepting it does, after the question.
 
 ```markdown
-- **Q7** _open_ · 2026-08-21 · Is the 100-particle cut the right one for the morphology claim?
+- **Q7** _open_ · 2026-08-21 · Is the 100-particle cut the right one for the morphology claim? **Recommend:** keep it and say why in §2 — accepting changes one sentence.
 - **Q4** _resolved 2026-08-19_ · Which cosmology to quote → WMAP1; see journal 2026-08-19
 ```
 
 Statuses are `_open_` and `_resolved <date>_`. Nothing else — a question with
 a recommendation attached is still open, and inventing a middle status hides
-that from `STATE.md`.
+that from `STATE.md`. A question the agent has no basis to recommend on says so (**Recommend:** none — the author's call), because the recommendation is what lets the author settle many questions in one reply.
 
 **One line is the norm, not the limit.** A question may carry what it needs to
 be actionable — evidence already checked, the command that would answer it,
-why it blocks what it blocks. Keep the three fields and the greppable id;
+why it blocks what it blocks. Keep the three fields, the recommendation and the greppable id;
 anything that is no longer a question belongs in `outline.md` or `STATE.md`.
 
 Ids are referenced from `\gap{q}` markers and from `STATE.md`. Resolved
@@ -135,66 +135,7 @@ the way it is.
 
 ## Literature notes
 
-`paper/lit/index.md` is a flat roster — one row per paper that has entered play,
-whether or not it has been read:
-
-```markdown
-| Bibcode | Handle | Why it is in play | Read |
-|---|---|---|---|
-| 2006MNRAS.365...11C | Croton+06 | the radio-mode model we compare against | yes |
-| 2015MNRAS.451.2663H | Henriques+15 | later calibration of the same model | no |
-```
-
-**Where a work has no bibcode**, put its identifier in that column instead —
-`arXiv:2305.16291`, or a bare DOI — and say so plainly rather than leaving the
-cell empty. Rule 2's other two exporting paths exist precisely for these, and
-a later session that sees a blank first column will go looking in ADS for
-something ADS does not have.
-
-**Where a roster was assembled without `ads.py`** — a web reconnaissance pass,
-say — the bibcodes in it are reconstructed rather than read, and the table
-carries one line at the top saying so. They are re-resolved at export time
-regardless; the note is what stops them being trusted in the meantime.
-
-The *Handle* is what the prose calls the paper. *Why it is in play* is one
-clause, and it is the field that stops the same paper being chased twice in
-three months' time.
-
-`paper/lit/<bibcode>.md` exists **only for papers actually read in depth**. The
-asymmetry is deliberate: a stub file per search hit would be hundreds of empty
-files. The filename is the bibcode exactly as ADS writes it, `.md` appended —
-`2013ARA&A..51..511K.md`. Bibcodes contain `&` and `.`, which are fine in a
-filename but need quoting in a shell.
-
-```markdown
-# 2006MNRAS.365...11C — Croton+06
-
-**Read:** 2026-08-21 · [ADS](https://ui.adsabs.harvard.edu/abs/2006MNRAS.365...11C)
-
-## What it does
-<two or three sentences: the sample or simulation, the method, the headline result>
-
-## Why it matters here
-<what this paper takes from it, or argues against — one paragraph>
-
-## Extracted values
-| Value | Where in the paper | Notes |
-|---|---|---|
-| $M_{\rm crit} = 10^{12.5}\,h^{-1}M_\odot$ | Table 2, row 3 | their $h=0.73$, Chabrier IMF |
-| bright-end slope steepens above $L^*$ | Fig. 8 — **visual estimate** | not quoted as a measured value |
-
-## Caveats
-<sample limits, cosmology, IMF, mass definition, aperture, resolution — whatever
-would make a comparison unfair. Each one names where in the paper it is stated,
-the same as a value does: these live in a methods section nobody will find again
-without the pointer, and they are what decides whether a comparison is fair at all.>
-```
-
-**Every extracted value names where in the paper it came from** — the table and
-row, the equation number, the section. That location is what a `% src:` into
-this file eventually points at. The visual-estimate rule in
-`_shared/house-rules.md` applies to these notes too, and the label is written
-here rather than left to be remembered, so that it travels with the number.
+`paper/lit/` is this paper's literature notebook; its format is `notebook.md`, written there and nowhere else.
 
 ---
 

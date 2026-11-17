@@ -1,9 +1,4 @@
----
-name: paper-start
-description: Ingest an astronomer's notes, figures, tables and analysis code, scaffold the paper workspace, and propose an argument spine plus the questions the material does not answer. Use at the beginning of a new paper, or when pointed at a directory of research material that has no manuscript yet.
----
-
-# paper-start
+# paper — mode: start
 
 Read everything the author has, look at every figure, and come back with three
 things: **a proposed argument**, **the results as understood**, and **what could
@@ -22,8 +17,8 @@ directory above:
 
 ```sh
 ls paper/STATE.md 2>/dev/null                       # already inside a workspace
-ls sci-paper-workspace*/paper/STATE.md 2>/dev/null  # at the working directory
-grep -l 'sci-paper: begin' CLAUDE.md 2>/dev/null
+find -L . -maxdepth 3 -path './sci-paper-workspace*/paper/STATE.md' 2>/dev/null  # at the working directory; -L follows a linked workspace
+grep -l 'sci-paper: begin' AGENTS.md CLAUDE.md .claude/CLAUDE.md 2>/dev/null
 ```
 
 **If any of these finds something, this is not a new paper for this project** —
@@ -31,15 +26,15 @@ though it may still be a new paper sharing an existing project with one that
 already has a workspace. **Stop here: §1–§5 do not run.** Read the matching
 `paper/STATE.md` in full before anything else, exactly as every other session
 does, then the shared files below, then ask what the author wants re-ingested
-before touching a thing. Where more than one workspace exists, resolve which
+before touching a thing (AQ1). Where more than one workspace exists, resolve which
 one per `_shared/house-rules.md`'s **The workspace root** before reading
 anything.
 
 **If none of these finds anything, this is the one session in the project with
 no state to read** — and the only one where the shared files come first.
 
-Either way, read from the sci-paper installation (the directory holding this
-skill — `../_shared/`):
+Either way, read from the installation (`skills/_shared/`; `../_shared/`
+relative to the router `SKILL.md`):
 
 - `_shared/memory.md`
 - `_shared/house-rules.md`
@@ -52,7 +47,7 @@ They are the authority and are not restated here.
 for d in notes figures code tables; do
   if [ -d "$d" ]; then ls -R "$d"; else printf '%s: absent\n' "$d"; fi
 done
-[ -d data ] && printf 'data/: present, %s entries at top level\n' "$(ls data | wc -l | tr -d ' ')"
+if [ -d data ]; then printf 'data/: present, %s entries at top level\n' "$(ls data | wc -l | tr -d ' ')"; fi
 ls
 ```
 
@@ -83,7 +78,7 @@ survey (or the resume check above) shows one already exists:
 - **No existing `sci-paper-workspace*/` here** → the name is `sci-paper-workspace`,
   full stop. Nothing to ask.
 - **One already exists, and this is a second, distinct paper** → ask for a
-  short, distinguishing suffix and use `sci-paper-workspace-<suffix>/`. Say why
+  short, distinguishing suffix (AQ2) and use `sci-paper-workspace-<suffix>/`. Say why
   in one sentence — the `.gitignore` glob below already covers this variant
   with no further edit needed.
 
@@ -93,7 +88,7 @@ immediately** — a gap between "the workspace exists as a repository" and "the
 working directory ignores it" is a window in which an ordinary `git add -A` in
 the working directory could stage the whole workspace as an embedded
 repository. Never a first commit inside `<ws>` itself, which stays the
-author's decision like any other repository:
+author's decision like any other repository. **If the paper's subject is the working directory itself** (§1b describes the case; confirm it with the author now, before anything is written, AQ19), the exclusion goes in `.git/info/exclude` only, never in the tracked `.gitignore` (see *When the paper's subject is the project itself* in `_shared/house-rules.md`): the block's `touch` and `grep` lines are replaced by `printf 'sci-paper-workspace*\n' >> .git/info/exclude` (no trailing slash, so it also matches a linked workspace):
 
 ```sh
 mkdir -p "<ws>"
@@ -119,7 +114,7 @@ them, since a bare write from here on that lands outside `<ws>` is exactly the
 isolation failure this design exists to prevent. `notes/`, `figures/`, `code/`
 and `data/` are the one deliberate exception: they are the author's own,
 outside `<ws>`, and stay addressed relative to the working directory as the
-survey found them.
+survey found them (for a paper whose subject is the project itself, the paper's own `notes/` and `figures/` are inside `<ws>` instead, per §1b).
 
 Nothing the author owns moves into `<ws>`, then or later.
 
@@ -127,6 +122,8 @@ Report what is there before reading it — how many notes, how many figures, is
 there code, are there tables. The author often does not know either.
 
 ### 1b. When the paper's subject is the working directory itself
+
+Whether it is was confirmed at §1a (AQ19).
 
 A software or instrument paper. Nothing about the process changes: the author
 still keeps `notes/`, still has opinions and direction that belong in the
@@ -149,12 +146,18 @@ comparison answering a question the author and the agent both believed was
 open — sat on a branch four months stale. It also answers questions the prose
 cannot, so check the README's claims against it rather than accepting them.
 
+**A large repository is too much for one reader.** Split the reading by question across parallel readers — for example capabilities, history, recorded evidence, development method, science products — each writing a sourced report into `paper/ingest/` **as it goes**, not at the end (a usage limit loses an unwritten report), and each saying what it did not read. The reports are an index, never a source (house rules, *Rule 1*).
+
+**The release history is the feature map.** Before drafting a software paper's methods, read the changelog and the tags or releases in order into `paper/feature-map.md` — each feature, the version that introduced it, where it lives, and the outline section that covers it. A feature with no section is a question.
+
+**The paper's subject is also its own moving source.** `_shared/house-rules.md` has the two rules this brings, *When the paper's subject is the project itself* (where the paper's notes and figures live) and *Pin a source that moves*; at scaffold time the workspace `CLAUDE.md` records the subject's pinned version, tag and commit.
+
 Record in the workspace `CLAUDE.md` where this paper's material actually is,
 as for any other paper (§5d).
 
 ## 2. Read the notes and any tables
 
-All of them, in full. They are author-owned: **read only.** Note as you go which
+All of them, in full. They are author-owned: **read only** (the one write is a new note in `<ws>/notes/` capturing the author's own words, per the house rules). Note as you go which
 claims carry a number and where that number came from — those become the `% src:`
 anchors later, so it is cheaper to capture them now.
 
@@ -173,7 +176,7 @@ A column whose header does not say its units is a question.
 Actually look at them. **PNG and PDF are opened and read directly** — a figure
 is a single page and needs no conversion. EPS and PS cannot be read, so those,
 and only those, get converted first — into `<ws>/.build/`, never into the
-working directory, since `.build/` is a workspace artefact (§4.2) and `<ws>`
+working directory, since `.build/` is a workspace artefact and `<ws>`
 already exists by this point (§1a):
 
 ```sh
@@ -202,8 +205,8 @@ inside the workspace once it exists, and does need
 fails.
 
 For each figure record, in one or two lines — these are working notes now, and
-the durable version of each one lands in the outline's **Figures** table at step
-7, so nothing needs a file of its own:
+the durable version of each one lands in the outline's **Figures** table at
+§7, so nothing needs a file of its own:
 
 - what is on each axis, **including the units and any $h$-scaling**
 - what the different lines, points and colours are
@@ -223,7 +226,7 @@ extension than the manuscript includes. Say what you find; do not tidy it.
 
 Note which figures are **EPS or PS only** — `pdflatex` cannot include those, so
 they will need converting before any draft that uses them will build. Report it;
-`/paper-draft` handles it when the figure is actually used.
+`/paper draft` handles it when the figure is actually used.
 
 ## 4. Read the code, if there is any
 
@@ -240,7 +243,7 @@ path, the build command — is wired in here or is not wired in at all.
 
 The workspace root (`<ws>`) was settled in §1a. Resolve **the installation
 root** now, per *Locating the installation* in `_shared/house-rules.md`; it is
-written `<sci-paper>` below and is never guessed.
+written `<root>` below and is never guessed.
 
 ### 5a. Copy the skeleton into the workspace root
 
@@ -248,7 +251,7 @@ written `<sci-paper>` below and is never guessed.
 for f in "<ws>/manuscript/main.tex" "<ws>/manuscript/scipaper.sty"; do
   [ -e "$f" ] && printf 'pre-existing: %s\n' "$f"
 done
-cp -Rn "<sci-paper>/skeleton/workspace/." "<ws>/"
+cp -Rn "<root>/skeleton/workspace/." "<ws>/"
 mkdir -p "<ws>/manuscript/sections"
 ```
 
@@ -257,8 +260,8 @@ Every part of that earns its place:
 - **`skeleton/workspace/.` mirrors the workspace root exactly** — its
   `paper-voice/`, `paper/`, `manuscript/`, `CLAUDE.md` and `.gitignore` all land
   directly in `<ws>/`, because that is the whole point of the skeleton being
-  laid out that way. `skeleton/root/` is a different template for a different
-  destination and §5b/§5c place it instead.
+  laid out that way. `skeleton/root/CLAUDE.md` is a different template for a different
+  destination, and §5b places it instead.
 - **The loop** names what is already there. `cp -Rn` preserves existing files
   but does not report what it skipped, and §5d needs to know the difference.
 - **`-n`** is what makes "never overwrite" true rather than merely intended. A
@@ -266,7 +269,7 @@ Every part of that earns its place:
   editing.
 - **The quotes** matter because either path may contain a space.
 - **`manuscript/sections/`** must be created explicitly. Git does not track
-  empty directories, so it cannot ship in the skeleton, and `/paper-draft`
+  empty directories, so it cannot ship in the skeleton, and `/paper draft`
   writes its first section straight into it — without this, that write fails on
   a brand new workspace.
 
@@ -274,12 +277,14 @@ Every part of that earns its place:
 outside `<ws>` entirely** — `_shared/house-rules.md` is the authority. Use them
 wherever the survey found them, under whatever they are already called. Create
 them **only** for material that exists nowhere, and even then in the working
-directory, never inside `<ws>`:
+directory, never inside `<ws>` (the author's captured words are the exception: they go in `<ws>/notes/`, per the house rules):
 
 ```sh
 # only for those the survey found nothing for, anywhere
 mkdir -p notes figures
 ```
+
+The one exception is a paper whose subject is the working directory itself (§1b): its own notes and figures go inside `<ws>`, per `_shared/house-rules.md`.
 
 Never move or copy the author's existing material to make the layout match a
 diagram.
@@ -308,13 +313,13 @@ path in every later diff. Where neither exists, copy the skeleton's and fill
 in `<ws>`'s row:
 
 ```sh
-cp -n "<sci-paper>/skeleton/root/CLAUDE.md" ./CLAUDE.md
+cp -n "<root>/skeleton/root/CLAUDE.md" ./CLAUDE.md
 ```
 
-Where both exist as independent real files, ask which is authoritative.
+Where both exist as independent real files, ask which is authoritative (AQ3).
 
 **Where the file is a checked-in contract** — a gated workflow, a permissions
-table, contributor rules — say what you are about to add and get a yes first.
+table, contributor rules — say what you are about to add and get a yes first (AQ3).
 
 If the file **exists** — the common case — do not overwrite it and do not
 rewrite the author's content. Say what you are about to add, get a
@@ -347,14 +352,14 @@ them here instead of asking again.
 Three more things about that block:
 
 - **The markers make it re-runnable, and re-running never means rewriting.** A
-  second `/paper-start` in this project adds or updates its *own* row; it never
+  second `/paper start` in this project adds or updates its *own* row; it never
   replaces the table wholesale, or the first paper's entry disappears.
 - **`## `, not `# `.** It is being appended into someone else's document.
 - **The short name is what a session or a skill matches on, never the directory
   name** — `_shared/house-rules.md`'s **The workspace root** is the authority,
   because the directory can be renamed by hand at any time.
 
-If the author would rather their instruction file were not touched at all, the
+For a paper whose subject is the working directory itself (§1b), this is the default rather than the fallback, per `_shared/house-rules.md`: the subject's own files stay untouched. If the author would rather their instruction file were not touched at all (AQ3), the
 index entry goes in `<ws>/paper/CLAUDE-sci-paper.md` instead and they are told
 it must be read manually. Say plainly that this costs the automatic pointer a session
 starting at the project root would otherwise get.
@@ -376,8 +381,8 @@ further edit to this file ever required.
 
 ### 5d. Placeholders
 
-Substitute the paper's short name, the author list and the resolved install
-path — **only in the files the copy actually created.** A `main.tex` that was
+Substitute the paper's short name, the author list (AQ4) and the resolved install
+path — **only in the files the copy actually created.** The placeholders also include the workspace `CLAUDE.md`'s *Subject version* section: fill it, or delete it for a paper whose subject is not a repository. A `main.tex` that was
 already there belongs to the author, has no placeholders left in it, and is not
 to be rewritten in the name of scaffolding. Say which files you left alone.
 
@@ -394,15 +399,15 @@ directory, at `<working directory>/analysis/plots/`, makes it
 `{{../../analysis/plots/}}`, not a third `../`, which would instead climb
 *above* the working directory. Get this wrong and the first figure inclusion
 fails the build with a missing-file error that reads like a broken figure
-rather than a broken path.
+rather than a broken path. For a paper whose subject is the project itself, `figures/` is inside the workspace and the path is `{{../figures/}}`.
 
 ## 6. The venue
 
-Ask which journal, and **accept "not decided yet"** — early on it usually is
+Ask which journal (AQ5), and **accept "not decided yet"** — early on it usually is
 not, and refusing to start until the author picks one would be exactly the wrong
 gate.
 
-**If they do not know, say that `/paper-lit venue` answers it** and move on.
+**If they do not know, say that `/paper venue` answers it** and move on.
 That mode finds the venues whose stated scope covers the paper, quotes the
 scope and the policies that actually discriminate between them, and reports
 what shape papers of this kind take. It is a different job from this one and
@@ -411,20 +416,7 @@ changes the outline — and an outline is cheap to change now and expensive
 later. Do not run it here; just name it. The skeleton uses a plain `article` class and switching later is a
 preamble change plus a re-fetch; the prose does not care.
 
-If a venue *is* named, fetch its current template. Four things about how:
-
-- **From the journal's own author or submission pages.** Not a mirror, not a
-  copy bundled with somebody else's paper, and never written from memory. Find
-  those pages for this journal rather than assuming a URL; they move.
-- **Take the whole bundle, not just the `.cls`.** A journal class normally needs
-  its `.bst` and its style files alongside it to compile at all.
-- **Build once before moving on.** A template that does not compile is far
-  better discovered now than at submission.
-- **Record the URL and the date** in the journal entry. "Which version of this
-  class is it?" gets asked months later, and classes drift continuously — a
-  stale one is what gets a submission bounced before review.
-
-If it cannot be fetched, say so, leave the plain `article` scaffold in place,
+If a venue *is* named, switch to it per `venue.md` *Switching the manuscript to a venue*. If it cannot be fetched, say so, leave the plain `article` scaffold in place,
 and carry it as an open question. Do not hand-write a class file.
 
 ## 7. Propose the argument
@@ -455,7 +447,7 @@ paper's real open question.
 | 5 | Conclusions | framing | — |
 
 Headings are whatever this paper actually uses; the **role** column is what
-`/paper-draft` keys on, and it holds only the bare words `methods`, `results`,
+`/paper draft` keys on, and it holds only the bare words `methods`, `results`,
 `discussion`, `framing` — joined by ` + ` where a section carries more than one,
 so a combined "Results and Discussion" is one row reading `results + discussion`.
 Those words are filenames in `_shared/sections/`, which is why nothing else goes
@@ -467,15 +459,15 @@ in the cell. A paper with no results section is allowed.
 ```
 
 `Status` says whether a figure exists, is still to be made, or is waiting on
-something — `blocked: Q7`. `/paper-draft` picks its next section on that
+something — `blocked: Q7`. `/paper draft` picks its next section on that
 distinction, so it is worth a word per row.
 
-**Other skills append their own sections here** — `/paper-lit venue` adds
+**Other skills append their own sections here** — `/paper venue` adds
 venue evidence and the structural template. Still the sole authority for the
 argument; just not written by one skill. Do not rewrite a section another
 skill owns.
 
-Propose it, then **discuss it**. Do not present it as decided.
+Propose it, then **discuss it** (AQ6). Do not present it as decided.
 
 ## 8. Say what you could not work out
 
@@ -501,10 +493,10 @@ In conversation, not as a file dump:
 - the proposed claim, in one sentence
 - the results as understood, briefly
 - the questions, ordered by how much they block
-- what to do next — usually `/paper-draft` on the role with the most material
+- what to do next — usually `/paper draft` on the role with the most material
 - mention `paper-voice/`, once, briefly — if the author has past papers or
   style notes they want this one to sound like, they can drop them there and
-  run `/paper-voice` whenever they are ready. Not a gate, not asked about again.
+  run `/paper voice` whenever they are ready. Not a gate, not asked about again.
 
 ## 10. Close the session
 

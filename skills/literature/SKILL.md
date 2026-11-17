@@ -1,9 +1,9 @@
 ---
-name: paper-lit
-description: Search the astronomical literature through ADS/SciX in five modes — novelty (has this been done?), build-on (closest prior work and what it left open), support/contradict (bound to one sentence of the draft), mine (pull comparison values with their exact source), and venue (which journals take this paper, and what shape do papers of this kind take?). Use for any literature question, for choosing a journal, for filling a gap{cite}, and for exporting BibTeX into refs.bib.
+name: literature
+description: Search the astronomical literature through ADS/SciX in five modes - novelty (has this been done?), build-on (closest prior work and what it left open), support/contradict (bound to one claim), mine (pull comparison values with their exact source), and provenance (who made this dataset or tool, and where is that written down?) - and export verbatim BibTeX. Works inside a paper workspace, at the keyboard with no paper, or for a caller that names a notebook directory. Use for any literature question, for filling a gap{cite}, and for BibTeX. Choosing a journal is the paper skill's venue mode.
 ---
 
-# paper-lit
+# literature
 
 Five modes, because they are five different jobs:
 
@@ -11,9 +11,9 @@ Five modes, because they are five different jobs:
 |---|---|---|
 | **novelty** | here is my result — has this been done? | an honest answer, including the unwelcome one |
 | **build-on** | what is the closest existing work, and what did it leave open? | a ranked shortlist, each with the gap it leaves |
-| **support/contradict** | bound to **one sentence** in the draft | both directions, explicitly |
+| **support/contradict** | bound to **one claim**: in a paper, one sentence of the draft; otherwise one claim, stated exactly by the caller | both directions, explicitly |
 | **mine** | pull the numbers I can compare against | values quoted with their exact source location |
-| **venue** | where does this paper go, and what shape should it be? | a ranked venue table with quoted scope and policy, and the section template the closest analogues actually use |
+| **provenance** | who made this dataset or tool, with what, and where is that written down? | the chain link by link, each with its source, and the links no public source records |
 
 Say which mode, or describe the question and the mode follows from it. The
 modes share the tool and the recording convention below; they do not share a
@@ -21,25 +21,42 @@ procedure, and running the wrong one wastes the search.
 
 ## Before anything
 
-Work from the workspace root, which `CLAUDE.md` names and
-`_shared/house-rules.md` defines; every path below is relative to it.
+**Decide the binding first.** It fixes where everything below is read from and
+written to.
 
-Read `paper/STATE.md` in full first — the first action of every session. Then,
-from the sci-paper installation (`../_shared/` relative to this skill — its
-**Locating the installation** section is what resolves `<sci-paper>` below):
+- **In a paper** — a paper workspace resolves (`_shared/house-rules.md` *The
+  workspace root*), or the caller names one. Work from the workspace root; read
+  `paper/STATE.md` in full first, then `_shared/memory.md` and
+  `_shared/house-rules.md`. The notebook is `paper/lit/`; BibTeX goes into
+  `manuscript/refs.bib`; a claim is a sentence of the draft; findings that need
+  the author's decision go to `paper/open-questions.md`.
+- **In a named notebook** — the caller (a person, or a campaign brief) names a
+  directory. The notebook is that directory, same format. BibTeX goes where the
+  caller says, or is printed.
+- **Unbound** — neither. Answer in the conversation and write nothing unless the
+  author names a directory (AQ13). Never default to writing into the current
+  directory: it may be someone else's repository.
 
-- `_shared/memory.md` — including its **Literature notes** section, which owns
-  the format of `paper/lit/index.md` and of a `<bibcode>.md` note
-- `_shared/house-rules.md` — **rule 2** is the one that binds here
+In every binding, read from the installation (`skills/_shared/`; `../_shared/`
+relative to this file — the **Locating the installation** section of
+`_shared/house-rules.md` is what resolves `<root>` below):
 
-Then `paper/lit/index.md`, always, before running a single query. It is the
-record of what has already been chased, and re-chasing a paper someone already
-rejected three months ago is the cheapest waste in the project.
+- `_shared/notebook.md` — the notebook's format
+- `_shared/author-questions.md` — the ids cited where this skill asks; the defaults apply only unattended
+- `_shared/house-rules.md` — its **rule 2** and its rules on units and on values
+  read off a figure bind here whatever the binding; the rest of it is about the
+  manuscript
+
+Then, where a notebook exists, its `index.md`, always, before running a single
+query. It is the record of what has already been chased, and re-chasing a paper
+someone already rejected three months ago is the cheapest waste in the project.
+
+Write `<notebook>` for the notebook directory from then on.
 
 ## The tool
 
 ```sh
-python3 <sci-paper>/tools/ads.py --help
+python3 <root>/tools/ads.py --help
 ```
 
 Five commands. Everything but `export` prints JSON:
@@ -67,7 +84,9 @@ Three flags worth knowing:
 If the token is missing the tool says exactly how to set one; pass that on and
 stop, rather than searching the web instead. **The web is not a substitute for
 ADS here** — `property:refereed` and the citation graph are the two things this
-whole skill runs on, and neither exists outside ADS.
+whole skill runs on, and neither exists outside ADS. That is about *finding papers*; the provenance mode is where the web is a source in its own right.
+
+**Not everything is in ADS.** A data portal, a GitHub tool, a numerical-methods paper from outside astronomy: ADS may hold none of them. For a work with an arXiv id or a DOI, run `ads.py resolve` first; if ADS has no record, take the arXiv or DOI path of Rule 2. All three paths are first-class. The notebook row carries whatever identifier the work has (`_shared/notebook.md`), and a source with no identifier at all gets a web-source note.
 
 ## Query craft
 
@@ -113,12 +132,12 @@ most likely to scoop the result.
 
 **Snowballing beats keyword search, and it is not close.** Keyword search finds
 papers that used your words. Astronomy has three names for most things, and the
-paper that scooped you probably used one of the other two. So: find two or three
+paper that scooped you probably used one of the other two. **For claims about numerics and software, snowball first**: keyword search drowns in vocabulary every other field shares. So: find two or three
 papers you already know are close, then
 
 ```sh
-python3 <sci-paper>/tools/ads.py refs  '2006MNRAS.365...11C' --rows 200 --brief
-python3 <sci-paper>/tools/ads.py cites '2006MNRAS.365...11C' --rows 200 --brief --sort 'citation_count desc'
+python3 <root>/tools/ads.py refs  '2006MNRAS.365...11C' --rows 200 --brief
+python3 <root>/tools/ads.py cites '2006MNRAS.365...11C' --rows 200 --brief --sort 'citation_count desc'
 ```
 
 and read the titles. `refs` gives what the field considered prior work;
@@ -148,17 +167,18 @@ softening — reporting the near-miss as "related but distinct", leading with th
 three papers that do not compete rather than the one that does. Do not. If
 something has been done, say so first, plainly, and in the first sentence.
 
-1. **Get the result stated as one testable sentence**, with the author. "We find
+1. **Get the result stated as one testable sentence**, with the author (AQ11). "We find
    satellites quench faster in dense environments" is searchable. "Our
    environmental results" is not. If the sentence does not exist yet, that is
-   the finding, and it goes to `open-questions.md`.
+   the finding: in a paper it goes to `open-questions.md`, otherwise it is
+   reported to the caller.
 2. **Split it into claim, object and method.** A paper can scoop any one of
    them. The strongest scoop shares the claim and uses a completely different
    method, and it will share none of the author's method words.
 3. **Ask what the field calls it.** The author's phrase and the literature's
    phrase are routinely different — "quenching", "strangulation", "starvation"
    and "environmental suppression" have all been the standard term. Search each.
-4. **Run three or four families separately.** Not one clever combined query — a
+4. **Run the families separately.** Not one clever combined query — a
    long query with everything ANDed returns nothing and proves nothing:
    - the claim in the author's words, `abs:`
    - the claim in the field's words, `abs:`
@@ -205,8 +225,9 @@ list.
 
 ## Mode: support/contradict
 
-*Bound to **one sentence** in the draft.* If no sentence has been named, ask for
-one. The mode's discipline comes entirely from that binding; unbound, it decays
+*Bound to **one claim**: in a paper, one sentence of the draft; otherwise one
+claim, stated exactly by the caller.* If no claim has been named, ask for
+one (AQ12). The mode's discipline comes entirely from that binding; with no claim named, it decays
 into a general reading list.
 
 1. Take the sentence exactly as it stands, so what is being tested is the
@@ -242,15 +263,21 @@ into a general reading list.
 
 **A contradicting paper is never resolved by quietly softening the sentence.**
 `_shared/house-rules.md` forbids changing the strength of a claim silently, and
-this is where the temptation is strongest. It becomes a numbered entry in
-`open-questions.md`, a `\gap{q}` on the sentence if it is load-bearing, and a
-row in `paper/lit/index.md` — plus a note file if it was read in depth, which a
-paper that contradicts a load-bearing sentence usually deserves to be. What to
-do about it is the author's call.
+this is where the temptation is strongest. In a paper it becomes a numbered entry
+in `open-questions.md`, a `\gap{q}` on the sentence if it is load-bearing, and a
+row in `<notebook>/index.md` — plus a note file if it was read in depth, which a
+paper that contradicts a load-bearing sentence usually deserves to be.
+Otherwise it is reported to the caller, and still gets its row in
+`<notebook>/index.md` where a notebook exists. What to do about it is the
+author's call.
 
 ## Mode: mine
 
 *"Pull the numbers I can compare against."*
+
+**The fetch target.** In a paper, `.build/`, as in the commands below.
+Otherwise a temporary directory — `FETCH=$(mktemp -d)` — and `.build/` below
+reads as `"$FETCH"/`; never the current directory.
 
 **The fetch ladder.** `esources` gives source *types*, not URLs, so retrieval is
 a ladder rather than a field lookup:
@@ -294,11 +321,11 @@ against the record before extracting a single value.
 author the link** (`https://ui.adsabs.harvard.edu/abs/<bibcode>`). Do not
 quietly return nothing, and do not fill the gap from the abstract.
 
-Then read the PDF and record into `paper/lit/<bibcode>.md`, in the format
-`_shared/memory.md` gives. Five things about what goes in it:
+Then read the PDF and record into `<notebook>/<bibcode>.md`, in the format
+`_shared/notebook.md` gives. Five things about what goes in it:
 
 - **Every value names its location** — Table 3 row 2, equation 7, §4.2. That
-  location is what a `% src:` into the note eventually points at, and a value
+  location is what, in a paper, a `% src:` into the note eventually points at, and a value
   with no location is worth less than no value, because it looks checked.
 - **So does every sample definition and every convention**: the mass
   definition, the cosmology, the IMF, the aperture, the selection cut. These
@@ -307,7 +334,7 @@ Then read the PDF and record into `paper/lit/<bibcode>.md`, in the format
   methods section where nobody will find them again without the pointer.
 - **Table and text values are reliable. A point read off their figure is a
   visual estimate and is labelled as one**, in the note, so the label travels
-  with the number into the manuscript. It is never quoted as a measured value.
+  with the number into the manuscript (in a paper). It is never quoted as a measured value.
 - **`_shared/house-rules.md` governs units, $h$-scalings and conventions.**
   What it costs *here* is one extra look: the IMF, the cosmology and the
   aperture are in someone else's methods section, not next to the number you
@@ -315,78 +342,42 @@ Then read the PDF and record into `paper/lit/<bibcode>.md`, in the format
   Salpeter and Chabrier masses is not a rounding difference, and it is
   invisible the moment the number leaves the paper it came from.
 
-A mined value reaches the manuscript through the ordinary trace,
+In a paper, a mined value reaches the manuscript through the ordinary trace,
 `% src: paper/lit/<bibcode>.md table 2` — never straight from the PDF, because
-then nothing records the caveats.
+then nothing records the caveats. Otherwise the value is reported to the
+caller with its location, and its note where a notebook exists.
 
----
+## Mode: provenance
 
-## Mode: venue
+*"Who made this dataset or tool, with what, and where is that written down?"*
 
-*"Where does this go, and what shape should it be?"*
+Follow the chain **link by link**: the data-release paper (ADS), the data portal, the repository's README or configuration, the tool that converted it. Provenance is often written only in comments and prose, not in any field, so read those as sources. Record each link with its source. Here the web is a legitimate source; a web source gets a web-source note (`_shared/notebook.md`), and a paper read in depth gets the usual note.
 
-The one mode not about claims. Run it early — the structural half changes the
-outline, and an outline is cheap to change before anything is drafted.
-
-Output is **two sections of `paper/outline.md`** — venue, and structure — plus
-ordinary rows in `paper/lit/index.md` for the analogues. Not a `<bibcode>.md`.
-
-**Part A — the venues.** Find the journals whose stated scope covers the
-paper, and **quote the scope rather than characterising it**, with the URL and
-the date fetched; policy pages drift continuously, exactly as journal class
-files do. Per venue also record: length norms; code and data availability
-requirements; **review model including anonymity** — a double-anonymous
-journal can be a hard blocker for a software paper whose package is named in
-the abstract; cost; **AI-use policy**, which is now a standard axis and for a
-paper where a model is part of the method outranks scope and prestige; and
-turnaround if findable. Then name the venues ruled out and why, **including
-any that have been archived or closed** — a journal that published an obvious
-precedent may no longer accept submissions, and its back catalogue does not
-say so.
-
-**Part B — the structure.** Read four to six of the closest analogues —
-closest in *kind*, not subject — and report each one's **actual section
-headings in order**, length, figure and table counts, and what the figures do.
-Then name the invariant template and where the variants diverge: a method
-paper, an infrastructure paper, a data-release paper and a comparison project
-are four different shapes, and picking the wrong one is a structural problem
-no prose fixes. Say explicitly if the paper contains something the template
-has **no slot for**, and propose where it goes with the precedent for it —
-that is usually the finding that earns the mode its keep.
-
-**Two fetching hazards specific to publisher sites**, on top of the discipline
-"Mode: mine" already covers. Publisher domains are heavily bot-walled: expect
-`403`, and where text can only be recovered through a search index rather than
-the page, **mark it lower-confidence and say which** — a venue decision can
-turn on the difference. And treat a redirect off the publisher's own domain as
-a failed fetch; policy URLs have been seen issuing off-domain `302`s.
-
-Two things for the close, on top of the shared rules below: an analogue's
-*why* says what it is an analogue **of** (length template, structural
-precedent, must-differentiate competitor), and a venue decision carries **its
-reason** into `STATE.md` — the reason is what a later session needs when a
-referee or co-author reopens it.
+**Report the chain, and say plainly which links no public source records.** That is a gap only the author, or the data's makers, can close, and the report names who. Run this before a methods section asserts provenance, since a brief's account of where something came from is a lead, not a fact.
 
 ---
 
 ## Recording what you found
 
-**Every paper that enters play gets a row in `paper/lit/index.md`** — including
+**Every paper that enters play gets a row in `<notebook>/index.md`** — including
 the ones rejected, with the reason as the *why*. That row is what stops the same
 paper being chased twice. **Only papers read in depth get a `<bibcode>.md`.**
-Both formats are in `_shared/memory.md`.
+Both formats are in `_shared/notebook.md`. Unbound: report the same information
+in the conversation.
 
 This is what makes the literature knowledge compound instead of evaporating at
 the end of the session.
 
 ## BibTeX
 
-Rule 2 in `_shared/house-rules.md` governs this, and is not restated here. In
+Rule 2 in `_shared/house-rules.md` governs this, and is not restated here. In a
+paper the entries go into `manuscript/refs.bib`, as below; in a named notebook,
+where the caller says, or they are printed; unbound, they are printed. In
 practice it means:
 
 ```sh
 grep -qF '2006MNRAS.365...11C' manuscript/refs.bib \
-  || python3 <sci-paper>/tools/ads.py export '2006MNRAS.365...11C' >> manuscript/refs.bib
+  || python3 <root>/tools/ads.py export '2006MNRAS.365...11C' >> manuscript/refs.bib
 ```
 
 - **Quote the bibcode, and grep for it with `-F`.** Bibcodes contain `&` and
@@ -421,13 +412,17 @@ grep -qF '2006MNRAS.365...11C' manuscript/refs.bib \
   reference. If a build ever reports `Undefined control sequence \<journal>`
   from `refs.bib`, add one `\providecommand` for it beside the others there —
   do **not** edit the `.bib` entry, which would break rule 2.
-- Filling a `\gap{cite}` means replacing the marker with the `\citep{}` and
+- In a paper, filling a `\gap{cite}` means replacing the marker with the `\citep{}` and
   appending the entry in the same edit. A citation command with no entry is a
-  different kind of hole from the one that was just closed.
+  different kind of hole from the one that was just closed. The first entry
+  is also when `main.tex`'s `\bibliographystyle` and `\bibliography` lines,
+  which the scaffold ships commented, are switched on.
 
 ## Close the session
 
-Update `paper/lit/index.md`, then `paper/STATE.md` and the `paper/journal.md`
-entry, per `_shared/memory.md`. A search that found nothing still goes in the
-journal — the queries that came back empty are the ones that get run again in
-three months.
+In a paper: update `paper/lit/index.md`, then `paper/STATE.md` and the
+`paper/journal.md` entry, per `_shared/memory.md`. In a named notebook: update
+its `index.md`. Unbound: nothing is written; report the queries run, including
+the empty ones, in the reply. A search that found nothing still goes in the
+journal (in a paper) — the queries that came back empty are the ones that get
+run again in three months.

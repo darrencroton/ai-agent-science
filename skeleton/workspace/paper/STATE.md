@@ -17,5 +17,5 @@ _nothing yet — each entry carries the journal date that records the reasoning_
 _nothing yet — ids into `open-questions.md`_
 
 ## Next
-Run `/paper-start` (or just describe the paper) to read `notes/` and `figures/`
+Run `/paper start` (or just describe the paper) to read `notes/` and `figures/`
 and propose an argument spine.
