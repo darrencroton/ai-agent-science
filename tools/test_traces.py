@@ -168,6 +168,12 @@ class TestLint(Workspace):
                 self.assertEqual(code, 1)
                 self.assertIn(shown, out)
 
+    def test_glob_reaching_a_differently_pinned_root(self):
+        self.write("AGENTS.md", SOURCES.replace("notes/", "code/models/m2/  fixed  cite\nnotes/", 1))
+        code, out, _ = self.lint("% src: code/models/*/props.yaml\n% src: code/models/m1/props.yaml\n")
+        self.assertEqual((code, out.strip()), (1, "manuscript/sections/s.tex:1  glob-spans-pins  "
+                                                  "code/models/*/props.yaml\n1 findings"))
+
     def test_path_absent_at_pin(self):
         # later.c exists in the working tree and at HEAD, but not at the pin v1
         code, out, _ = self.lint("% src: code/src/later.c\n% src: notes/missing.md\n")

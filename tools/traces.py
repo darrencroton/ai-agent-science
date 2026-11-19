@@ -36,7 +36,9 @@ each commit resolves, that every path is written plainly (no `.`, `..` or
 empty segment), and that each \\cite key is in refs.bib. The `never` policy is applied to what a trace names, not to what
 it is written as: each `{a,b}` alternative is expanded first and judged under
 its own longest-matching root, each file a glob matches is judged likewise and
-must exist at its own root's pin, and a commit anchor `<root>@<hex>` is judged
+must exist at its own root's pin, a glob that can reach a root pinned
+differently from its own is refused (write one anchor per root), and a commit
+anchor `<root>@<hex>` is judged
 under its root.
 
 The check stamp is one line, `% checked: <YYYY-MM-DD> <who checked>`. `stale`
@@ -410,6 +412,19 @@ def root_of(path, roots):
     return max((r for r in roots if p.startswith(r.name)), key=lambda r: len(r.name), default=None)
 
 
+def spans_pins(path, root, roots):
+    """Whether a glob under `root` can reach a cited root pinned differently."""
+    if "*" not in path and "?" not in path:
+        return False
+    segs = path.rstrip("/").split("/")
+    for r in roots:
+        cs = r.name.rstrip("/").split("/")
+        if (r.name.startswith(root.name) and r.pin not in (root.pin, "-") and len(segs) >= len(cs)
+                and all(glob_rx(p).fullmatch(c) for p, c in zip(segs, cs))):
+            return True
+    return False
+
+
 def plain(path):
     """Whether a path has no `.`, `..` or empty segment (a trailing slash is allowed)."""
     return os.path.normpath(path) == path.rstrip("/") and not path.startswith("..")
@@ -438,6 +453,9 @@ def lint_trace(t, roots, keys, pins):
                 root = root_of(path, roots)
                 if root.policy == "never":
                     yield "never-root", path
+                    continue
+                if spans_pins(path, root, roots):
+                    yield "glob-spans-pins", path
                     continue
                 hits = pins.matches(root, path)
                 if not hits:

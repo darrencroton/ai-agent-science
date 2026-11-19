@@ -6,7 +6,7 @@ The protocol every reader follows, whichever brief it is given: how a fresh cont
 
 1. **A fresh context that did not write the text** (core rule 3): a subagent, a second session, or another harness. It is never the drafter and never the session that owns the paper.
 2. **Read-only.** A reader edits no file of the paper and runs no code (reading, search and read-only git are fine). It writes one thing: its report.
-3. **It reads only what its brief allows, and reads committed text.** The session commits the text the reader reads, or the PDF is built from (under the workspace's commit policy), and names that commit in the brief, so that `skills/paper/revise.md` can measure every later change against it.
+3. **It reads only what its brief allows, and reads committed text.** The session commits the text the reader reads, or the PDF is built from (under the workspace's commit policy), and names that commit in the brief, so that `skills/paper/revise.md` can measure every later change against it. The one exception is a seeded test's copy in `.scratch/` (below), which is never revised.
 
    | Reader | May read |
    |---|---|
