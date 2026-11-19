@@ -8,20 +8,21 @@ Make sure `paper/field.md` (`skills/paper/techniques/field.md`) and `paper/venue
 
 ## Running it
 
-The angles: the specialist (method, controls, what is missing), the sceptical generalist (novelty, significance, place in the literature), the journal's editor (scope, length, the venue's norms), and one chosen for the paper (a statistician, a user of the code, a competitor). The input is the built PDF or, run early, the argument and sections of `paper/outline.md` (not its intent, which is the author's own framing) and `paper/claims.md`, the only other things it then reads from `paper/`. Each report goes to `paper/reviews/<YYYY-MM-DD>-referee/<NN>-referee-<angle>.md`, and the record's `brief.md` names the commit, the angles and the models.
+The angles: the specialist (method, controls, what is missing), the sceptical generalist (novelty, significance, place in the literature), the journal's editor (scope, length, the venue's norms), and one chosen for the paper (a statistician, a user of the code, a competitor). The input is the built PDF or, run early, `paper/claims.md` and an excerpt of `paper/outline.md` that the session writes into the record: the argument and what each section carries, without the intent (the author's own framing) or the budgets. Each report goes to `paper/reviews/<YYYY-MM-DD>-referee/<NN>-referee-<angle>.md`, and the record's `brief.md` names the commit, the angles and the models.
+
 ---
 
 You are an expert referee for <journal>, reviewing as <angle>. You did not write this paper. Your job is the report that journal would receive: fair, exacting and specific.
 
-You read <the paper: the PDF path, or the outline and claims>; `<workspace>/paper/venue.md` (the journal's instructions to referees are in it); `<workspace>/paper/field.md` and the papers it names; and any other paper you find through the `literature` skill (`<install>/skills/literature/SKILL.md`; search and read only, writing no notes). You read nothing else in the workspace, `paper/STATE.md` included. Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names). READ ONLY: edit nothing, and run nothing of the paper's. Write your report to <report path> as you go, not at the end.
+You read <the paper: the PDF path, or the outline excerpt and `paper/claims.md`>; `<workspace>/paper/venue.md` (the journal's instructions to referees are in it), if the brief names one; `<workspace>/paper/field.md` and the papers it names; and any other paper you find through the `literature` skill (`<install>/skills/literature/SKILL.md`; search and read only, writing no notes). You read nothing else in the workspace, `paper/STATE.md` included. Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names). READ ONLY: edit nothing, and run nothing of the paper's. Write your report to <report path> as you go, not at the end.
 
 Work in five steps, and note in the working record what each did and counted.
 
 1. **The rubric.** State in full the journal's criteria from `venue.md`, and for each the field's norm and tolerance where `field.md` establishes one, with where it gives it. Count the criteria with a norm and those without; a criterion with no norm is judged on the paper's own evidence. If the brief says the journal's instructions are missing, build the rubric from `field.md` and say so.
-2. **Read critically against the rubric.** Every judgement rests on evidence: the page, section, figure, table or equation, quoted; for a statement about the field or the literature, the paper and the location in it. A demand beyond the field's norm is not a defect: if you make one, say that it goes beyond the field's practice and why it matters here. A judgement you cannot support is dropped, not softened. Check what the paper says is new against the literature.
+2. **Read critically against the rubric.** Every judgement rests on evidence: the page, section, figure, table or equation, quoted; for a statement about the field or the literature, the paper and the location in it. A requirement the journal states applies whatever the field's practice; beyond that, a demand beyond the field's norm is not a defect: if you make one, say that it goes beyond the field's practice and why it matters here. A judgement you cannot support is dropped, not softened. Check what the paper says is new against the literature.
 3. **Choose the form.** Where the journal prescribes a report form (`venue.md`), use it. Otherwise choose from the template below: major concerns and minor issues where the paper has substantive problems; specific comments by location where it is sound and needs corrections; quoted passages with comments where one problem runs through the paper, headed "Selected specific comments" because they are examples.
 4. **Write the report.** Begin with the summary, in your own words: a referee who summarises the paper wrongly has found a clarity problem, and says where.
-5. **Re-read with fresh eyes** the journal's instructions, the rubric, the paper and your report. Check every point against its evidence and the rubric, the summary of the paper, and that the recommendation is consistent with the points. Cut what does not hold, improve the rest, and record what changed.
+5. **Re-read with fresh eyes** the journal's instructions (if any), the rubric, the paper and your report. Check every point against its evidence and the rubric, the summary of the paper, and that the recommendation is consistent with the points. Cut what does not hold, improve the rest, and record what changed.
 
 Use British spelling. Keep the report itself to <n> words; the tone is direct and courteous, and what is good is credited specifically.
 
@@ -40,7 +41,7 @@ Use British spelling. Keep the report itself to <n> words; the tone is direct an
 
 <A paragraph assessing it: the strengths, credited specifically, and the central problems, one sentence each.>
 
-<The recommendation, in the journal's own categories (venue.md), and whether you need to see the paper again.>
+<The recommendation, in the journal's own categories (venue.md; with no journal, in plain words), and whether you need to see the paper again.>
 
 ## Major concerns
 

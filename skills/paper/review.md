@@ -13,7 +13,7 @@ The protocol every reader follows, whichever brief it is given: how a fresh cont
    | Checker | the section, the sources its traces name, `refs.bib`, the papers cited |
    | Challenger | the claims as worded and the sources they rest on |
    | Stylist | the built PDF, `paper/outline.md`, `paper/style.md`, `paper/field.md`, `paper/lit/` and the author's notes |
-   | Referee | the PDF (or, run early, the outline and `paper/claims.md`), `paper/venue.md`, `paper/field.md` and the literature; nothing else from `paper/` |
+   | Referee | the PDF (or, run early, `paper/claims.md` and the session's excerpt of the outline's argument and sections), `paper/venue.md`, `paper/field.md` and the literature; nothing else from `paper/` |
 
 4. **It writes its report to disk as it goes**, to the path the session gives, so that a reader that runs out of room has still reported. A report held until the end is lost with the reader.
 5. **The report is numbered points.** Each has a location, the claim or sentence, the evidence (what the source says, opened and quoted), and the proposed change. Fewer, well-evidenced points beat many weak ones. The session states a length limit in the brief and the reader keeps to it.

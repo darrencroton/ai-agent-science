@@ -4,6 +4,8 @@ A paper workspace: its own git repository, and the working directory of every se
 
 ## First action, every session
 
+A reader commissioned with a brief reads only what its brief allows and skips this. Every other session:
+
 1. Read `paper/STATE.md` in full.
 2. Read `<install>/skills/_shared/core.md`. It is the authority on how to behave here, and nothing in this file overrides it.
 
