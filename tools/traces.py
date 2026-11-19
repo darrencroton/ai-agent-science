@@ -36,8 +36,8 @@ each commit resolves, that every path is written plainly (no `.`, `..` or
 empty segment), and that each \\cite key is in refs.bib. The `never` policy is applied to what a trace names, not to what
 it is written as: each `{a,b}` alternative is expanded first and judged under
 its own longest-matching root, each file a glob matches is judged likewise and
-must exist at its own root's pin, a glob that can reach a root pinned
-differently from its own is refused (write one anchor per root), and a commit
+must exist at its own root's pin, a glob that can reach another cited
+root is refused (write one anchor per root), and a commit
 anchor `<root>@<hex>` is judged
 under its root.
 
@@ -59,6 +59,7 @@ or uncommitted file (stale); 2 the request, the configuration or git failed.
 import argparse
 import collections
 import difflib
+import fnmatch
 import glob
 import os
 import re
@@ -412,15 +413,15 @@ def root_of(path, roots):
     return max((r for r in roots if p.startswith(r.name)), key=lambda r: len(r.name), default=None)
 
 
-def spans_pins(path, root, roots):
-    """Whether a glob under `root` can reach a cited root pinned differently."""
-    if "*" not in path and "?" not in path:
+def spans_roots(path, root, roots):
+    """Whether a glob under `root` can reach another cited root (any pin, any repository)."""
+    if not any(c in path for c in "*?["):
         return False
     segs = path.rstrip("/").split("/")
     for r in roots:
         cs = r.name.rstrip("/").split("/")
-        if (r.name.startswith(root.name) and r.pin not in (root.pin, "-") and len(segs) >= len(cs)
-                and all(glob_rx(p).fullmatch(c) for p, c in zip(segs, cs))):
+        if (r is not root and r.name.startswith(root.name) and r.policy != "never"
+                and len(segs) >= len(cs) and all(fnmatch.fnmatchcase(c, p) for p, c in zip(segs, cs))):
             return True
     return False
 
@@ -454,8 +455,8 @@ def lint_trace(t, roots, keys, pins):
                 if root.policy == "never":
                     yield "never-root", path
                     continue
-                if spans_pins(path, root, roots):
-                    yield "glob-spans-pins", path
+                if spans_roots(path, root, roots):
+                    yield "glob-spans-roots", path
                     continue
                 hits = pins.matches(root, path)
                 if not hits:

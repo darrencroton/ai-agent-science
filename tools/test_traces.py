@@ -168,10 +168,10 @@ class TestLint(Workspace):
                 self.assertEqual(code, 1)
                 self.assertIn(shown, out)
 
-    def test_glob_reaching_a_differently_pinned_root(self):
+    def test_glob_reaching_another_cited_root(self):
         self.write("AGENTS.md", SOURCES.replace("notes/", "code/models/m2/  fixed  cite\nnotes/", 1))
         code, out, _ = self.lint("% src: code/models/*/props.yaml\n% src: code/models/m1/props.yaml\n")
-        shown = "manuscript/sections/s.tex:1  glob-spans-pins  code/models/*/props.yaml"
+        shown = "manuscript/sections/s.tex:1  glob-spans-roots  code/models/*/props.yaml"
         self.assertEqual((code, out.strip()), (1, f"{shown}\n1 findings"))
 
     def test_path_absent_at_pin(self):
