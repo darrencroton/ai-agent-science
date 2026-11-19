@@ -45,13 +45,13 @@ The PDF is `manuscript/main.pdf`. Keep `-interaction=nonstopmode`: without it a 
 
 ## Venue
 
-Not yet chosen; `main.tex` uses a plain `article` class. To choose one, and to switch the manuscript to it, read `<install>/skills/paper/techniques/venue.md`.
+Not yet chosen; `main.tex` uses a plain `article` class. To choose one, and to switch the manuscript to it, read `<install>/skills/paper/techniques/venue.md`. The journal's facts, its class fixes and its referee instructions go in `paper/venue.md`.
 
 ## Directory map
 
 | Path | Holds |
 |---|---|
-| `paper/` | the memory files: `STATE.md`, `outline.md`, `claims.md`, `open-questions.md`, `journal.md`, and `style.md` once built |
+| `paper/` | the memory files: `STATE.md`, `outline.md`, `claims.md`, `open-questions.md`, `journal.md`, and the reference files `style.md`, `venue.md` and `field.md` once built |
 | `paper/lit/` | the literature notebook; `pdf/` holds fetched full texts and is gitignored |
 | `paper/ingest/` | agent-written indexes of the sources: never a source |
 | `paper/checks/` | the agent's own read-only checks, one directory each, with script, command and output |

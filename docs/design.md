@@ -69,7 +69,7 @@ Rule 6 states its exception: the agent never runs the author's analysis or the c
 
 ### Five procedures
 
-`start` (make the scaffold; ask the broad questions before proposing any claim: why was the work done, what surprised you, who must be convinced; propose the intent, the spine and the questions). `draft` (write a paragraph plan against the budget, then the section from sources opened in this session, tracing as it goes, marking every hole, with a short read-back, a build and a short report). `review` (how a fresh context is commissioned and what its report looks like). `revise` (the one loop). `finish` (submission; not yet written, section 8). Building a style sheet and choosing a venue are techniques, and framing is a role in `sections.md` with two extra rules; none is a procedure: what differs between a checker, a stylist and a referee is the brief, not the procedure.
+`start` (make the scaffold; ask the broad questions before proposing any claim: why was the work done, what surprised you, who must be convinced; propose the intent, the spine and the questions). `draft` (write a paragraph plan against the budget, then the section from sources opened in this session, tracing as it goes, marking every hole, with a short read-back, a build and a short report). `review` (how a fresh context is commissioned and what its report looks like). `revise` (the one loop). `finish` (submission; not yet written, section 8). Building a style sheet, surveying the field and choosing a venue are techniques, each writing a reference file once per paper, and framing is a role in `sections.md` with two extra rules; none is a procedure: what differs between a checker, a stylist and a referee is the brief, not the procedure.
 
 ### Four reader briefs
 
@@ -78,7 +78,7 @@ Each is a self-contained brief handed to a fresh context.
 - **The checker** opens every trace, recounts every count, checks every equation, checks that each citation is the paper cited for that statement, re-runs each absence search, and sweeps for quantities with no trace. After any later change it reads only the changed sentences.
 - **The challenger** takes a claim as worded and what it rests on and tries to show it does not follow: a threshold with no recorded reason, a margin that shrinks under refinement, the effective size of the design, a title that says more than its test, an effect every model shows alike, a holdout already seen, a number older than the version described.
 - **The stylist** reads the built PDF as an editor would, against the outline's intent, the budgets and the style sheet. It begins with a reverse outline, one line per paragraph, so that the paper's shape can be read in two pages, and proposes cuts, merges and moves. It is advice to the author, not an instruction to the agent.
-- **The referee** gets only the PDF, the venue file and a few papers of the same genre, and nothing from the workspace's memory. It runs once per angle (specialist, sceptical generalist, the journal's editor, and one chosen for the paper) and reports in the journal's form, beginning with what it takes the paper to claim.
+- **The referee** judges a paper against its field's culture and standard benchmarks, surveyed once per paper from similar papers into `paper/field.md`, and against the journal's referee guidelines, fetched once into `paper/venue.md`. It states a rubric from both, reads with evidence for every judgement, writes in the form of the author's own good reports, beginning with what it takes the paper to claim, and re-reads before it is done. It runs once per angle (specialist, sceptical generalist, the journal's editor, and one chosen for the paper) and gets the PDF and those two files (`field.md` and `venue.md`), nothing else from the workspace's memory.
 
 ### One loop
 
@@ -104,13 +104,13 @@ The workspace is its own git repository and the working directory of every sessi
 - **`paper/outline.md`** opens with the intent in the author's words, then the argument, then the sections with role, budget and what each must carry.
 - **`paper/style.md`**: register, spelling, person and tense, notation, defined terms and a few exemplar paragraphs, in two pages at most.
 
-Five memory files keep apart what is true today (`STATE.md`, rewritten, two pages), what the paper argues (`outline.md`), what each claim rests on (`claims.md`, a table), what the author must decide (`open-questions.md`, open ones only) and what was decided, by whom and why (`journal.md`, append-only, no account of work done because git holds it). That is the whole handoff: a session ends by rewriting `STATE.md`, appending to the journal, and committing under the policy in `AGENTS.md`. The toolkit assumes no commit policy; the author sets it at `start`. Changes found uncommitted in the manuscript at the start of a session are the author's and are reported, and the session does not write to those files until they are committed or the author says to go ahead.
+Five memory files keep apart what is true today (`STATE.md`, rewritten, two pages), what the paper argues (`outline.md`), what each claim rests on (`claims.md`, a table), what the author must decide (`open-questions.md`, open ones only) and what was decided, by whom and why (`journal.md`, append-only, no account of work done because git holds it). Three reference files, `style.md`, `venue.md` and `field.md`, are each built once at first need and kept current; they are agent-written and never a source. That is the whole handoff: a session ends by rewriting `STATE.md`, appending to the journal, and committing under the policy in `AGENTS.md`. The toolkit assumes no commit policy; the author sets it at `start`. Changes found uncommitted in the manuscript at the start of a session are the author's and are reported, and the session does not write to those files until they are committed or the author says to go ahead.
 
 The author's words are sorted by what will rest on them. Testimony (why the work was done; a fact only the author knows) is a primary source: verbatim, dated, in a new note, never edited. Direction goes into the live file it changes with one journal line quoting the words. A standing instruction goes into `AGENTS.md`. Conversation is not kept. In doubt, classify upward; the closing message lists what was recorded. A decision recorded only in the agent's paraphrase is the agent's, not the author's, which is why the journal quotes the author.
 
 ## 4. Generic and particular
 
-The test for any sentence is whether a paper on a different subject, by a different author, for a different journal would need it. The toolkit holds the rules, the trace forms, the procedures and briefs, a journal's quirks, the technique for a subject repository, the form findings arrive in, and the scaffold. A paper's workspace holds which paths are sources and which are forbidden, the pin and the command that reads at it, who drafts and who checks on which model, the style decisions, its feature map, and every local file. The toolkit names no subject and carries no unpublished paper. Nothing is copied into a workspace except the scaffold and the gap macro.
+The test for any sentence is whether a paper on a different subject, by a different author, for a different journal would need it. The toolkit holds the rules, the trace forms, the procedures and briefs, the technique for a subject repository, the form findings arrive in, and the scaffold. A paper's workspace holds which paths are sources and which are forbidden, the pin and the command that reads at it, who drafts and who checks on which model, the journal's facts and the field's norms (each determined once per paper, so current for it), the style decisions, its feature map, and every local file. The toolkit names no subject and carries no unpublished paper. Nothing is copied into a workspace except the scaffold and the gap macro.
 
 ## 5. The boundary with ai-agent-coder
 
@@ -132,7 +132,8 @@ A Campaign Manager in the author's seat needs one rule, not a table of defaults,
 |---|---|
 | A default for every author question | Built for a caller that has never existed; rule 5 replaces it |
 | Finding the workspace from somewhere else | The session works in the workspace; a project that wants a pointer writes one line |
-| A procedure each for framing, style and venue | Framing is drafting with a different role and two rules; a style sheet is built once per author; choosing a journal is a literature-shaped question asked once, and the durable part is the venue file |
+| A procedure each for framing, style and venue | Framing is drafting with a different role and two rules; a style sheet is built once per author; choosing a journal is a literature-shaped question asked once, and the durable part is the paper's own `venue.md` |
+| Venue files in the toolkit | A journal's facts drift between papers; each paper fetches them once into its own `paper/venue.md`, current for it |
 | A separate brief written for each drafter | With sources and conventions in `AGENTS.md`, intent and budgets in the outline and style in the style sheet, a drafter is told which section to write and what is particular to it |
 | A register of promises between sections | A `\gap{todo}` under the heading it binds is visible in every build and blocks submission |
 | A claims database, an approval registry or a state validator | `claims.md` is a table that nothing validates and nothing depends on; the check stamp is one comment line that git can contradict |
@@ -151,16 +152,15 @@ Every component is tested on a live paper, because the toolkit names no subject 
 - **On a real paper**: does the component reproduce or improve what was done there by hand? The challenger is run on claims whose narrowing is already known; `lint` is run on a manuscript whose rule-level failures are already known; `lost` is run across a cut whose moves are already known; a second agent checks a set of literature notes against the papers; a fresh session finds its way from `AGENTS.md` and `STATE.md` alone; a drafter told only which section to write produces a compliant one from the three contract files.
 - **Seeded**: copy a checked section to scratch, plant five errors of named kinds (a changed number, a strengthened quantifier, a trace moved to the wrong line, a converted unit, a swapped citation), run the reader and count. This measures recall on mechanical errors, which is what the checker and the challenger are for, and it is repeated whenever a brief or a model changes. It is a recipe in `skills/paper/review.md`, not a fixture. It says nothing about judgement.
 
-The stylist and the referee are judged against the author's own reading. Each is briefed by hand first and its brief written from what produced substantive criticism, so that there is one referee and not two. The second test of the split between generic and particular is a second paper on a different subject: one paper cannot show whether the split is right, and a sixty-line `AGENTS.md` meeting a new subject will.
+The stylist and the referee are judged against the author's own reading. The stylist is briefed by hand first and its brief written from what produced substantive criticism. The referee's brief is written from the author's own refereeing practice and is judged on its first runs against the author's reading. The second test of the split between generic and particular is a second paper on a different subject: one paper cannot show whether the split is right, and a sixty-line `AGENTS.md` meeting a new subject will.
 
 ## 8. Build order, and what is not yet written
 
-Written: the core, the map, the scaffold, `start`, `draft`, `review`, `revise`, the checker and challenger briefs, the section roles, the techniques, the PASA venue file, the literature skill, and the tools `ads.py` and `traces.py`.
+Written: the core, the map, the scaffold, `start`, `draft`, `review`, `revise`, the checker, challenger and referee briefs, the section roles, the techniques (including the field survey), the literature skill, and the tools `ads.py` and `traces.py`.
 
 | Not yet written | Triggered by |
 |---|---|
 | The stylist brief | A hand-run pass on a complete first draft, before the author's own read, with its reverse outline and two-page report, taken through `revise` with the author's reading; then the brief is written from what survived |
-| The referee brief | A hand-run pass, with the instructions, angles and two good reports from the author's own referee project, first on the outline and claims, then on the whole paper; then the brief is written |
 | The `evidence` skill | The first session that chooses a paper's science focus and uses campaign findings once; its form is fixed above and its text is written from what that session used |
 | `finish`, the audit sheet and the letter | The first paper to reach submission: the final-mode build, a clean `lint` and `stale`, the framing check (every number in the abstract, introduction and conclusions appears in the body with the same value and a claim id behind it), the audit sheet, the submission bundle with comments stripped, the venue's checklist and its statement on AI use; and the reply to a real referee, a letter rendered from the dispositions and a `latexdiff` PDF |
 | A figures technique; a co-authors technique | Their second need; one use so far stays in that paper's `AGENTS.md`, and co-authors have not yet been met |
@@ -169,7 +169,7 @@ The ai-agent-coder engine needs no change for this design. Three small generic s
 
 ## 9. Settled decisions
 
-All fourteen recommendations were accepted by the owner on 2026-11-19.
+All fourteen recommendations were accepted by the owner on 2026-11-19; decisions 15 and 16 followed the same day.
 
 1. One loop: `review` with four reader briefs, and `revise`; no separate style, referee or respond procedures.
 2. Eight core rules, not five.
@@ -185,3 +185,5 @@ All fourteen recommendations were accepted by the owner on 2026-11-19.
 12. A second paper, on a different subject, is the test of generic against particular.
 13. The commit policy is one section in the workspace `AGENTS.md`, in the author's words; the toolkit assumes none.
 14. Model policy is two sentences: the reader is never the writer's context, and at a milestone it is a different model where one is available; which model takes which seat is written in each paper's `AGENTS.md`.
+15. The owner's later decision the same day: the referee brief is written now, from the author's own refereeing instructions and reports (their form only, no content). It judges a paper against its field's culture, accepted practice and tolerances, surveyed once per paper, and against the journal's referee guidelines, fetched once; both are kept in the workspace.
+16. The owner's later decision the same day: no venue files in the toolkit. What a paper can determine once (its journal's facts and referee instructions, its field's norms, its style) is determined at first need and kept in its workspace as a reference file, current for that paper.

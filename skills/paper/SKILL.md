@@ -12,13 +12,13 @@ Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` i
 | Stage | What the scientist is doing | Read |
 |---|---|---|
 | Orient | Deciding what the paper is for | `skills/paper/start.md` |
-| Position | Finding its place in the literature and its journal | the `literature` skill; `skills/paper/techniques/venue.md` |
+| Position | Finding its place in the literature and its journal | the `literature` skill; `skills/paper/techniques/field.md`; `skills/paper/techniques/venue.md` |
 | Evidence | Checking each claim has something under it; getting what is missing | `skills/paper/readers/challenger.md`; the `evidence` skill (not yet written: use the challenger brief, and the workspace's own notes on how its findings arrive) |
 | Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` in the workspace |
 | Verify | Having every trace re-opened | `skills/paper/review.md`, `skills/paper/readers/checker.md` |
 | Style and shape | Reading the whole and reshaping it | `skills/paper/readers/stylist.md` (not yet written: the session briefs it by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
-| Referee | Having it attacked | `skills/paper/readers/referee.md` (not yet written: the session briefs it by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
-| Finish | Submitting | `skills/paper/finish.md` (not yet written: the final-mode build, `tools/traces.py lint` and `stale` clean, and the venue file in `skills/paper/venues/`) |
+| Referee | Having it attacked | `skills/paper/readers/referee.md` (it needs `paper/field.md` and `paper/venue.md`), then `skills/paper/revise.md` |
+| Finish | Submitting | `skills/paper/finish.md` (not yet written: the final-mode build, `tools/traces.py lint` and `stale` clean, and `paper/venue.md`) |
 | Respond | Answering the referee and co-authors | `skills/paper/revise.md` |
 
 The stages are not in order and none is a gate. The agent may leave the map; `skills/_shared/core.md` still holds, and what the paper teaches goes into its own `AGENTS.md`.
@@ -32,6 +32,7 @@ Short notes, read only when the case arises.
 | `skills/paper/techniques/subject-repository.md` | the paper describes software or an instrument: pin its version, build the feature map, follow the code where a guide disagrees |
 | `skills/paper/techniques/many-drafters.md` | several drafters write at once: one writer per file, shared files written by the owning session only |
 | `skills/paper/techniques/style-sheet.md` | building `paper/style.md` from the author's past papers, once per author |
-| `skills/paper/techniques/venue.md` | choosing a journal, or switching the manuscript to its class |
+| `skills/paper/techniques/field.md` | what papers of this kind contain and what the field accepts, written once per paper to `paper/field.md` |
+| `skills/paper/techniques/venue.md` | choosing a journal and recording it, its class and its referee instructions in `paper/venue.md`; switching the manuscript to its class |
 
 Commands such as `/paper draft` are shortcuts where a harness offers them; plain conversation works everywhere, and a session that was never given a command starts in the right place by reading `paper/STATE.md`.
