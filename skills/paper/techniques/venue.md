@@ -20,13 +20,12 @@ Once a journal is chosen, write `paper/venue.md` (agent-written, never cited). I
 - its instructions to referees: the criteria referees are asked to judge, the report form, the recommendation categories, and its rules for referees (confidentiality, use of AI), each quoted with its URL and date;
 - after the switch below, the template and the date fetched, each preamble fix, the bibliography style's fix, characters the class cannot print, the class's baseline warnings, the rules for tables, listings and citations, and greps that check conformance.
 
-It is fetched again when the venue changes, and checked for drift before submission. Record the switch in `paper/STATE.md` and the journal as for any decision.
+Instructions to referees missing from an existing file are fetched before the referee's first run. It is fetched again when the venue changes, and checked for drift before submission. Record the switch in `paper/STATE.md` and the journal as for any decision.
 
 ## Switching to the journal's class
 
-If `paper/venue.md` already records the switch, follow it. Otherwise:
 
-1. **Fetch the official bundle** (class, bibliography style, style files) and record the URL and date in the preamble comment and the journal.
+1. **Fetch the official bundle** (class, bibliography style, style files) and record the URL and date in the preamble comment and `paper/venue.md`.
 2. **Build the bundle's own sample first**, in a scratch directory, before any manuscript text goes near it. A class can fail on a current TeX and the failure then looks like the author's error. Test the bibliography style with a citation: a broken one shows only when the first reference goes in. Record every fix and the class's **baseline warnings** (those the sample itself produces), so that a later build is judged by what it adds to them.
 3. **Keep the unmodified originals** and the template's own guide in `manuscript/template-reference/`.
 4. **Run `(cd manuscript && latexmk -C main.tex)`** before the first build on the new class: stale auxiliary files survive a switch and give misleading errors.

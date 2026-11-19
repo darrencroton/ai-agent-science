@@ -1,14 +1,14 @@
 # The field
 
-How to build `paper/field.md`, what papers of this kind contain and what the field accepts, so that the paper is drafted, shaped and refereed against that and not against a generic ideal. Read it at start, once the paper's field and genre (a methods paper, a survey, a software paper) are clear, since what it finds can change the outline; or at the first need of a drafter, the stylist or the referee.
+How to build `paper/field.md`, what papers of this kind contain and what the field accepts, so that the paper is drafted, shaped and refereed against that and not against a generic ideal. Read it at start, once the paper's field and genre (a methods paper, a survey, a software paper) are clear, since what it finds can change the outline; or at the first need of the stylist or the referee.
 
 ## Reading the field
 
-Commission it to a fresh context, so that the norms are not chosen to suit the draft. Give it only the paper's title, a paragraph saying what the paper does, its field and genre, and any exemplars already in `paper/lit/index.md`. It uses the `literature` skill and reads recent papers closest in kind and in subject, from the target journal (if one is chosen) and the field's leading journals, until new papers stop adding norms. It says so and gives the count: about ten is typical, never fewer than six.
+Commission it to a fresh context, so that the norms are not chosen to suit the draft. Give it only the paper's title, a paragraph saying what the paper does, its field and genre, and any exemplars already in `paper/lit/index.md`. It uses the `literature` skill (or the field's own index where ADS does not serve it, recording any limit on coverage) and reads recent papers closest in kind and in subject, from the target journal (if one is chosen) and the field's leading journals, until new papers stop adding norms. It says so and gives the count: about ten is typical, never fewer than six.
 
 ## What to record
 
-The papers read, each with its key and why it was chosen. Then their form: each one's headings in order, length, figure and table counts and what the figures do; the template they share, where they diverge, and anything this paper has that the template has no slot for, with the precedent for where it goes. That finding is usually the one that matters.
+The papers read, each with its key and why it was chosen. Then their form: each one's headings in order, length, figure and table counts and what the figures do; the template they share and where they diverge. What this paper has that the template has no slot for, with the precedent for where it goes, is returned to the session for the outline and not written into the file, which describes the field only; that finding is usually the one that matters.
 
 Then the norms, each with the papers that show it and where:
 

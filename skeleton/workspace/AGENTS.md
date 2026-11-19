@@ -19,6 +19,7 @@ What the paper may cite, at what version, and what it may not. `python3 <install
 notes/              fixed      cite    # the author's testimony
 paper/lit/          fixed      cite    # a note records a reading; a trace names the location in the paper
 paper/checks/       fixed      cite    # the agent's own read-only checks
+paper/lit/reports/  -          never   # agent-written answers to literature questions
 paper/               -          never   # agent-written memory and indexes, never a source
 manuscript/         -          never   # the draft is never a source
 ```

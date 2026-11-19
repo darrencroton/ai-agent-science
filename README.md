@@ -9,7 +9,7 @@ A paper is verifiable when every checkable sentence has its source beside it, or
 The mechanism is one comment beside each checkable sentence in the manuscript source, or a gap that prints loudly in a draft and fails the build in final mode:
 
 ```latex
-% src: notes/2026-03-02-run-log.md:41
+% src: notes/2026-03-02-run-log.md "converged after 200 iterations"
 The fit converged after 200 iterations.
 
 The residual is below the noise \gap{number}{command that would measure the residual}.
@@ -56,7 +56,7 @@ The readers are briefs handed to a fresh context that did not write the text. Th
 
 Five memory files keep apart what is true today (`STATE.md`, rewritten each session), what the paper argues (`outline.md`), what each claim rests on (`claims.md`), what the author must decide (`open-questions.md`) and what was decided and why (`journal.md`, append-only). Three reference files, `style.md`, `venue.md` and `field.md`, are each built once at first need by a technique, so that they are current for this paper, and are never a source. Each milestone review leaves a record in `paper/reviews/`.
 
-**The check stamp**, `% checked: <date> <reader>`, is one comment line near the top of a section file, written when `revise` sends its changes back to the checker. `tools/traces.py stale` reports every file changed since its stamp.
+**The check stamp**, `% checked: <date> <reader>`, is one comment line near the top of a section file, written once the checker has re-read what `revise` changed. `tools/traces.py stale` reports every file changed since its stamp.
 
 ## The tools
 

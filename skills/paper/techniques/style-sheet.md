@@ -1,6 +1,6 @@
 # The style sheet
 
-How to build `paper/style.md`, the paper's style sheet, from the author's past writing. Read it once per author, before the first section is drafted, if the author wants the paper to sound like their own work. Not wanting it is a decision; a paper with no sheet is drafted in plain register.
+How to build `paper/style.md`, the paper's style sheet, from the author's past writing. Read it once per paper, before the first section is drafted (a later paper by the same author may start from an earlier one's sheet), if the author wants the paper to sound like their own work. Not wanting it is a decision; a paper with no sheet is drafted in plain register.
 
 A sheet is at most two pages, because every drafter must read it whole. Voice is carried by examples, not adjectives: "formal but direct" gives a drafter nothing to act on.
 

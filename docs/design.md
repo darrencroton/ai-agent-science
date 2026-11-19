@@ -132,7 +132,7 @@ A Campaign Manager in the author's seat needs one rule, not a table of defaults,
 |---|---|
 | A default for every author question | Built for a caller that has never existed; rule 5 replaces it |
 | Finding the workspace from somewhere else | The session works in the workspace; a project that wants a pointer writes one line |
-| A procedure each for framing, style and venue | Framing is drafting with a different role and two rules; a style sheet is built once per author; choosing a journal is a literature-shaped question asked once, and the durable part is the paper's own `venue.md` |
+| A procedure each for framing, style and venue | Framing is drafting with a different role and two rules; a style sheet is built once per paper; choosing a journal is a literature-shaped question asked once, and the durable part is the paper's own `venue.md` |
 | Venue files in the toolkit | A journal's facts drift between papers; each paper fetches them once into its own `paper/venue.md`, current for it |
 | A separate brief written for each drafter | With sources and conventions in `AGENTS.md`, intent and budgets in the outline and style in the style sheet, a drafter is told which section to write and what is particular to it |
 | A register of promises between sections | A `\gap{todo}` under the heading it binds is visible in every build and blocks submission |
@@ -178,7 +178,7 @@ All fourteen recommendations were accepted by the owner on 2026-11-19; decisions
 5. `traces.py` with `list`, `lost`, `lint` and `stale`, the small trace format and the check stamp are built now; `sample` waits for submission.
 6. The workspace is the working directory, with sources linked into it.
 7. The owning session approves a paragraph plan; the author does for the first section of each role and whenever what a section must carry does not fit its budget.
-8. The author supplies the referee project's instructions, angles and two good reports; the first hand prototype runs on the outline and claims before the science focus is chosen.
+8. The author supplies the referee project's instructions, angles and two good reports; the first hand prototype runs on the outline and claims before the science focus is chosen (superseded by 15).
 9. The `evidence` skill is written after the first focus session; the challenger brief is written now.
 10. The earlier Plan is archived and this document replaces it.
 11. Reader briefs are tested by the seeded recipe in a live workspace, with no fixture in the toolkit.
