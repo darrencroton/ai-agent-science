@@ -10,7 +10,7 @@ Five commands over the ADS v1 API:
     export <bibcode> [...]     verbatim BibTeX from the ADS export endpoint
 
 Everything but `export` prints JSON on stdout. `export` prints BibTeX exactly
-as ADS returned it, because rule 2 in skills/_shared/house-rules.md says a
+as ADS returned it, because core rule 2 (skills/_shared/core.md) says a
 refs.bib entry is never composed or adjusted, and this is its only path.
 
 Token resolution, in order, so it works on a laptop and on OzSTAR or NERSC
@@ -47,9 +47,8 @@ TIMEOUT = 30
 DEFAULT_ROWS = 20
 MAX_ROWS = 200
 
-# Enough to screen a result set and then act on it. Plan section 9.1 singles
-# out the abstract, the identifiers and `esources` as load-bearing rather than
-# optional: without the abstract nothing can be screened, and without the
+# Enough to screen a result set and then act on it. The abstract, the
+# identifiers and `esources` are load-bearing rather than optional: without the abstract nothing can be screened, and without the
 # identifiers no PDF can be found. The rest is what a shortlist has to show.
 FIELDS = ("bibcode,title,author,year,property,doctype,citation_count,"
           "doi,identifier,esources,abstract")

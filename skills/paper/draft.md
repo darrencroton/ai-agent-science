@@ -1,0 +1,45 @@
+# Draft
+
+How one section is written from sources, tracing as it goes and marking every hole. Read it when drafting, whether as a drafter commissioned by the session or as the session itself. A section that reads as finished when it is not is the failure this procedure exists to prevent.
+
+## Read first
+
+`skills/_shared/core.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent* and the section's own row: its role, budget and what it must carry); `paper/style.md`; the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
+
+Then read the sections already drafted, for the notation and terms the paper already uses and for what it has already said, never as a source (core rule 1). Search them for `\gap{todo}` promises made to this section and keep them. If the section file exists, read it first, with its traces and gaps: filling gaps is edited in place; rewriting author prose is shown to the author and told to go ahead (core rule 5).
+
+## 1. The paragraph plan, before any prose
+
+One line per paragraph: its point and its sources. Every item the outline row says the section must carry appears in it. Sum the lines to an estimate against the budget.
+
+**Coverage beats budget, and the conflict is settled before the prose exists.** If the estimate is over budget the drafter does not choose what to drop (core rule 7). It returns the plan with the overrun and the options: raise the budget; move named items to another section or an appendix; state an item more briefly. The owning session accepts the plan; the author does, for the first section of each role and whenever what the section must carry does not fit its budget. The outline is changed to match. A budget for a section of an unfamiliar kind is a guess, and the plan is where it is corrected cheaply.
+
+## 2. Gather and write
+
+Open every source in this session; write nothing from memory of having read it. Science comes only from the sources the `sources` block allows: the author's notes, figures, tables, code, the subject at its pin, pinned copies and the literature notebook, each cited as core's trace forms say.
+
+- **Notes:** follow the author's stated understanding; what the notes do not settle is a gap. **Tables:** a row is a better source than a value read off a plot.
+- **Code:** write what it does, not what it is named or what a note says it does. A line anchor names the symbol that owns the line; a constant belongs to the line that defines it. Where code and the author's notes describe the method differently, give both traces, mark `\gap{q}` and choose neither.
+- **Figures:** describe what is plotted, then check it against the caption, the notes and the code that made it. A mismatch is a `\gap{q}`, never a silent choice. PDF, PNG and JPG are included as they are; a figure that exists only as EPS is converted into `manuscript/figures/` (never into the author's directory), after checking that a sibling file is not a different plot.
+- **Trace as you write** (core rule 1): the `% src:` line goes immediately above the sentence; captions and tables carry claims too. A value with no source yet is `\gap{number}{<the command that would produce it>}`. A hole is marked as it is met, with a note saying what would fill it.
+- Match the manuscript's own conventions (figure macro, citation commands, label names, section file `manuscript/sections/NN_slug.tex`). Every float has a `\label` and is referred to where it is discussed. Placeholders for figures are a `\gap{todo}` naming what the figure must show.
+- A citation is a key that exists in `refs.bib`, or a `\gap{cite}`. The drafter never edits `refs.bib` (core rule 2); it lists each key it used with its identifier.
+
+## 3. Read back, once
+
+The drafter reads its own traces back against the open sources, and only for what a fresh reader would find hardest to see: **the direction of every comparison** (above or below, steeper or shallower), **quantities written as words** ("four", "twice", "half", "an order of magnitude"), and **a figure and the code said to have made it** (the legend, the number of curves, the guide lines and the tick range as well as the label; where they disagree, trace displayed values to the figure and raise a `\gap{q}`). Anything that does not survive becomes a gap, not a softer sentence (core rule 4). The rest of the check is not the drafter's: the writer does not check itself (core rule 3).
+
+## 4. Build and report
+
+Build with the command in `AGENTS.md`, in a scratch copy of `manuscript/` when other drafters are working (`skills/paper/techniques/many-drafters.md`). A draft that compiles with gaps is the target; fix only what this edit broke. Where a fix would mean changing author prose, choosing between two versions of a figure or deciding something scientific, stop and report it.
+
+Report in under 400 words:
+
+1. The file written and the PDF's path.
+2. Every gap, by kind, with what would fill it. This is the main output.
+3. Questions for the author, each with a recommendation and no id: the session assigns ids and writes `paper/open-questions.md`.
+4. Keys to export, each with its identifier (bibcode, arXiv id or DOI).
+5. Words against the budget. A section that is running more than about a fifth over its plan's estimate is reported with what the drafter would cut, not cut silently and not padded.
+6. Anything the sources disagreed about, anything unreadable, and any statement the session made that proved wrong.
+
+A drafter writes its one section file and nothing else. The session writes everything shared: `main.tex`, `refs.bib`, `paper/open-questions.md`, `paper/STATE.md` and the journal. Every drafted section then goes to an independent check (`skills/paper/review.md`) before it is called drafted.

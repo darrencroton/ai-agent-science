@@ -1,21 +1,23 @@
-# State — <paper short name>
+# State: <paper short name>
 _Last updated: <date>_
 
+What is true today. Rewritten each session, never appended to; two pages at most; no history and no reasons (those are in `journal.md`). Read whole at the start of every session.
+
 ## Argument
-See `paper/outline.md` — the single authority. Note here only what is currently
-*in flux* about it, not a restatement.
+See `paper/outline.md`, the only authority. Note here only what is currently in flux about it.
 
 ## Sections
-| Section | Status | Notes |
-|---|---|---|
-| — | not started | nothing scaffolded yet |
+`Checked` is read from `tools/traces.py stale`: the date of the last independent check, `changed since`, `checked, not yet committed`, or `never`.
+
+| Section | Status | Words / budget | Checked | Notes |
+|---|---|---|---|---|
+| none | not started | | never | nothing scaffolded yet |
 
 ## Settled
-_nothing yet — each entry carries the journal date that records the reasoning_
+_Nothing yet. Each entry carries the date of the journal line that records its reasoning._
 
 ## Open
-_nothing yet — ids into `open-questions.md`_
+_Nothing yet. Ids into `open-questions.md`._
 
 ## Next
-Run `/paper start` (or just describe the paper) to read `notes/` and `figures/`
-and propose an argument spine.
+Run `start` (or describe the paper): read the material, ask why the work was done, and propose an intent, an argument and the open questions.

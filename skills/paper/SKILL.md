@@ -1,48 +1,37 @@
 ---
 name: paper
-description: Write a journal paper from an author's notes, figures, tables and analysis code, or from a software repository, in a git-isolated workspace with durable memory. Modes - start (ingest the material, scaffold the workspace, propose the argument and the open questions), draft (write or rewrite a methods, results or discussion section, marking every hole), voice (distil the author's past papers or style notes into this paper's voice profile), venue (which journals take this paper, and what shape papers of this kind take), iterate (an independent check that every trace in a drafted section says what its source says). Use for starting, writing, structuring or continuing a paper, and for choosing a journal. Literature questions go to the literature skill.
+description: Write a journal paper with an agent so that every checkable sentence is verifiable, in a git-isolated workspace with durable memory. Stages - orient (start: ingest the material, ask why the work was done, propose the argument), position (literature and journal), evidence (test each claim against what it rests on), draft (one section from sources, tracing as it goes), verify (an independent reader re-opens every trace), style and shape, referee (simulated criticism), finish, respond (revise after any reader, including the journal's referee). Use for starting, writing, restructuring, checking or continuing a paper. Literature questions (novelty, prior work, what a paper says, BibTeX) go to the literature skill.
 ---
 
 # paper
 
-One skill, several modes. Each mode's procedure is in `modes/<mode>.md` and is
-read in full when the mode runs; this file only routes to it and holds what
-every mode shares.
+A map of what a scientist does when writing a paper, with one file for each stage. Paths below are relative to the installation root.
 
-| Mode | Use when | File |
+Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` in the workspace, then `skills/_shared/core.md`. With no workspace yet, begin at `skills/paper/start.md`.
+
+| Stage | What the scientist is doing | Read |
 |---|---|---|
-| `start` | beginning a paper, or pointed at a directory of research material with no manuscript yet: ingest it, scaffold the workspace, propose the argument and the open questions | `modes/start.md` |
-| `draft <section>` | writing or rewriting one methods, results or discussion section from the notes, figures and code, marking every hole | `modes/draft.md` |
-| `voice` | the author has put past papers or style notes in `paper-voice/` and wants them applied, or the profile refreshed | `modes/voice.md` |
-| `venue` | choosing a journal, and finding what shape papers of this kind take | `modes/venue.md` |
-| `iterate <section>` | a section has just been drafted, or its sources have moved: an independent check that every trace says what its source says | `modes/iterate.md` |
+| Orient | Deciding what the paper is for | `skills/paper/start.md` |
+| Position | Finding its place in the literature and its journal | the `literature` skill; `skills/paper/techniques/venue.md` |
+| Evidence | Checking each claim has something under it; getting what is missing | `skills/paper/readers/challenger.md`; the `evidence` skill (not yet written: use the challenger brief, and the workspace's own notes on how its findings arrive) |
+| Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` in the workspace |
+| Verify | Having every trace re-opened | `skills/paper/review.md`, `skills/paper/readers/checker.md` |
+| Style and shape | Reading the whole and reshaping it | `skills/paper/readers/stylist.md` (not yet written: run by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
+| Referee | Having it attacked | `skills/paper/readers/referee.md` (not yet written: run by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
+| Finish | Submitting | `skills/paper/finish.md` (not yet written: the final-mode build, `tools/traces.py lint` and `stale` clean, and the venue file in `skills/paper/venues/`) |
+| Respond | Answering the referee and co-authors | `skills/paper/revise.md` |
 
-Not built yet: `frame` (Introduction, Conclusions, Abstract, Title), `finish`,
-and `iterate`'s structural read of a draft. If asked for one, say so and do not
-improvise it.
+The stages are not in order and none is a gate. The agent may leave the map; `skills/_shared/core.md` still holds, and what the paper teaches goes into its own `AGENTS.md`.
 
-## Picking the mode
+## Techniques
 
-`/paper <mode> [args]` where the harness offers commands, or plain conversation,
-which works everywhere. The commands are shortcuts, not an interface: this is a settled design rule, and the workspace's own `AGENTS.md`
-points every session at `paper/STATE.md`, so a session that was never given a
-command still starts in the right place. If the mode is unclear, ask (AQ16).
+Short notes, read only when the case arises.
 
-Literature questions — novelty, build-on, support/contradict, mine, provenance, filling a
-`\gap{cite}`, exporting BibTeX — are the `literature` skill, not a mode here.
+| Read | When |
+|---|---|
+| `skills/paper/techniques/subject-repository.md` | the paper describes software or an instrument: pin its version, build the feature map, follow the code where a guide disagrees |
+| `skills/paper/techniques/many-drafters.md` | several drafters write at once: one writer per file, shared files written by the owning session only |
+| `skills/paper/techniques/style-sheet.md` | building `paper/style.md` from the author's past papers, once per author |
+| `skills/paper/techniques/venue.md` | choosing a journal, or switching the manuscript to its class |
 
-## Before every mode
-
-1. Find the workspace root, per `_shared/house-rules.md` *The workspace root*.
-   `start` is the exception: it may run before any workspace exists, and its
-   own *Before anything* replaces steps 1 and 2.
-2. Read `paper/STATE.md` in full.
-3. Read `_shared/memory.md` and `_shared/house-rules.md` from the installation
-   (`../_shared/` relative to this file; the installation root itself is
-   resolved per house-rules *Locating the installation*).
-4. Read `_shared/author-questions.md`: the modes cite its ids where they ask the
-   author. Its defaults apply only when running unattended, with no author at
-   the keyboard.
-5. Read the mode file in full and follow it.
-
-They are the authority and are not restated here.
+Commands such as `/paper draft` are shortcuts where a harness offers them; plain conversation works everywhere, and a session that was never given a command starts in the right place by reading `paper/STATE.md`.

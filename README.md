@@ -1,78 +1,46 @@
 # ai-agent-science
 
-**Work in progress — stage 2a built; stage 2b is being built by writing a real paper.**
+Agent skills for writing a journal paper with an AI agent so that every checkable sentence is verifiable. They are plain Markdown, one small Python tool for the literature and one for the traces, and one LaTeX package, and they work in any agent harness that reads `SKILL.md` skills.
 
-The science-method toolkit: a small set of agent skills, usable from any harness that reads `SKILL.md` skills (Claude Code, Codex and OpenCode, for example), that hold how scientific work is done, apart from any subject it is done on. Today that is a `paper` skill with modes, which helps a working astronomer turn notes, figures, tables and analysis code (or a software repository) into a journal paper and keep working on it for as long as it takes, and a `literature` skill, which searches the astronomical literature and keeps a notebook of what it found. There is one stdlib script, for ADS access, and one LaTeX package, for gap markers.
+## The idea
 
-It is built for the way papers actually get written: **starting before the picture is complete, and letting the writing shape the result.** The first draft is deliberately incomplete, with every hole marked rather than smoothed over. The astronomer is the verifier: the system never claims a number, method or citation is correct, it makes what it did visible and traceable so you can check it fast. Where a skill would ask the author a question, a recorded default lets a caller with no author present, such as a Campaign Manager running under a brief, use the skills too.
+A paper is verifiable when every checkable sentence has its source beside it, or a visible gap where the source is missing, and when someone other than the writer has opened those pointers. An agent writes fast and cannot see its own errors; the author's attention is the scarce resource. So the toolkit makes the unverified visible, keeps what the author must read short, and never certifies anything itself. The author is the gate.
 
-It was called sci-paper until 2026-11-17.
+The mechanism is one comment per sentence in the manuscript source, `% src: <path>:<line>`, or a `\gap{kind}{note}` that prints loudly in a draft and fails the build in final mode. Everything else serves that, or serves the author's attention.
 
-## Status
+## The map
 
-| | |
-|---|---|
-| Design | see [`docs/ai-agent-science - Plan.md`](docs/ai-agent-science%20-%20Plan.md), which is also the build record |
-| Built (stage 2a, 2026-11-17) | the rename; one `paper` skill with modes `start`, `draft`, `voice`, `venue` and `iterate` (the trace check); `literature` unbound from the paper, with five modes and three bindings (in a paper, in a named notebook, unbound); a recorded default for every author question; the Mimic paper's lessons folded in, including the first venue file (PASA) |
-| Stage 2b (under way) | the Mimic paper is the vehicle: `iterate`'s structural read, `frame` (Introduction, Conclusions, Abstract, Title) and `finish` are built by writing it, and not yet built. v4.1 (2026-11-18) simplified the workspace layout and made `AGENTS.md` the one instruction file |
-| Stage 3 | `scope`, `findings` and `challenge`, and the catalogue of evidence clauses. Not built |
+- **Core.** `skills/_shared/core.md`: eight rules, the trace forms and gap kinds, and the memory files. Every session and every subagent reads it.
+- **Five procedures** in `skills/paper/`: `start`, `draft`, `review`, `revise`, and `finish` (submission).
+- **Four reader briefs** in `skills/paper/readers/`, each handed to a fresh context that did not write the text: the checker (does each sentence say what its source says), the challenger (does the claim as worded follow from its test), the stylist and the referee.
+- **One loop.** Every reader's report, the author's own red pen and a journal's referee all go through `revise`: numbered points, a disposition for each confirmed at source, the changes, and a re-check of only what changed.
+- **Techniques**, short notes read when the case arises: a software or instrument subject, many drafters at once, a style sheet, choosing a venue; and one file per journal in `skills/paper/venues/`.
+- **The workspace contract.** A paper lives in its own git repository, the working directory of every session, with three files every drafter reads: `AGENTS.md` (how we work here, and the `sources` block of what may be cited at which version), `paper/outline.md` (the intent, the argument and the section budgets) and `paper/style.md`. The memory files are `STATE.md`, `outline.md`, `claims.md`, `open-questions.md` and `journal.md`. `skeleton/workspace/` is the scaffold.
 
-The architecture this belongs to, with stages 2a, 2b and 3 and the other repositories it works with, is `docs/dev/AGENTIC-SCIENCE-ARCHITECTURE.md` in the Mimic repository.
+## The skills
 
-## What is here
+- **`paper`** (`skills/paper/SKILL.md`) is a map of what a scientist does when writing a paper, with one file per stage. The stages are not in order and none is a gate.
+- **`literature`** (`skills/literature/SKILL.md`) searches the astronomical literature through ADS/SciX: novelty, closest prior work, support or contradiction for one claim, comparison values with their conventions, and provenance. It keeps a notebook and exports BibTeX verbatim.
 
-```text
-docs/ai-agent-science - Plan.md   # the design, the build record and the status. start here
-tools/ads.py                      # the only script: ADS/SciX, stdlib only
-skills/
-├── _shared/                      # data the skills read, not skills
-│   ├── memory.md                 # what to read first, what to write last, open questions
-│   ├── house-rules.md            # integrity rules, gap markers, % src:, the workspace root
-│   ├── notebook.md               # the literature notebook's format
-│   ├── author-questions.md       # every point where a skill asks the author, with its unattended default
-│   ├── sections/                 # rhetorical moves per section role
-│   └── venues/                   # one file per venue: pasa.md
-├── paper/
-│   ├── SKILL.md                  # the router
-│   ├── modes/                    # start, draft, voice, venue, iterate
-│   └── templates/                # the drafting brief
-└── literature/SKILL.md           # query craft and five modes
-skeleton/
-├── root/                         # AGENTS.md, appended into the working directory (an index only)
-└── workspace/                    # copied to become sci-paper-workspace*/
-    ├── AGENTS.md
-    ├── .gitignore
-    ├── paper-voice/README.md
-    ├── paper/                    # STATE, journal, outline, open questions, lit
-    └── manuscript/               # main.tex + scipaper.sty + refs.bib
-```
+Not yet written, and each built when its case arrives: `skills/paper/finish.md` (at submission); the stylist and referee briefs (run by hand first, then written from what produced substantive criticism); and the `evidence` skill (how a claim with nothing under it becomes a question with a declared test, and the form in which findings come back from a campaign).
 
-## The two skills
+## The tools
 
-`/paper <mode>` (a shortcut where the harness offers commands; plain language works everywhere):
+- `tools/ads.py` searches ADS/SciX and exports BibTeX byte for byte. Python standard library only; it needs an [ADS/SciX API token](https://ui.adsabs.harvard.edu/user/settings/token).
+- `tools/traces.py` is run from the workspace root: `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check. Python standard library only.
+- `skeleton/workspace/manuscript/scipaper.sty` is the gap macro.
 
-- `start` — read the notes, look at the figures, propose an argument and a list of questions; for a software paper, read the repository and its release history too
-- `draft <section>` — write a methods, results or discussion section from notes, code or figures, marking what it cannot answer; or several at once from a shared drafting brief
-- `voice` — distil past papers or style notes into this paper's own voice profile
-- `venue` — which journals take this paper, what shape papers of this kind take, and how to switch the manuscript to the one chosen
-- `iterate <section>` — an independent check that every trace in a drafted section says what its source says
+A paper also needs `latexmk` and a git installation. No third-party Python packages, no node, no MCP client.
 
-`/literature <mode>`:
+## Installation
 
-- `novelty`, `build-on`, `support/contradict` and `mine` — has this been done, what is closest, what supports or contradicts this claim, and what values can I compare against
-- `provenance` — who made this dataset or tool, and where is that written down
+Install once, globally. The skills are linked into each harness's skills directory by the agent-home catalogue (`setup.sh` clones this repository and links every directory under `skills/` that holds a `SKILL.md`); `skills/_shared/` is data the skills read and is not linked. The installation root, which holds `skills/`, `skeleton/` and `tools/`, is written once in a workspace's `AGENTS.md`, which is the only instruction file and is harness-agnostic. To develop, edit, commit and push in a separate clone, then bring the installed copy forward with `git pull --ff-only` in it (or re-run `setup.sh` when the catalogue itself changes); never edit the installed copy.
 
-`frame` and `finish`, and `iterate`'s structural read, are the remaining modes, and are not built.
+To begin a paper, ask the agent to start one (the `paper` skill's `start` procedure). It copies the scaffold to a new directory, makes it a git repository, links the sources in, and asks why the work was done and who the paper is for. Commands such as `/paper draft` are shortcuts where a harness offers them; plain conversation works everywhere.
 
-## Using it
+## Design
 
-Install once, globally: this repo is composed into a shared agent home (the `ai-agent-home` repo) as a manifest-managed clone, `repos/ai-agent-science`, which links `skills/paper` and `skills/literature` into the one catalogue each harness reads. The skills are then available from any working directory.
-
-`/paper start` scaffolds a paper **workspace** — always `sci-paper-workspace/`, a fixed-name subdirectory of wherever you are, and always its own independent git repository. The workspace keeps its historical name, as do `scipaper.sty` and a few other names written into live workspaces; they belong to the workspace format, not to the toolkit. Nothing the toolkit creates or touches reaches the project's own git history: your working directory's `AGENTS.md` gets one small appended index block, and its `.gitignore` gets one appended line excluding the workspace entirely (a paper whose subject is the project itself touches neither). Everything the paper needs — its draft, its memory, its literature notes, an optional `paper-voice/` of past papers to write like — lives inside that one isolated directory, and your own `notes/`, `figures/` and `code/` stay exactly where your project already keeps them. The manuscript builds in place, to `manuscript/main.pdf`.
-
-Between sessions the project remembers itself in `paper/` — a short living state file (the only handoff), an append-only journal, the argument spine, open questions each with a recommendation, and literature notes. A new conversation picks up where the last one stopped. `/literature` works inside a paper, in a notebook directory you name, or with no paper at all.
-
-Needs an [ADS/SciX API token](https://ui.adsabs.harvard.edu/user/settings/token) and `latexmk`. No third-party Python packages, no node, no MCP client.
+The reasons for the shape, what is deliberately left out, how components are tested and the decisions settled so far are in [`docs/design.md`](docs/design.md).
 
 ## Licence
 

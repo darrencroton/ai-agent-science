@@ -1,0 +1,27 @@
+# A subject repository
+
+For a paper that describes software or an instrument: the repository itself is the main source, and it keeps changing. Read it at the start of the paper, and again whenever a drafter's anchors disagree with the checkout.
+
+## Pin it and read at the pin
+
+- Record the tag and commit the paper describes in the `sources` block (`<root>/  git:<rev>  cite`). Read every file at it with `git -C <root> show <rev>:<path>`, not from the working tree.
+- Each section file opens with a comment naming the version its anchors were read at, and the command that re-reads a file at it. A checkout that has moved past the tag is re-read at the tag; `git diff --quiet <rev> HEAD -- <path>` says whether a file is as released.
+- A measurement made on an earlier version is quoted with that version; a re-measurement is a question for someone who may run the code (core rule 6).
+- Link the repository into the workspace so that every anchor begins with its root, and write nothing in its files. The paper's own notes and figures live in the workspace.
+
+## Cite only what was delivered
+
+- Forward plans, design proposals and local archives are roots marked `never`. A plan is not a feature.
+- A count read from the repository is a trace when the anchor says how it was counted (core, *Trace forms*).
+
+## Read it whole
+
+- Use parallel readers by question (`skills/paper/start.md`): capabilities, history, recorded runs and logs, tests (what the authors take correctness to mean), the development method, the products.
+- Read the history across every branch, not only the main one. An unmerged branch can hold the one correctness comparison the paper needs, and the history answers questions the README cannot.
+- **Build a feature map from the release history** in `paper/ingest/feature-map.md`: the changelog and tags read in order, one row per feature with the release that introduced it, where it lives and the outline section that covers it. A feature with no section is a question for the author.
+
+## Follow the code where a guide disagrees
+
+- Prose follows the code. The disagreement goes on one list for the subject's owner: the subject's own backlog where the owner keeps one, otherwise `paper/subject-notes.md`, named in the workspace `AGENTS.md` either way. Each entry gives the guide's words, the code's behaviour and both locations. So does a quirk that is neither a disagreement nor a hole in the draft, such as a configuration key nothing reads.
+- It does not go in the paper's open questions, which would bury the author's decisions under the owner's chores. It becomes a `\gap{q}` in the manuscript only when it changes what a sentence says.
+- A disagreement between the code and the **author's** notes is different: it is always a `\gap{q}` (`skills/paper/draft.md`).

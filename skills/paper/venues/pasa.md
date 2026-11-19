@@ -1,10 +1,10 @@
 # Venue: PASA (Publications of the Astronomical Society of Australia)
 
-Facts true for any paper submitted to PASA, found by building the journal's own template on a current TeX. Paper-specific choices (spelling, macros) are not here. How to switch a manuscript to a venue is in `skills/paper/modes/venue.md`.
+Facts true for any paper submitted to PASA, found by building the journal's own template on a current TeX. Paper-specific choices (spelling, macros) are not here. How to switch a manuscript to a journal's class is in `skills/paper/techniques/venue.md`.
 
 ## Template
 
-Cambridge's "PAS LaTeX template 2022" (`pas.cls` v1.0, 2021/04/29, with `paslike.bst`), downloaded 2026-11-16 from the "Downloadable Zip File - PASA LaTeX template" link on PASA's "Preparing your materials" author-instructions page. Check the page for a newer one before relying on this. The class loads `natbib` in author-year mode.
+Cambridge's "PAS LaTeX template 2022" (`pas.cls` v1.0, 2021/04/29, with `paslike.bst`), downloaded 2026-11-16 from the "Downloadable Zip File - PASA LaTeX template" link on PASA's "Preparing your materials" author-instructions page. Check the page for a newer one before relying on this. The class loads `natbib` with author-year citations.
 
 ## Preamble fixes
 
@@ -30,7 +30,7 @@ All tested on TeX Live 2022. None edits the class.
 
 ## Characters
 
-Rule 2's preamble fix (house rules) applies: add a `\DeclareUnicodeCharacter` with a comment naming the record or the listing. Seen so far:
+Core rule 2 applies (a record that will not render is fixed in the preamble, never in `refs.bib`): add a `\DeclareUnicodeCharacter` with a comment naming the record or the listing. Seen so far:
 
 - `\DeclareUnicodeCharacter{2500}{--}`: ADS exported a record with U+2500 (box drawing) where the source has an en dash, which stops pdfLaTeX.
 - `\DeclareUnicodeCharacter{2014}{---}`: an em dash in a verbatim listing printed as `|` under this class, with no error.
@@ -63,4 +63,4 @@ grep -n 'begin{tabular}' main.tex sections/*.tex | sed 's/\\extracolsep{[^}]*}//
 grep -n 'begin{tabular}' main.tex sections/*.tex | grep -v tablefont   # a table body not wrapped in \tablefont
 ```
 
-The full conformance checklist is `/paper finish`'s, written when the paper reaches submission.
+The full submission checklist belongs in `skills/paper/finish.md`, written when a paper reaches submission.
