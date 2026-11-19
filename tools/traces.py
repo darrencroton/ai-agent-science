@@ -32,18 +32,21 @@ and TeX quotes is never read for anchors, and any token that is not clearly an
 anchor is free text. It then checks that no path lies under a `never` root, that
 each path exists at its pin (`git:` roots are read through one `git ls-tree`
 per root, `fixed` roots on disk), that a given line is within the file, that
-each commit resolves, that no path has a `..` segment, and that each \\cite key
-is in refs.bib. The `never` policy is applied to what a trace names, not to what
+each commit resolves, that every path is written plainly (no `.`, `..` or
+empty segment), and that each \\cite key is in refs.bib. The `never` policy is applied to what a trace names, not to what
 it is written as: each `{a,b}` alternative is expanded first and judged under
-its own longest-matching root, each file a glob matches is judged likewise, and a
-commit anchor `<root>@<hex>` is judged under its root.
+its own longest-matching root, each file a glob matches is judged likewise and
+must exist at its own root's pin, and a commit anchor `<root>@<hex>` is judged
+under its root.
 
 The check stamp is one line, `% checked: <YYYY-MM-DD> <who checked>`. `stale`
 compares the file with the version in the commit that last changed that line,
 so the stamp line must differ from the one it replaces at every check: a second
 check on the same day adds a round, e.g. `% checked: 2026-11-19 r2 checker
-(Sonnet)`. A file with no traces and no stamp is `no traces` and is not counted.
-A stamp whose line is not yet committed is reported as such and counts as not
+(Sonnet)`. A changed file is reported with that commit, the baseline for its
+re-check. A section file needs a stamp whatever it holds; any other file needs
+one only when it holds traces or citations, and is otherwise `no traces` and not
+counted. A stamp whose line is not yet committed is reported as such and counts as not
 clean, since the section can still change under it; `stale` is a submission gate.
 
 Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
@@ -59,7 +62,8 @@ import re
 import subprocess
 import sys
 
-DEFAULTS = ("manuscript/main.tex", "manuscript/sections/*.tex", "manuscript/figures/*.tex")
+SECTIONS = "manuscript/sections/"
+DEFAULTS = ("manuscript/main.tex", SECTIONS + "*.tex", "manuscript/figures/*.tex")
 BIB = "manuscript/refs.bib"
 SRC_RE = re.compile(r"(?<!\\)%\s*src(?:\s*\(([^)]*)\))?\s*:(.*)$")
 STAMP_RE = re.compile(r"^\s*%\s*checked:\s*(\d{4}-\d{2}-\d{2})")
@@ -405,13 +409,20 @@ def root_of(path, roots):
     return max((r for r in roots if p.startswith(r.name)), key=lambda r: len(r.name), default=None)
 
 
+def plain(path):
+    """Whether a path has no `.`, `..` or empty segment (a trailing slash is allowed)."""
+    return os.path.normpath(path) == path.rstrip("/") and not path.startswith("..")
+
+
 def lint_trace(t, roots, keys, pins):
     if t.body.lstrip(LEAD).startswith("../"):
         yield "parent-path", t.body[:70]
     for kind, tok, lines in (found := anchors(t.body, [r.name for r in roots], keys)):
         if kind == "commit":
             root, hex_ = tok.split("@")
-            if root_of(root, roots).policy == "never":
+            if not plain(root):
+                yield "unplain-path", tok
+            elif root_of(root, roots).policy == "never":
                 yield "never-root", tok
             elif not pins.commit_ok(root + "/", hex_):
                 yield "unknown-commit", tok
@@ -419,6 +430,9 @@ def lint_trace(t, roots, keys, pins):
             for path in expand_braces(tok):
                 if ".." in path.split("/"):
                     yield "parent-path", path
+                    continue
+                if not plain(path):
+                    yield "unplain-path", path
                     continue
                 root = root_of(path, roots)
                 if root.policy == "never":
@@ -428,9 +442,14 @@ def lint_trace(t, roots, keys, pins):
                 if not hits:
                     yield "missing-at-pin", path
                     continue
-                forbidden = [h for h in hits if root_of(h, roots).policy == "never"]
-                for h in forbidden:
-                    yield "never-root", h
+                forbidden = []
+                for h in hits:
+                    own = root_of(h, roots)
+                    if own.policy == "never":
+                        forbidden.append(h)
+                        yield "never-root", h
+                    elif own is not root and not pins.matches(own, h):
+                        yield "missing-at-pin", h
                 if lines and len(hits) == 1 and "*" not in path and not forbidden:
                     n = pins.length(root, hits[0])
                     if n is not None and max(lines) > n:
@@ -455,24 +474,24 @@ def cmd_lint(args):
 # ---------------------------------------------------------------- stale
 
 def cmd_stale(args):
+    if git("rev-parse", "--git-dir")[0]:
+        raise Error("git failed: is this a git repository?")
     bad = 0
     for path in find_files(args.files):
         text = read(path)
         lines = text.splitlines()
         n = next((i for i, l in enumerate(lines, 1) if STAMP_RE.match(l)), None)
         if n is None:
-            if parse_traces(path, text):
+            section = os.path.normpath(path).startswith(SECTIONS)
+            if section or parse_traces(path, text) or parse_cites(text):
                 print(f"{path}: never checked")
                 bad += 1
             else:
                 print(f"{path}: no traces")
             continue
         date = STAMP_RE.match(lines[n - 1]).group(1)
-        rc, committed = git("log", "-1", "--format=%H", "--all", "--", path)
-        if rc:
-            raise Error(f"git log failed for {path}: is this a git repository?")
         sha = out = None
-        if committed.strip():  # ever committed: blame says whether the stamp line itself is
+        if not git("cat-file", "-e", f"HEAD:./{path}")[0]:  # in HEAD: blame dates the stamp line
             rc, out = git("blame", "--porcelain", "-L", f"{n},{n}", "--", path)
             if rc:
                 raise Error(f"git blame failed for {path}")
@@ -489,7 +508,7 @@ def cmd_stale(args):
         ops = difflib.SequenceMatcher(None, keep(old.splitlines()), keep(lines), autojunk=False)
         k = sum(max(i2 - i1, j2 - j1) for tag, i1, i2, j1, j2 in ops.get_opcodes() if tag != "equal")
         if k:
-            print(f"{path}: STALE: checked {date}, changed since ({k} lines)")
+            print(f"{path}: STALE: checked {date}, changed since {sha[:8]} ({k} lines)")
             bad += 1
         else:
             print(f"{path}: checked {date}, unchanged")

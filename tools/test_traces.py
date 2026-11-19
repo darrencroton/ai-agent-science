@@ -160,7 +160,9 @@ class TestLint(Workspace):
         for tok, shown in (("code/docs/{dev,public}/plan.md", "never-root  code/docs/dev/plan.md"),
                            ("code/docs/*/plan.md", "never-root  code/docs/dev/plan.md"),
                            ("code/docs/dev@0123abcd", "never-root  code/docs/dev@0123abcd"),
-                           ("notes/../manuscript/x.tex", "parent-path  notes/../manuscript/x.tex")):
+                           ("notes/../manuscript/x.tex", "parent-path  notes/../manuscript/x.tex"),
+                           ("notes/./n.md", "unplain-path  notes/./n.md"),
+                           ("code//docs/dev@0123abcd", "unplain-path  code//docs/dev@0123abcd")):
             with self.subTest(tok=tok):
                 code, out, _ = self.lint(f"% src: {tok}\n")
                 self.assertEqual(code, 1)
@@ -253,9 +255,11 @@ class TestStale(Workspace):
         code, out, _ = self.stale()
         self.assertEqual(code, 1)
         self.assertIn("never checked", out)
-        self.section("Text, no traces.\n")
-        code, out, _ = self.stale()
-        self.assertEqual((code, out.strip()), (0, "manuscript/sections/s.tex: no traces"))
+        self.section("Text, no traces.\n")  # a section needs a stamp whatever it holds
+        self.assertEqual(self.stale()[0], 1)
+        self.write("manuscript/figures/style.tex", "\\tikzset{x/.style={}}\n")
+        code, out, _ = self.run_cmd("stale", "manuscript/figures/style.tex")
+        self.assertEqual((code, out.strip()), (0, "manuscript/figures/style.tex: no traces"))
 
     def test_git_failure_is_an_error(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
@@ -273,6 +277,10 @@ class TestStale(Workspace):
         self.commit()
         self.section("% checked: 2026-11-20 a checker\nText.\n")  # re-stamped, uncommitted
         self.assertIn("not yet committed", self.stale()[1])
+        git(".", "rm", "-qf", "manuscript/sections/s.tex")
+        self.commit()
+        self.section("% checked: 2026-11-20 a checker\nText.\n")  # restored, in history but not HEAD
+        self.assertEqual(self.stale()[:2], (1, "manuscript/sections/s.tex: checked 2026-11-20, not yet committed\n"))
 
     def test_unchanged_then_stale(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
@@ -282,7 +290,8 @@ class TestStale(Workspace):
         self.section("% checked: 2026-11-19 a checker\nText, changed.\nMore.\n")
         code, out, _ = self.stale()
         self.assertEqual(code, 1)
-        self.assertIn("STALE: checked 2026-11-19, changed since (2 lines)", out)
+        sha = git(".", "rev-parse", "--short=8", "HEAD")
+        self.assertIn(f"STALE: checked 2026-11-19, changed since {sha} (2 lines)", out)
 
     def test_second_check_on_the_same_day_adds_a_round(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
