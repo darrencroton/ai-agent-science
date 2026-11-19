@@ -13,13 +13,13 @@ The rules every session and every subagent works under, whatever the task. Read 
 3. **The writer does not check itself.** Nothing is called checked until an independent reader has re-opened its traces. Independent means a fresh context that did not write the text (a subagent, a second session, or another harness) and, at a milestone, another model where one is available. The session that owns the paper confirms each finding at source before changing anything: a finding is a lead, not an instruction.
 4. **A claim is worded no stronger than its test.** Correct traces under an overstated claim are the failure traces cannot catch. A threshold has a recorded reason; a title says no more than was tested. A rewrite never changes a claim's strength silently; where the source cannot settle a sentence, it becomes a gap, not a softer sentence.
 5. **The author owns the argument and their prose.** Propose, do not apply. Edit in place; never regenerate text the author wrote without showing what would be replaced and being told to go ahead. Ask with a recommendation, so that one reply can settle many questions. Act on a recommendation without an answer only where the author has delegated that kind of decision, and mark the result provisional. "Look into" is not "do": restate what is authorised before a round of changes.
-6. **Read, do not run, with one exception.** The agent never runs the author's analysis or the code the paper is about: that would make a new result nobody has reviewed. A number that exists only as the output of such a run is a `\gap{number}` that names the command that would produce it. The exception is the agent's own small read-only script over files already pinned in the workspace (a count, a ratio, a recomputation of a reported verdict). It is kept under `paper/checks/<slug>/` with its script, command and output; it is checked independently like any other trace; and a trace may then point at it. A check derives from sources and never adds a fact they do not hold.
+6. **Read, do not run, with one exception.** The agent never runs or modifies the author's notes and analysis, or the code the paper is about: a run would make a new result nobody has reviewed. A number that exists only as the output of such a run is a `\gap{number}` that names the command that would produce it. The exception is the agent's own small read-only script over files already pinned in the workspace (a count, a ratio, a recomputation of a reported verdict). It is kept under `paper/checks/<slug>/` with its script, command and output; it is checked independently like any other trace; and a trace may then point at it. A check derives from sources and never adds a fact they do not hold.
 7. **Shorter, and never by silent omission.** Every section has a budget in `paper/outline.md`, and a report or a question is as long as its decision needs. What the outline says a section must carry is never dropped to meet a budget: where the two conflict, the conflict goes to the author before the prose is written. A cut keeps every traced fact or names it as dropped.
 8. **Memory.** Read `paper/STATE.md` first. The argument lives in `paper/outline.md` only. End every session by recording (below). Nothing the author owns is moved to tidy the layout.
 
 ## Trace forms
 
-A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports. It must contain at least one anchor a tool can recognise (the first four rows below); anything else in it is free text. Write a line number by looking at the file, never from memory.
+A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports. It must contain at least one anchor a tool can recognise (a path from a declared root, a commit `<root>@<hex>`, a `refs.bib` key, or the keyword `search`); anything else in it is free text. Write a line number by looking at the file, never from memory.
 
 | Source | Form |
 |---|---|
@@ -28,8 +28,8 @@ A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports
 | A commit | `<root>@<hex>`, root without its slash: `code@a654c228 "fix flybys"` |
 | A paper | its `refs.bib` key and the page, equation, table or figure: `2021MNRAS.506.4210I Table 1` |
 | An absence or a search | `search <command> (<date>, <version>) -> <result>` |
-| A count | the file and how it was counted, with the items nameable: `run.cfg (grep -c '^model_' -> 64)` |
-| A pinned copy | a path inside it: `campaign-findings/<id>/findings.md "claim C3"` |
+| A count | the file and how it was counted, with the items nameable: `code/run.cfg (grep -c '^model_' -> 64)` |
+| A pinned copy | a path inside it: `findings/<id>/findings.md "claim C3"` |
 | The author's testimony | `notes/<date>-<slug>.md` with the quoted words |
 
 ## Gap kinds
@@ -52,7 +52,7 @@ The workspace is its own git repository and the working directory of every sessi
 |---|---|
 | `STATE.md` | what is true today; rewritten, never appended; two pages at most; no history |
 | `outline.md` | the intent, the argument, and the sections table with role, budget and what each must carry; changed only on the author's decision |
-| `claims.md` | one row per claim: id, the claim as the paper may word it, what it rests on, the paper's verdict (and a campaign's own, beside it, for a campaign result) |
+| `claims.md` | one row per claim: id, the claim as the paper may word it, what it rests on, the paper's verdict (and, for a result pinned from an investigation run elsewhere, that investigation's own verdict beside it) |
 | `open-questions.md` | open questions only, each with a recommendation; a resolved one becomes a journal line |
 | `journal.md` | append-only; decisions, by whom and why; no list of work done, which git holds |
 

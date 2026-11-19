@@ -17,7 +17,7 @@ For a paper whose sections are drafted at the same time by fresh contexts (subag
 
 ## Builds
 
-- Each test build is in a fresh copy of `manuscript/`, made outside the workspace for that build, with the section added to the copy's `main.tex`. A reused or in-place copy shows other drafters' edits mid-build.
+- Each test build follows `skills/paper/draft.md`, step 4. A reused or in-place copy shows other drafters' edits mid-build.
 - Before the first drafter starts, the session gives every undrafted row of the outline a placeholder heading with its fixed label and a `\gap{todo}`, replaced by the `\input` when that section is wired in. Otherwise the first section is numbered "1" and every forward reference prints `??`.
 
 ## Order and quality

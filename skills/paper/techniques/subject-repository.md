@@ -22,6 +22,6 @@ For a paper that describes software or an instrument: the repository itself is t
 
 ## Follow the code where a guide disagrees
 
-- Prose follows the code. The disagreement goes on one list for the subject's owner: the subject's own backlog where the owner keeps one, otherwise `paper/subject-notes.md`, named in the workspace `AGENTS.md` either way. Each entry gives the guide's words, the code's behaviour and both locations. So does a quirk that is neither a disagreement nor a hole in the draft, such as a configuration key nothing reads.
+- Prose follows the code. The disagreement goes on one list for the subject's owner: the subject's own backlog only where the author has authorised writing to it (named in the workspace `AGENTS.md`), otherwise `paper/subject-notes.md`. Each entry gives the guide's words, the code's behaviour and both locations. So does a quirk that is neither a disagreement nor a hole in the draft, such as a configuration key nothing reads.
 - It does not go in the paper's open questions, which would bury the author's decisions under the owner's chores. It becomes a `\gap{q}` in the manuscript only when it changes what a sentence says.
 - A disagreement between the code and the **author's** notes is different: it is always a `\gap{q}` (`skills/paper/draft.md`).

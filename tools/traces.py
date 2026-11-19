@@ -32,14 +32,22 @@ and TeX quotes is never read for anchors, and any token that is not clearly an
 anchor is free text. It then checks that no path lies under a `never` root, that
 each path exists at its pin (`git:` roots are read through one `git ls-tree`
 per root, `fixed` roots on disk), that a given line is within the file, that
-each commit resolves, that no trace begins `../`, and that each \\cite key is
-in refs.bib.
+each commit resolves, that no path has a `..` segment, and that each \\cite key
+is in refs.bib. The `never` policy is applied to what a trace names, not to what
+it is written as: each `{a,b}` alternative is expanded first and judged under
+its own longest-matching root, each file a glob matches is judged likewise, and a
+commit anchor `<root>@<hex>` is judged under its root.
 
 The check stamp is one line, `% checked: <YYYY-MM-DD> <who checked>`. `stale`
-compares the file with the version in the commit that last changed that line.
+compares the file with the version in the commit that last changed that line,
+so the stamp line must differ from the one it replaces at every check: a second
+check on the same day adds a round, e.g. `% checked: 2026-11-19 r2 checker
+(Sonnet)`. A file with no traces and no stamp is `no traces` and is not counted.
+A stamp whose line is not yet committed is reported as such and counts as not
+clean, since the section can still change under it; `stale` is a submission gate.
 
-Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale or
-unchecked file (stale); 2 the request or the configuration failed.
+Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
+or uncommitted file (stale); 2 the request, the configuration or git failed.
 """
 
 import argparse
@@ -172,12 +180,12 @@ def anchors(body, roots, keys):
         m = LINE_RE.match(tok)
         if m and out and out[-1][0] == "path":
             out[-1][2].extend(int(n) for n in m.groups() if n)
+        elif (m := COMMIT_RE.match(tok)) and m.group(1) + "/" in roots:
+            out.append(("commit", tok, []))
         elif any(tok.startswith(r) for r in roots):
             m = PATH_RE.match(tok)
             lines = [int(n) for n in (m.group("a"), m.group("b")) if n]
             out.append(("path", m.group("p"), lines))
-        elif (m := COMMIT_RE.match(tok)) and m.group(1) + "/" in roots:
-            out.append(("commit", tok, []))
         elif tok in keys:
             out.append(("key", tok, []))
         elif tok == "search":
@@ -247,18 +255,23 @@ def cmd_list(args):
 
 
 def compare(old, new):
-    """Match (file, line, text) items old against new: (lost, moved)."""
-    by_new = collections.defaultdict(list)
-    for f, l, t in new:
-        by_new[t].append((f, l))
-    lost, moved = [], []
+    """Match (file, line, text) items old against new: (lost, moved).
+
+    Same-file matches come first, so a copy of a text left in place is never
+    reported moved or lost because another copy elsewhere went."""
+    pool = collections.defaultdict(list)
+    for f, l, t in sorted(new):
+        pool[t].append((f, l))
+    rest, lost, moved = [], [], []
     for f, l, t in sorted(old):
-        news = by_new[t]
-        same = next((n for n in news if n[0] == f), None)
+        same = next((n for n in pool[t] if n[0] == f), None)
         if same:
-            news.remove(same)
-        elif news:
-            moved.append((f, l, news.pop(0), t))
+            pool[t].remove(same)
+        else:
+            rest.append((f, l, t))
+    for f, l, t in rest:
+        if pool[t]:
+            moved.append((f, l, pool[t].pop(0), t))
         else:
             lost.append((f, l, t))
     return lost, moved
@@ -344,15 +357,15 @@ class Pins:
         return self._trees[root.name]
 
     def matches(self, root, path):
-        """Files or directories the path (maybe a glob) names at the pin."""
+        """Files or directories the path (maybe a glob) names at the pin, as workspace paths."""
         if root.pin == "fixed":
             return glob.glob(path)
         _, prefix, files, dirs, _ = self._tree(root)
         inner = (prefix + path[len(root.name):]).rstrip("/")
         if "*" in inner or "?" in inner:
             rx = glob_rx(inner)
-            return [n for n in files | dirs if rx.fullmatch(n)]
-        return [inner] if inner in files | dirs else []
+            return [root.name + n[len(prefix):] for n in files | dirs if rx.fullmatch(n)]
+        return [path.rstrip("/")] if inner in files | dirs else []
 
     def length(self, root, match):
         """Number of lines of a matched file, or None for a directory."""
@@ -362,10 +375,11 @@ class Pins:
             with open(match, "rb") as f:
                 data = f.read()
         else:
-            top, _, files, _, rev = self._tree(root)
-            if match not in files:
+            top, prefix, files, _, rev = self._tree(root)
+            inner = prefix + match[len(root.name):]
+            if inner not in files:
                 return None
-            _, out = git("cat-file", "blob", f"{rev}:{match}", cwd=top)
+            _, out = git("cat-file", "blob", f"{rev}:{inner}", cwd=top)
             data = out.encode()
         return data.count(b"\n") + (0 if data.endswith(b"\n") or not data else 1)
 
@@ -385,24 +399,39 @@ def read_keys():
     return set(re.findall(r"^\s*@\w+\s*\{\s*([^,\s]+)\s*,", read(BIB), re.MULTILINE))
 
 
+def root_of(path, roots):
+    """The declared root with the longest name that `path` lies under, or None."""
+    p = path.rstrip("/") + "/"
+    return max((r for r in roots if p.startswith(r.name)), key=lambda r: len(r.name), default=None)
+
+
 def lint_trace(t, roots, keys, pins):
     if t.body.lstrip(LEAD).startswith("../"):
         yield "parent-path", t.body[:70]
     for kind, tok, lines in (found := anchors(t.body, [r.name for r in roots], keys)):
         if kind == "commit":
             root, hex_ = tok.split("@")
-            if not pins.commit_ok(root + "/", hex_):
+            if root_of(root, roots).policy == "never":
+                yield "never-root", tok
+            elif not pins.commit_ok(root + "/", hex_):
                 yield "unknown-commit", tok
         elif kind == "path":
-            root = max((r for r in roots if tok.startswith(r.name)), key=lambda r: len(r.name))
-            if root.policy == "never":
-                yield "never-root", tok
-                continue
             for path in expand_braces(tok):
+                if ".." in path.split("/"):
+                    yield "parent-path", path
+                    continue
+                root = root_of(path, roots)
+                if root.policy == "never":
+                    yield "never-root", path
+                    continue
                 hits = pins.matches(root, path)
                 if not hits:
                     yield "missing-at-pin", path
-                elif lines and len(hits) == 1 and "*" not in path:
+                    continue
+                forbidden = [h for h in hits if root_of(h, roots).policy == "never"]
+                for h in forbidden:
+                    yield "never-root", h
+                if lines and len(hits) == 1 and "*" not in path and not forbidden:
                     n = pins.length(root, hits[0])
                     if n is not None and max(lines) > n:
                         yield "line-beyond-end", f"{path}:{max(lines)} (file has {n} lines)"
@@ -428,20 +457,34 @@ def cmd_lint(args):
 def cmd_stale(args):
     bad = 0
     for path in find_files(args.files):
-        lines = read(path).splitlines()
+        text = read(path)
+        lines = text.splitlines()
         n = next((i for i, l in enumerate(lines, 1) if STAMP_RE.match(l)), None)
         if n is None:
-            print(f"{path}: never checked")
-            bad += 1
+            if parse_traces(path, text):
+                print(f"{path}: never checked")
+                bad += 1
+            else:
+                print(f"{path}: no traces")
             continue
         date = STAMP_RE.match(lines[n - 1]).group(1)
-        rc, out = git("blame", "--porcelain", "-L", f"{n},{n}", "--", path)
-        sha = out.split()[0] if rc == 0 and out else "0" * 40
-        if set(sha) == {"0"}:
+        rc, committed = git("log", "-1", "--format=%H", "--all", "--", path)
+        if rc:
+            raise Error(f"git log failed for {path}: is this a git repository?")
+        sha = out = None
+        if committed.strip():  # ever committed: blame says whether the stamp line itself is
+            rc, out = git("blame", "--porcelain", "-L", f"{n},{n}", "--", path)
+            if rc:
+                raise Error(f"git blame failed for {path}")
+            sha = out.split()[0]
+        if not sha or set(sha) == {"0"}:
             print(f"{path}: checked {date}, not yet committed")
+            bad += 1
             continue
         old_name = re.search(r"^filename (.*)$", out, re.MULTILINE).group(1)
         rc, old = git("show", f"{sha}:{old_name}")
+        if rc:
+            raise Error(f"git show {sha}:{old_name} failed")
         keep = lambda ls: [l for l in ls if not STAMP_RE.match(l)]
         ops = difflib.SequenceMatcher(None, keep(old.splitlines()), keep(lines), autojunk=False)
         k = sum(max(i2 - i1, j2 - j1) for tag, i1, i2, j1, j2 in ops.get_opcodes() if tag != "equal")

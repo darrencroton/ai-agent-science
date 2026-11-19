@@ -16,8 +16,8 @@ Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` i
 | Evidence | Checking each claim has something under it; getting what is missing | `skills/paper/readers/challenger.md`; the `evidence` skill (not yet written: use the challenger brief, and the workspace's own notes on how its findings arrive) |
 | Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` in the workspace |
 | Verify | Having every trace re-opened | `skills/paper/review.md`, `skills/paper/readers/checker.md` |
-| Style and shape | Reading the whole and reshaping it | `skills/paper/readers/stylist.md` (not yet written: run by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
-| Referee | Having it attacked | `skills/paper/readers/referee.md` (not yet written: run by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
+| Style and shape | Reading the whole and reshaping it | `skills/paper/readers/stylist.md` (not yet written: the session briefs it by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
+| Referee | Having it attacked | `skills/paper/readers/referee.md` (not yet written: the session briefs it by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
 | Finish | Submitting | `skills/paper/finish.md` (not yet written: the final-mode build, `tools/traces.py lint` and `stale` clean, and the venue file in `skills/paper/venues/`) |
 | Respond | Answering the referee and co-authors | `skills/paper/revise.md` |
 

@@ -1,6 +1,6 @@
 # Checker brief
 
-A brief for one independent trace check of one section. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the section, on a different model where one is available. The protocol is `skills/paper/review.md`.
+A brief for one independent trace check of one section. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the section. The protocol is `skills/paper/review.md`.
 
 ---
 
@@ -15,10 +15,12 @@ For EVERY `% src:` comment, open the cited source at the cited place and check:
 - **Line anchors.** The line exists and the named symbol owns it. Off by more than about three lines, or the wrong symbol, is a finding.
 - **Heading and quote anchors.** The heading exists and the phrase appears verbatim.
 - **Substance.** Reversed directions or comparisons. "Always", "never", "only", "every", "any" stronger than the source. Counts and lists: recount them, and check a list for completeness. A claim from one context (one driver, one format, one mode) generalised. Every symbol and sign of every equation. Verbatim listings: diff against the file.
-- **Citations.** Is the cited paper the one for this statement? Open it, or its note in `paper/lit/` for what was read, and find the page, table or equation named. A statement about what a paper says must be what it says there.
+- **Citations.** Is the cited paper the one for this statement? Open the paper itself and find the page, table or equation named; the note in `paper/lit/` only helps locate the passage. A statement about what a paper says must be what it says there. A paper that cannot be opened is reported as unchecked, not passed. A web source with no key is the exception: its note (URL, date, quoted text) is the pinned record.
 - **Absence claims** ("nothing in X does Y"): re-run the search yourself and say whether it holds.
 - **Derived values.** A number the paper derives must show its derivation in the trace, or point at a recorded check under `paper/checks/`. Recompute it. A derived value with no derivation is a finding.
 - **Versions.** A recorded measurement presented as a property of the version described, when it was measured on another, is a finding.
+- **Units and conventions.** A value in a unit or convention other than its source's is a finding even when numerically equal (core rule 1, *Copy, do not convert*).
+- **Placement.** Each trace sits immediately above or beside the sentence it supports. A trace that supports a different sentence, and a sentence whose support has no trace, are findings.
 - **What a trace may cite.** A trace that cites the manuscript itself (a `Table`, `Section` or `\ref` of the paper), a note an agent wrote (`paper/ingest/`, a brief, a survey), or a root marked `never` is a finding. `tools/traces.py lint` catches most of these and has run already; note any it missed.
 
 Then sweep for untraced quantities, including quantities in words ("two", "once", "half"), and for load-bearing claims and quantifiers with no trace.

@@ -156,6 +156,16 @@ class TestLint(Workspace):
             self.assertEqual(code, 1)
             self.assertIn(f"never-root  {tok}", out)
 
+    def test_never_policy_is_applied_to_what_is_named(self):
+        for tok, shown in (("code/docs/{dev,public}/plan.md", "never-root  code/docs/dev/plan.md"),
+                           ("code/docs/*/plan.md", "never-root  code/docs/dev/plan.md"),
+                           ("code/docs/dev@0123abcd", "never-root  code/docs/dev@0123abcd"),
+                           ("notes/../manuscript/x.tex", "parent-path  notes/../manuscript/x.tex")):
+            with self.subTest(tok=tok):
+                code, out, _ = self.lint(f"% src: {tok}\n")
+                self.assertEqual(code, 1)
+                self.assertIn(shown, out)
+
     def test_path_absent_at_pin(self):
         # later.c exists in the working tree and at HEAD, but not at the pin v1
         code, out, _ = self.lint("% src: code/src/later.c\n% src: notes/missing.md\n")
@@ -214,6 +224,17 @@ class TestListAndLost(Workspace):
         self.assertIn("gap closed  manuscript/sections/a.tex:4  q: open", out)
         self.assertNotIn("notes/n.md", out)
 
+    def test_copy_left_in_place_is_not_reported_moved(self):
+        self.section("% src: notes/n.md\n", "a.tex")
+        self.section("\n\n% src: notes/n.md\n", "b.tex")
+        self.commit()
+        self.section("Text.\n", "a.tex")  # the copy in a.tex goes; b.tex is untouched
+        code, out, _ = self.run_cmd("lost")
+        self.assertEqual(code, 1)
+        self.assertIn("lost  manuscript/sections/a.tex:1  notes/n.md", out)
+        self.assertIn("1 lost, 0 moved", out)
+        self.assertNotIn("b.tex", out)
+
     def test_nothing_lost_exits_0(self):
         self.section("% src: code/src/a.c:1\n")
         self.commit()
@@ -227,17 +248,28 @@ class TestStale(Workspace):
     def stale(self):
         return self.run_cmd("stale", "manuscript/sections/s.tex")
 
-    def test_never_checked(self):
-        self.section("Text.\n")
+    def test_never_checked_and_no_traces(self):
+        self.section("Text.\n% src: notes/n.md\n")
         code, out, _ = self.stale()
         self.assertEqual(code, 1)
         self.assertIn("never checked", out)
+        self.section("Text, no traces.\n")
+        code, out, _ = self.stale()
+        self.assertEqual((code, out.strip()), (0, "manuscript/sections/s.tex: no traces"))
+
+    def test_git_failure_is_an_error(self):
+        self.section("% checked: 2026-11-19 a checker\nText.\n")
+        self.commit()
+        os.rename(".git", ".git-away")  # no longer a repository
+        code, _, err = self.stale()
+        self.assertEqual(code, 2)
+        self.assertIn("git", err)
 
     def test_stamp_not_yet_committed(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
         code, out, _ = self.stale()  # untracked
         self.assertIn("checked 2026-11-19, not yet committed", out)
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
         self.commit()
         self.section("% checked: 2026-11-20 a checker\nText.\n")  # re-stamped, uncommitted
         self.assertIn("not yet committed", self.stale()[1])
@@ -251,6 +283,13 @@ class TestStale(Workspace):
         code, out, _ = self.stale()
         self.assertEqual(code, 1)
         self.assertIn("STALE: checked 2026-11-19, changed since (2 lines)", out)
+
+    def test_second_check_on_the_same_day_adds_a_round(self):
+        self.section("% checked: 2026-11-19 a checker\nText.\n")
+        self.commit()
+        self.section("% checked: 2026-11-19 r2 a checker\nText, changed.\n")
+        self.commit()
+        self.assertIn("checked 2026-11-19, unchanged", self.stale()[1])
 
     def test_restamping_in_a_new_commit_resets(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")

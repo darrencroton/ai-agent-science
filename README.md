@@ -22,7 +22,7 @@ The mechanism is one comment per sentence in the manuscript source, `% src: <pat
 - **`paper`** (`skills/paper/SKILL.md`) is a map of what a scientist does when writing a paper, with one file per stage. The stages are not in order and none is a gate.
 - **`literature`** (`skills/literature/SKILL.md`) searches the astronomical literature through ADS/SciX: novelty, closest prior work, support or contradiction for one claim, comparison values with their conventions, and provenance. It keeps a notebook and exports BibTeX verbatim.
 
-Not yet written, and each built when its case arrives: `skills/paper/finish.md` (at submission); the stylist and referee briefs (run by hand first, then written from what produced substantive criticism); and the `evidence` skill (how a claim with nothing under it becomes a question with a declared test, and the form in which findings come back from a campaign).
+Not yet written, and each built when its case arrives: `skills/paper/finish.md` (at submission); the stylist and referee briefs (briefed by hand first, then written from what produced substantive criticism); and the `evidence` skill (how a claim with nothing under it becomes a question with a declared test, and the form in which findings come back from a campaign).
 
 ## The tools
 
@@ -34,7 +34,7 @@ A paper also needs `latexmk` and a git installation. No third-party Python packa
 
 ## Installation
 
-Install once, globally. The skills are linked into each harness's skills directory by the agent-home catalogue (`setup.sh` clones this repository and links every directory under `skills/` that holds a `SKILL.md`); `skills/_shared/` is data the skills read and is not linked. The installation root, which holds `skills/`, `skeleton/` and `tools/`, is written once in a workspace's `AGENTS.md`, which is the only instruction file and is harness-agnostic. To develop, edit, commit and push in a separate clone, then bring the installed copy forward with `git pull --ff-only` in it (or re-run `setup.sh` when the catalogue itself changes); never edit the installed copy.
+Install once, globally. Clone this repository, and link each `skills/<name>/` that holds a `SKILL.md` into the harness's skills directory (a catalogue script may do the linking); `skills/_shared/` is data the skills read and is not linked. The installation root, which holds `skills/`, `skeleton/` and `tools/`, is written once in each workspace's `AGENTS.md`, which is the only instruction file and is harness-agnostic. To develop, edit, commit and push in a separate clone, then bring the installed copy forward with `git pull --ff-only` in it; never edit the installed copy.
 
 To begin a paper, ask the agent to start one (the `paper` skill's `start` procedure). It copies the scaffold to a new directory, makes it a git repository, links the sources in, and asks why the work was done and who the paper is for. Commands such as `/paper draft` are shortcuts where a harness offers them; plain conversation works everywhere.
 

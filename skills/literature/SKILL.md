@@ -47,7 +47,7 @@ python3 <install>/tools/ads.py --help
 
 `search`, `refs` and `cites` take `--rows N` (default 20, at most 200), `--start` to page, `--sort` (`'citation_count desc'`, `'date desc'`, `'date asc'`) and `--brief`, which drops the abstracts: use it for any listing, since a `refs` on an ordinary paper is over a hundred records. List brief, choose candidates, then `search 'bibcode:(A OR B OR C)'` for their abstracts. Exit codes: 2 is a failed request or missing configuration (the message says how to set the token: pass that on and stop, rather than searching the web in its place), 3 is `export` returning nothing for at least one bibcode.
 
-The web does not replace ADS for finding papers: `property:refereed` and the citation graph exist nowhere else. But not everything is in ADS (a data portal, a software repository, a numerical-methods paper from outside astronomy). For a work with an arXiv id or a DOI, run `resolve`; where ADS has no record, take the arXiv or DOI export of core rule 2. A source with no identifier at all gets a web note.
+The web does not replace ADS for finding papers: `property:refereed` and the citation graph exist nowhere else. But not everything is in ADS (a data portal, a software repository, a numerical-methods paper from outside astronomy). For a work with an arXiv id or a DOI, run `resolve`; where ADS has no record, take the arXiv or DOI export (*BibTeX and fetching*, below). A source with no identifier at all gets a web note.
 
 ## Query craft
 
@@ -93,7 +93,7 @@ A work with no bibcode carries its identifier in that column (`arXiv:...`, a bar
 
 ## BibTeX and fetching
 
-BibTeX comes from `tools/ads.py export` or the arXiv or DOI export, byte for byte (core rule 2). The hazards are few:
+BibTeX comes from one of three paths, byte for byte (core rule 2): `tools/ads.py export` for anything ADS holds; for an arXiv-only preprint, `curl -sfL 'https://arxiv.org/bibtex/<arxiv id>'`; for anything else with a DOI, `curl -sfLH 'Accept: application/x-bibtex' 'https://doi.org/<doi>'`. A work with none of the three is a `\gap{cite}` until the author supplies one. The hazards are few:
 
 - **Quote the bibcode**, and grep for it with `-F`: `2013ARA&A..51..511K` is a background job in most shells, and without `-F` every `.` is a wildcard.
 - **Never rekey.** An ADS entry is keyed on its bibcode; an arXiv export on something like `wang2023voyager`; a DOI export on `Author_2026`. A `refs.bib` of mixed keys is expected, not a defect to tidy. Test for an entry already present with whatever identifies it (the bibcode, the arXiv id, the DOI).

@@ -31,7 +31,7 @@ The drafter reads its own traces back against the open sources, and only for wha
 
 ## 4. Build and report
 
-Build with the command in `AGENTS.md`, in a scratch copy of `manuscript/` when other drafters are working (`skills/paper/techniques/many-drafters.md`). A draft that compiles with gaps is the target; fix only what this edit broke. Where a fix would mean changing author prose, choosing between two versions of a figure or deciding something scientific, stop and report it.
+Build with the command in `AGENTS.md`, in a fresh scratch copy of `manuscript/` made outside the workspace, with the section's `\input` added to the copy's `main.tex` (the scaffold's `\input` lines are commented out and `main.tex` is the session's, so the real build may omit the section). The session wires the real `main.tex`. A draft that compiles with gaps is the target; fix only what this edit broke. Where a fix would mean changing author prose, choosing between two versions of a figure or deciding something scientific, stop and report it.
 
 Report in under 400 words:
 
