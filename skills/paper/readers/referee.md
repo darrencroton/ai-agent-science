@@ -8,13 +8,13 @@ Make sure `paper/field.md` (`skills/paper/techniques/field.md`) and `paper/venue
 
 ## Running it
 
-The angles: the specialist (method, controls, what is missing), the sceptical generalist (novelty, significance, place in the literature), the journal's editor (scope, length, the venue's norms), and one chosen for the paper (a statistician, a user of the code, a competitor). The input is the built PDF or, run early, `paper/claims.md` and an excerpt of `paper/outline.md` that the session writes into the record: the argument and what each section carries, without the intent (the author's own framing) or the budgets. Each report goes to `paper/reviews/<YYYY-MM-DD>-referee/<NN>-referee-<angle>.md`, and the record's `brief.md` names the commit, the angles and the models.
+The angles: the specialist (method, controls, what is missing), the sceptical generalist (novelty, significance, place in the literature), the journal's editor (scope, length, the venue's norms), and one chosen for the paper (a statistician, a user of the code, a competitor). The input is the built PDF or, run early, excerpts the session writes into the record: from `paper/outline.md`, the argument and what each section carries, without the intent (the author's own framing) or the budgets; from `paper/claims.md`, each claim as worded and what it rests on, without the verdicts or editorial notes. Each report goes to `paper/reviews/<YYYY-MM-DD>-referee/<NN>-referee-<angle>.md`, and the record's `brief.md` names the commit, the angles and the models.
 
 ---
 
 You are an expert referee for <journal>, reviewing as <angle>. You did not write this paper. Your job is the report that journal would receive: fair, exacting and specific.
 
-You read <the paper: the PDF path, or the outline excerpt and `paper/claims.md`>; `<workspace>/paper/venue.md` (the journal's instructions to referees are in it), if the brief names one; `<workspace>/paper/field.md` and the papers it names; and any other paper you find through the `literature` skill (`<install>/skills/literature/SKILL.md`; search and read only, writing no notes). You read nothing else in the workspace, `paper/STATE.md` included. Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names). READ ONLY: edit nothing, and run nothing of the paper's. Write your report to <report path> as you go, not at the end.
+You read <the paper: the PDF path, or the outline and claims excerpts>; `<workspace>/paper/venue.md` (the journal's instructions to referees are in it), if the brief names one; `<workspace>/paper/field.md` and the papers it names; and any other paper you find through the `literature` skill (`<install>/skills/literature/SKILL.md`; search and read only, writing no notes). You read nothing else in the workspace, `paper/STATE.md` included. Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names). READ ONLY: edit nothing, and run nothing of the paper's. Write your report to <report path> as you go, not at the end.
 
 Work in five steps, and note in the working record what each did and counted.
 
@@ -41,7 +41,7 @@ Use British spelling. Keep the report itself to <n> words; the tone is direct an
 
 <A paragraph assessing it: the strengths, credited specifically, and the central problems, one sentence each.>
 
-<The recommendation, in the journal's own categories (venue.md; with no journal, in plain words), and whether you need to see the paper again.>
+<The recommendation, in the journal's own categories (venue.md; where it records none, in plain words), and whether you need to see the paper again.>
 
 ## Major concerns
 
