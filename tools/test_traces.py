@@ -257,6 +257,7 @@ class TestStale(Workspace):
         self.assertIn("never checked", out)
         self.section("Text, no traces.\n")  # a section needs a stamp whatever it holds
         self.assertEqual(self.stale()[0], 1)
+        self.assertIn("never checked", self.run_cmd("stale", "manuscript/main.tex")[1])  # the abstract
         self.write("manuscript/figures/style.tex", "\\tikzset{x/.style={}}\n")
         code, out, _ = self.run_cmd("stale", "manuscript/figures/style.tex")
         self.assertEqual((code, out.strip()), (0, "manuscript/figures/style.tex: no traces"))
@@ -285,12 +286,12 @@ class TestStale(Workspace):
     def test_unchanged_then_stale(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
         self.commit()
+        sha = git(".", "rev-parse", "--short=8", "HEAD")
         code, out, _ = self.stale()
-        self.assertEqual((code, out.strip()), (0, "manuscript/sections/s.tex: checked 2026-11-19, unchanged"))
+        self.assertEqual((code, out.strip()), (0, f"manuscript/sections/s.tex: checked 2026-11-19, unchanged since {sha}"))
         self.section("% checked: 2026-11-19 a checker\nText, changed.\nMore.\n")
         code, out, _ = self.stale()
         self.assertEqual(code, 1)
-        sha = git(".", "rev-parse", "--short=8", "HEAD")
         self.assertIn(f"STALE: checked 2026-11-19, changed since {sha} (2 lines)", out)
 
     def test_second_check_on_the_same_day_adds_a_round(self):

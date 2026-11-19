@@ -44,9 +44,10 @@ compares the file with the version in the commit that last changed that line,
 so the stamp line must differ from the one it replaces at every check: a second
 check on the same day adds a round, e.g. `% checked: 2026-11-19 r2 checker
 (Sonnet)`. A changed file is reported with that commit, the baseline for its
-re-check. A section file needs a stamp whatever it holds; any other file needs
-one only when it holds traces or citations, and is otherwise `no traces` and not
-counted. A stamp whose line is not yet committed is reported as such and counts as not
+re-check, as is an unchanged one (a changed `fixed` source still needs one).
+main.tex and each section file need a stamp whatever they hold; any other file
+needs one only when it holds traces or citations, and is otherwise `no traces`
+and not counted. A stamp whose line is not yet committed is reported as such and counts as not
 clean, since the section can still change under it; `stale` is a submission gate.
 
 Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
@@ -62,8 +63,8 @@ import re
 import subprocess
 import sys
 
-SECTIONS = "manuscript/sections/"
-DEFAULTS = ("manuscript/main.tex", SECTIONS + "*.tex", "manuscript/figures/*.tex")
+MAIN, SECTIONS = "manuscript/main.tex", "manuscript/sections/"
+DEFAULTS = (MAIN, SECTIONS + "*.tex", "manuscript/figures/*.tex")
 BIB = "manuscript/refs.bib"
 SRC_RE = re.compile(r"(?<!\\)%\s*src(?:\s*\(([^)]*)\))?\s*:(.*)$")
 STAMP_RE = re.compile(r"^\s*%\s*checked:\s*(\d{4}-\d{2}-\d{2})")
@@ -450,8 +451,8 @@ def lint_trace(t, roots, keys, pins):
                         yield "never-root", h
                     elif own is not root and not pins.matches(own, h):
                         yield "missing-at-pin", h
-                if lines and len(hits) == 1 and "*" not in path and not forbidden:
-                    n = pins.length(root, hits[0])
+                if lines and len(hits) == 1 and not forbidden:
+                    n = pins.length(root_of(hits[0], roots), hits[0])
                     if n is not None and max(lines) > n:
                         yield "line-beyond-end", f"{path}:{max(lines)} (file has {n} lines)"
     if not found:
@@ -482,8 +483,8 @@ def cmd_stale(args):
         lines = text.splitlines()
         n = next((i for i, l in enumerate(lines, 1) if STAMP_RE.match(l)), None)
         if n is None:
-            section = os.path.normpath(path).startswith(SECTIONS)
-            if section or parse_traces(path, text) or parse_cites(text):
+            p = os.path.normpath(path)
+            if p == MAIN or p.startswith(SECTIONS) or parse_traces(path, text) or parse_cites(text):
                 print(f"{path}: never checked")
                 bad += 1
             else:
@@ -511,7 +512,7 @@ def cmd_stale(args):
             print(f"{path}: STALE: checked {date}, changed since {sha[:8]} ({k} lines)")
             bad += 1
         else:
-            print(f"{path}: checked {date}, unchanged")
+            print(f"{path}: checked {date}, unchanged since {sha[:8]}")
     return 1 if bad else 0
 
 

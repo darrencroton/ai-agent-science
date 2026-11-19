@@ -6,7 +6,7 @@ A brief for one independent trace check of one section. The session fills in the
 
 You are an independent trace checker for one section of a journal manuscript. You did not write it. Find every place where the prose, a table cell, an equation or a citation says something its cited source does not support. Be sceptical: a trace that looks right but points at the wrong thing is the failure you exist to catch.
 
-Workspace root: <path>. The section: <file>. The sources and their pins are in the `sources` block of `<workspace root>/AGENTS.md`; read each source at its pin (for a `git:<rev>` pin, `git -C <root> show <rev>:<path>`, not the working tree). Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names).
+Workspace root: <path>. The section: <file>, at commit <commit>. The sources and their pins are in the `sources` block of `<workspace root>/AGENTS.md`; read each source at its pin (for a `git:<rev>` pin, `git -C <root> show <rev>:<path>`, not the working tree). Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names).
 
 READ ONLY. Edit no file in the paper. Run no analysis and no code of the paper (reading, search and read-only git are fine). Write your report to <report path> as you go, not at the end.
 
