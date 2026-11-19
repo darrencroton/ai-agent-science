@@ -10,7 +10,7 @@ For a paper whose sections are drafted at the same time by fresh contexts (subag
 
 ## The contract
 
-- It is three workspace files and the section's row, not a separate brief: `AGENTS.md` (sources, pins, the build), `paper/outline.md` (the intent and the row), `paper/style.md`, and the claim rows the section carries.
+- It is the workspace's own files and the section's row, not a separate brief: `AGENTS.md` (sources, pins, the build), `paper/outline.md` (the intent and the row), `paper/style.md`, `paper/venue.md` once a journal is chosen, and the claim rows the section carries.
 - A change made while drafters run goes into those files and is sent to each drafter as a message. Every drafter re-reads the files before it reports.
 - Tell each drafter only what is particular to its section: the file it owns and its role; its claim ids; the labels it may refer to in other sections, fixed by the outline's slugs so that a forward reference works before the section exists; terms defined elsewhere, and where; promises other sections expect it to keep; which drafted sections to read for notation.
 - Every fact the session states is a lead until the drafter has confirmed it at source (core rule 1), and the drafter reports any that were wrong.

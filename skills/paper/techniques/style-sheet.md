@@ -16,7 +16,7 @@ Fetch what is not on hand into `paper/lit/pdf/` (gitignored), named by key, so t
 
 ## What to record
 
-For each pattern, a short real quotation with its source key and location. Where the author's own style notes exist they override anything inferred.
+For each pattern, a short real quotation with its source key and location. Where the author's own style notes exist (testimony, in `notes/`) they override anything inferred.
 
 - **Register:** person (we, I, passive), contractions, how technical, how a result is first stated.
 - **Spelling and number conventions:** observed, or stated. Where the venue requires otherwise the venue wins; say so.
@@ -31,4 +31,4 @@ Where the sources disagree (two papers differ in register, a note contradicts wh
 
 ## Testing it
 
-Give a drafter only the sheet and a paragraph's content. If the author must restyle the result, the sheet lacks an example for that kind of paragraph: add one.
+Give a drafter only the sheet and a paragraph's content. If the author must restyle the result, the sheet lacks an example for that kind of paragraph: add one. A passage the author rewrites for its voice during revision is the same signal: it replaces the example of its kind, and the sheet stays within two pages.

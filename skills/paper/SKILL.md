@@ -14,7 +14,7 @@ Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` i
 | Orient | Deciding what the paper is for | `skills/paper/start.md` |
 | Position | Finding its place in the literature and its journal | the `literature` skill; `skills/paper/techniques/field.md`; `skills/paper/techniques/venue.md` |
 | Evidence | Checking each claim has something under it; getting what is missing | `skills/paper/readers/challenger.md`; the `evidence` skill (not yet written: use the challenger brief, and the workspace's own notes on how its findings arrive) |
-| Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` in the workspace |
+| Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` and `paper/venue.md` in the workspace |
 | Verify | Having every trace re-opened | `skills/paper/review.md`, `skills/paper/readers/checker.md` |
 | Style and shape | Reading the whole and reshaping it | `skills/paper/readers/stylist.md` (not yet written: the session briefs it by hand from `skills/paper/review.md`), then `skills/paper/revise.md` |
 | Referee | Having it attacked | `skills/paper/readers/referee.md` (it needs `paper/field.md` and `paper/venue.md`), then `skills/paper/revise.md` |

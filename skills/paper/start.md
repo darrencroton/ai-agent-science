@@ -38,7 +38,7 @@ Write, as proposals for the author to correct:
 - **`paper/open-questions.md`**: everything that could not be worked out, each with a recommendation and a short `Q<n>` id: a number no figure or code produces, two notes that disagree, a figure nothing explains, an unstated convention, a cut with no reason, the paper's evident point with nothing behind it. **Never invent a result to fill a hole**: if the notes do not say what was found, the paper does not yet know.
 - **A first journal entry** recording the decisions made so far.
 
-Build the reference files (core, *The workspace*) as each is needed. Once the field and genre are clear, `skills/paper/techniques/field.md` writes `paper/field.md`; the form its papers take can change the outline, so it is worth running early. Ask once which journal; "not decided yet" is an answer; `skills/paper/techniques/venue.md` finds one and writes `paper/venue.md`. Where the author wants a past paper's voice, `skills/paper/techniques/style-sheet.md` builds `paper/style.md` before anything is drafted.
+Build the reference files (core, *The workspace*) as each is needed. Once the field and genre are clear, `skills/paper/techniques/field.md` writes `paper/field.md`; the form its papers take can change the outline, so it is worth running early. Ask once which journal; "not decided yet" is an answer; `skills/paper/techniques/venue.md` finds one and writes `paper/venue.md`. Ask once whether the paper should sound like the author's own work; if so, `skills/paper/techniques/style-sheet.md` builds `paper/style.md` before anything is drafted.
 
 ## 5. What the author sees
 

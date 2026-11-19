@@ -21,10 +21,10 @@ The `paper` skill is a map of what a scientist does, not a pipeline: the stages 
 
 | Stage | What happens | Read | Status |
 |---|---|---|---|
-| Orient | The workspace is made, the material is read, the author is asked why the work was done, and an argument is proposed for the author to correct | `start.md` | built |
+| Orient | The workspace is made, the material is read, the author is asked why the work was done, and an argument is proposed for the author to correct; the author's voice is distilled from their past papers | `start.md`, `techniques/style-sheet.md` | built |
 | Position | The paper's place in the literature and its journal | the `literature` skill, `techniques/field.md`, `techniques/venue.md` | built |
 | Evidence | Each claim is tested against what it rests on, and what is missing is found | `readers/challenger.md` | the challenger is built; the `evidence` skill is planned |
-| Draft | One section at a time, from sources opened in that session, with a paragraph plan first and a trace or gap beside each checkable sentence | `draft.md`, `sections.md`, the workspace's `paper/style.md` | built |
+| Draft | One section at a time, from sources opened in that session, with a paragraph plan first and a trace or gap beside each checkable sentence | `draft.md`, `sections.md`, the workspace's `paper/style.md` and `paper/venue.md` | built |
 | Verify | A fresh context re-opens every trace and compares it with the sentence | `review.md`, `readers/checker.md` | built |
 | Style and shape | The whole is read as an editor would and reshaped | the stylist brief | planned; briefed by hand from `review.md` until then |
 | Referee | The paper is attacked as a journal's referee would, one fresh context per angle, against the field's accepted practice and the journal's referee guidelines | `readers/referee.md` | built |
@@ -52,7 +52,7 @@ The readers are briefs handed to a fresh context that did not write the text. Th
 
 - `AGENTS.md` says how we work here, names the installation root, sets the commit policy, and holds the `sources` block: which roots the paper may cite, at which version, and which it may not.
 - `paper/outline.md` holds the intent in the author's words, the argument, and each section's role, budget and what it must carry.
-- `paper/style.md` holds the register, notation and defined terms.
+- `paper/style.md` holds the author's voice, distilled from their past papers by `techniques/style-sheet.md`: register, notation, defined terms and verbatim exemplar paragraphs, which the stylist also reads against.
 
 Five memory files keep apart what is true today (`STATE.md`, rewritten each session), what the paper argues (`outline.md`), what each claim rests on (`claims.md`), what the author must decide (`open-questions.md`) and what was decided and why (`journal.md`, append-only). Three reference files, `style.md`, `venue.md` and `field.md`, are each built once at first need by a technique, so that they are current for this paper, and are never a source. Each milestone review leaves a record in `paper/reviews/`.
 
