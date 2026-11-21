@@ -20,7 +20,7 @@ Once a journal is chosen, write `paper/venue.md` (agent-written, never cited). I
 - its instructions to referees: the criteria referees are asked to judge, the report form, the recommendation categories, and its rules for referees (confidentiality, use of AI), each quoted with its URL and date;
 - after the switch below, the template and the date fetched, each preamble fix, the bibliography style's fix, characters the class cannot print, the class's baseline warnings, the rules for tables, listings and citations, and greps that check conformance.
 
-Instructions to referees missing from an existing file are fetched before the referee's first run. It is fetched again when the venue changes, and checked for drift before submission. Record the switch in `paper/STATE.md` and the journal as for any decision.
+Its contents are fetched again when the venue changes, and checked for drift before submission. Record the switch in `paper/STATE.md` and the journal as for any decision.
 
 ## Switching to the journal's class
 

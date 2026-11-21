@@ -22,6 +22,7 @@ For each pattern, a short real quotation with its source key and location. Where
 - **Spelling and number conventions:** observed, or stated. Where the venue requires otherwise the venue wins; say so.
 - **Tense,** by section role.
 - **Sentence and paragraph habits:** typical length; whether a paragraph opens with its claim or builds up to it; where a caveat sits relative to the claim it qualifies; how confidently a result is stated.
+- **How the author moves between ideas:** how a paper and a section open, how the prose turns from one idea to the next, how a section and the paper close. The stylist reads for this.
 - **Notation rules:** symbols, units, scaling conventions, macros, how a quantity is named at first use.
 - **Defined terms:** each term the paper uses, and the one place it is defined.
 - **To avoid:** the habits of an agent's default prose that the author does not use, and the author's own stated dislikes.

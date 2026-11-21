@@ -4,21 +4,13 @@ The protocol every reader follows, whichever brief it is given: how a fresh cont
 
 ## The protocol
 
-1. **A fresh context that did not write the text** (core rule 3): a subagent, a second session, or another harness. It is never the drafter and never the session that owns the paper.
+1. **A fresh context that did not write the text** (core rule 3). It is never the drafter and never the session that owns the paper. A reader launched in another harness is confirmed running before the session moves on: a tool can fail at once and say nothing.
 2. **Read-only.** A reader edits no file of the paper and runs no code (reading, search and read-only git are fine). It writes one thing: its report.
-3. **It reads only what its brief allows, and reads committed text.** The session commits the text the reader reads, or the PDF is built from (under the workspace's commit policy), and names that commit in the brief, so that `skills/paper/revise.md` can measure every later change against it. The one exception is a seeded test's copy in `.scratch/` (below), which is never revised.
-
-   | Reader | May read |
-   |---|---|
-   | Checker | the section, the sources its traces name, `refs.bib`, the papers cited |
-   | Challenger | the claims as worded and the sources they rest on |
-   | Stylist | the built PDF, `paper/outline.md`, `paper/style.md`, `paper/field.md`, `paper/lit/` and the author's notes |
-   | Referee | the PDF (or, run early, the session's excerpts of the outline's argument and sections and of the claims as worded with what they rest on), `paper/venue.md`, `paper/field.md` and the literature; nothing else from `paper/` |
-
+3. **It reads the core, then only what its brief allows, and reads committed text.** Each brief carries its own list; the stylist's is its *Modes* table. The session commits the text the reader reads, or the PDF is built from (under the workspace's commit policy), and names that commit in the brief, so that `skills/paper/revise.md` can measure every later change against it. The exceptions are a paragraph plan or an outline read by the stylist, given as a named file that is not changed while it is read, and a seeded test's copy in `.scratch/` (below), which is never revised.
 4. **It writes its report to disk as it goes**, to the path the session gives, so that a reader that runs out of room has still reported. A report held until the end is lost with the reader.
 5. **The report is numbered points.** Each has a location, the claim or sentence, the evidence (what the source says, opened and quoted), and the proposed change. Fewer, well-evidenced points beat many weak ones. The session states a length limit in the brief and the reader keeps to it.
 6. **`tools/traces.py lint` runs first**, by the session, and its findings are fixed or handed over, so the reader's effort goes on meaning and not on mechanics.
-7. **At a milestone** (the first complete run of sections, before the author's read, before submission): a different model from the writer's where one is available, and readers in parallel. Which model takes which seat is written in the workspace `AGENTS.md`.
+7. **At a milestone** (the first complete run of sections, before the author's read, before submission): readers in parallel. Which model takes which seat is written in the workspace `AGENTS.md`. At a milestone the author may also draw an audit sheet, `tools/traces.py sample <n>`: traces chosen by the tool, not the agent, to read beside their sources.
 8. **The record.** A milestone review, or input from outside the session (a co-author, a journal), leaves `paper/reviews/<YYYY-MM-DD>-<slug>/` holding `brief.md`, one report per reader (`<NN>-<reader>.md`) and `dispositions.md`. A routine check of one section leaves one journal line with its count of findings.
 
 ## The readers
@@ -27,16 +19,12 @@ The protocol every reader follows, whichever brief it is given: how a fresh cont
 |---|---|---|
 | Checker | `skills/paper/readers/checker.md` | does each sentence say what its source says |
 | Challenger | `skills/paper/readers/challenger.md` | does the claim as worded follow from its test |
-| Stylist | below | is the paper the shape its author intends |
+| Stylist | `skills/paper/readers/stylist.md` | how the paper reads, from its story to its sentences |
 | Referee | `skills/paper/readers/referee.md` | would a journal accept it, and what would it object to |
-
-**The stylist** (no brief file yet: the session writes the reader's brief by hand from this paragraph and gives it to a fresh context, never reading as the stylist itself) reads the built PDF as an editor would, against the outline's intent, the section budgets, `paper/style.md` and the form of its field's papers (`paper/field.md`). It starts with a reverse outline: one line per paragraph, giving its point and its length, so that the paper's shape can be read in two pages. It then reports, in at most two pages, what to cut, merge, move and rebalance; where the text has drifted from the intent; what is said twice; what the author's notes hold that the draft lacks; and where the voice slips. It changes nothing, and its report is advice to the author, not an instruction to the agent. Run it at the first complete draft, before the author's own read.
-
-Once a hand run has produced substantive criticism, write the stylist's brief from what worked.
 
 ## Testing a reader brief
 
-Run this whenever a reader brief or the model changes, in a live workspace, on its own text.
+Run this whenever the checker's or the challenger's brief, or the model it runs on, changes, in a live workspace, on its own text.
 
 1. Copy a checked section to `.scratch/` (never to the manuscript).
 2. Plant five errors, one of each kind: a changed number; a strengthened quantifier ("some" to "all"); a trace moved to the wrong line; a converted unit; a swapped citation. Keep a list of where each is.

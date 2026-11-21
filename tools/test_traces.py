@@ -252,6 +252,24 @@ class TestListAndLost(Workspace):
         self.assertIn("0 lost, 0 moved", out)
 
 
+class TestSample(Workspace):
+    def test_sample_is_reproducible_and_shows_the_tex(self):
+        self.section("% src: code/src/a.c:1\nFirst sentence.\n% src: notes/n.md\nSecond.\n% src: code/src/a.c:2\nThird.\n")
+        code, out, _ = self.run_cmd("sample", "2", "--seed", "7")
+        self.assertEqual(code, 0)
+        self.assertEqual(out.strip().splitlines()[-1], "2 of 3 traces, seed 7")
+        self.assertEqual(out, self.run_cmd("sample", "2", "--seed", "7")[1])
+        first = out.splitlines()[0]
+        line = int(first.split()[1].split(":")[1])
+        self.assertIn(f"{line + 1:>5}  ", out)
+
+    def test_sample_more_than_there_are_and_bad_n(self):
+        self.section("% src: notes/n.md\nOnly.\n")
+        _, out, _ = self.run_cmd("sample", "5", "--seed", "1")
+        self.assertTrue(out.strip().endswith("1 of 1 traces, seed 1"))
+        self.assertEqual(self.run_cmd("sample", "0")[0], 2)
+
+
 class TestStale(Workspace):
     def stale(self):
         return self.run_cmd("stale", "manuscript/sections/s.tex")

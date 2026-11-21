@@ -4,13 +4,11 @@ For a paper whose sections are drafted at the same time by fresh contexts (subag
 
 ## Who writes what
 
-- **One writer per file.** A drafter writes its one section file and nothing else.
-- The session alone writes `main.tex`, `refs.bib`, `paper/open-questions.md`, `paper/STATE.md` and `paper/journal.md`, and does the wiring, the bookkeeping and the commit. Nothing a drafter does needs a shared file to change.
-- Questions are reported without ids. The session numbers them (`Q<n>`), merges the ones that overlap and writes `paper/open-questions.md`. Keys to export are collected the same way and exported once, verbatim (core rule 2).
+Each drafter follows `skills/paper/draft.md`, which says what it writes and reports; the session numbers and merges the questions (`Q<n>`) and exports the keys once (core rule 2).
 
 ## The contract
 
-- It is the workspace's own files and the section's row, not a separate brief: `AGENTS.md` (sources, pins, the build), `paper/outline.md` (the intent and the row), `paper/style.md`, `paper/venue.md` once a journal is chosen, and the claim rows the section carries.
+- Drafters get no separate brief: they read the workspace's own files (`skills/paper/draft.md`, *Read first*).
 - A change made while drafters run goes into those files and is sent to each drafter as a message. Every drafter re-reads the files before it reports.
 - Tell each drafter only what is particular to its section: the file it owns and its role; its claim ids; the labels it may refer to in other sections, fixed by the outline's slugs so that a forward reference works before the section exists; terms defined elsewhere, and where; promises other sections expect it to keep; which drafted sections to read for notation.
 - Every fact the session states is a lead until the drafter has confirmed it at source (core rule 1), and the drafter reports any that were wrong.
@@ -22,6 +20,6 @@ For a paper whose sections are drafted at the same time by fresh contexts (subag
 
 ## Order and quality
 
-- Ask each drafter for its paragraph plan first (`skills/paper/draft.md`, step 1); accept it or send it back, then let it write. An overrun is reported, not trimmed in the drafter.
+- Ask each drafter for its paragraph plan first (`skills/paper/draft.md`, step 1); the session takes it through the stylist's plan mode, accepts it or sends it back, then lets the drafter write.
 - Match the model to the section: a dense section written from code gets a stronger model than a short one written from notes. The session reviews every draft either way.
-- Each section then goes to an independent check (`skills/paper/review.md`); the session confirms each finding at source, wires the sections in order, builds the whole, and only then calls a section drafted.
+- The session wires the sections in order, builds the whole, and only then calls a section drafted.

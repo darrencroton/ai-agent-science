@@ -18,11 +18,12 @@ What the paper may cite, at what version, and what it may not. `python3 <install
 # code/               git:v1.0   cite    # the repository the paper describes, at its release
 # code/docs/plans/    -          never   # forward plans are not delivered work
 # data/               fixed      cite    # files the paper reads as they are
+# campaign-findings/  fixed      cite    # pinned copies of investigations' findings (skills/paper/evidence.md)
 notes/              fixed      cite    # the author's testimony
 paper/lit/          fixed      cite    # a note records a reading; a trace names the location in the paper
 paper/checks/       fixed      cite    # the agent's own read-only checks
 paper/lit/reports/  -          never   # agent-written answers to literature questions
-paper/               -          never   # agent-written memory and indexes, never a source
+paper/              -          never   # agent-written memory and indexes, never a source
 manuscript/         -          never   # the draft is never a source
 ```
 
@@ -36,7 +37,7 @@ _This paper's conventions as they are decided: file names, labels, units, notati
 
 ## How we work here
 
-_Who drafts and who checks, and on which model; the panel's membership; anything this paper teaches. A standing instruction from the author goes here, with one journal line quoting it._
+_Who drafts and who checks, and on which model (the stylist on the strongest available); the panel's membership; anything this paper teaches. A standing instruction from the author goes here, with one journal line quoting it._
 
 ## Build
 

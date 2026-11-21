@@ -1,6 +1,6 @@
 # The field
 
-How to build `paper/field.md`, what papers of this kind contain and what the field accepts, so that the outline is set, and the paper shaped and refereed, against that and not against a generic ideal. Read it at start, once the paper's field and genre (a methods paper, a survey, a software paper) are clear, since what it finds can change the outline; or at the first need of the stylist or the referee.
+How to build `paper/field.md`, what papers of this kind contain and what the field accepts, so that the outline is set, and the paper shaped and refereed, against that and not against a generic ideal. Read it at start, once the paper's field and genre (a methods paper, a survey, a software paper) are clear; or at the first need of the stylist or the referee.
 
 ## Reading the field
 
@@ -21,7 +21,7 @@ Then the norms, each with the papers that show it and where:
 
 Where practice varies, give a range and not a norm; a norm seen in one paper only is marked as such.
 
-Two or three papers of the same genre are the exemplars: they give the stylist its standard (`skills/paper/review.md`) and are the first papers of the referee's reading. Each gets a row in `paper/lit/index.md` saying what it is an analogue of.
+Two or three papers of the same genre are the exemplars: they give the stylist its standard of narrative (`skills/paper/readers/stylist.md`) and are the first papers of the referee's reading. For each, record its story line, quoted with locations: what its first paragraph and the introduction's last paragraph do, the order in which it introduces its ideas and why that order serves the reader, how its sections hand on, and how it closes. Each gets a row in `paper/lit/index.md` saying what it is an analogue of.
 
 ## Returning it
 

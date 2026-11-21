@@ -2,13 +2,14 @@
 """Trace inventory and lint for a paper workspace. Python standard library only.
 
 Every checkable sentence of the paper carries a `% src:` comment naming its
-primary source (a "trace") or a `\\gap{kind}{note}` marker. Four commands read
+primary source (a "trace") or a `\\gap{kind}{note}` marker. Five commands read
 them, from the workspace root (the working directory):
 
     traces.py list  [--rev REV] [files...]   every trace and gap, one per line
     traces.py lost  [--rev REV] [files...]   traces and gaps at REV missing now
     traces.py lint  [files...]               anchors, pins, paths, lines, cites
     traces.py stale [files...]               sections changed since their check stamp
+    traces.py sample N [--seed S] [files...] N traces drawn at random, with their TeX
 
 Files default to manuscript/main.tex, manuscript/sections/*.tex and
 manuscript/figures/*.tex; a directory stands for its *.tex files (not its
@@ -58,6 +59,7 @@ or uncommitted file (stale); 2 the request, the configuration or git failed.
 
 import argparse
 import collections
+import random
 import difflib
 import fnmatch
 import glob
@@ -215,10 +217,10 @@ def find_files(specs, rev=None, strict=True):
     names = tree_at(rev) if rev else None
     out = []
     for spec in specs or DEFAULTS:
-        spec = spec.rstrip("/") if specs else spec
+        spec = spec.rstrip("/")
         if rev:
-            pats = [spec] if spec.endswith(".tex") else [spec + "/*.tex"]
-            hits = [n for n in names if any(re.fullmatch(glob_rx(p).pattern, n) for p in pats)]
+            rx = glob_rx(spec if spec.endswith(".tex") else spec + "/*.tex")
+            hits = [n for n in names if rx.fullmatch(n)]
         else:
             hits = sorted(glob.glob(spec + "/*.tex") if os.path.isdir(spec) else glob.glob(spec))
         if specs and not hits and strict:
@@ -290,9 +292,10 @@ def cmd_lost(args):
     old, new = load(args.files, rev, strict=False), load(args.files, None, strict=False)
     if not old:
         raise Error(f"no .tex files at revision {rev}")
-    items = lambda d, i: [(t.file, t.line, t.text) if i == 0 else t for f, v in d.items() for t in v[i]]
-    t_lost, t_moved = compare(items(old, 0), items(new, 0))
-    g_lost, g_moved = compare(items(old, 1), items(new, 1))
+    traces = lambda d: [(t.file, t.line, t.text) for v in d.values() for t in v[0]]
+    gaps = lambda d: [g for v in d.values() for g in v[1]]
+    t_lost, t_moved = compare(traces(old), traces(new))
+    g_lost, g_moved = compare(gaps(old), gaps(new))
     short = lambda s: s if len(s) <= 140 else s[:137] + "..."
     for f, l, t in t_lost:
         print(f"lost  {f}:{l}  {short(t)}")
@@ -328,7 +331,7 @@ def parse_sources(path="AGENTS.md"):
         f = line.split()
         ok = (len(f) == 3 and f[0].endswith("/") and f[2] in ("cite", "never")
               and (f[1] in ("fixed", "-") or re.fullmatch(r"git:\S+", f[1]))
-              and (f[1] != "-" or f[2] == "never") and (f[2] != "cite" or f[1] != "-"))
+              and (f[1] != "-" or f[2] == "never"))
         if not ok:
             raise Error(f"{path}:{start + i}: cannot parse sources line: {raw.strip()!r}")
         roots.append(Root(*f))
@@ -445,35 +448,30 @@ def lint_trace(t, roots, keys, pins):
                 yield "unknown-commit", tok
         elif kind == "path":
             for path in expand_braces(tok):
+                root = root_of(path, roots)
                 if ".." in path.split("/"):
                     yield "parent-path", path
-                    continue
-                if not plain(path):
+                elif not plain(path):
                     yield "unplain-path", path
-                    continue
-                root = root_of(path, roots)
-                if root.policy == "never":
+                elif root.policy == "never":
                     yield "never-root", path
-                    continue
-                if spans_roots(path, root, roots):
+                elif spans_roots(path, root, roots):
                     yield "glob-spans-roots", path
-                    continue
-                hits = pins.matches(root, path)
-                if not hits:
+                elif not (hits := pins.matches(root, path)):
                     yield "missing-at-pin", path
-                    continue
-                forbidden = []
-                for h in hits:
-                    own = root_of(h, roots)
-                    if own.policy == "never":
-                        forbidden.append(h)
-                        yield "never-root", h
-                    elif own is not root and not pins.matches(own, h):
-                        yield "missing-at-pin", h
-                if lines and len(hits) == 1 and not forbidden:
-                    n = pins.length(root_of(hits[0], roots), hits[0])
-                    if n is not None and max(lines) > n:
-                        yield "line-beyond-end", f"{path}:{max(lines)} (file has {n} lines)"
+                else:
+                    forbidden = False
+                    for h in hits:
+                        own = root_of(h, roots)
+                        if own.policy == "never":
+                            forbidden = True
+                            yield "never-root", h
+                        elif own is not root and not pins.matches(own, h):
+                            yield "missing-at-pin", h
+                    if lines and len(hits) == 1 and not forbidden:
+                        n = pins.length(root_of(hits[0], roots), hits[0])
+                        if n is not None and max(lines) > n:
+                            yield "line-beyond-end", f"{path}:{max(lines)} (file has {n} lines)"
     if not found:
         yield "no-anchor", t.body[:70]
 
@@ -535,6 +533,28 @@ def cmd_stale(args):
     return 1 if bad else 0
 
 
+# ---------------------------------------------------------------- sample
+
+def cmd_sample(args):
+    """An audit sheet: traces chosen by the tool, not the agent, each with the
+    TeX it stands in (its own lines and the next few), so that the author can
+    read each beside its source. The seed is printed so that a sheet can be
+    drawn again."""
+    if args.n < 1:
+        raise Error("N must be at least 1")
+    data = load(args.files)
+    pool = [t for traces_, _, _ in data.values() for t in traces_]
+    seed = args.seed if args.seed is not None else random.SystemRandom().randrange(10**6)
+    chosen = sorted(random.Random(seed).sample(pool, min(args.n, len(pool))))
+    lines = {path: read(path).splitlines() for path in {t.file for t in chosen}}
+    for k, t in enumerate(chosen, 1):
+        print(f"[{k}] {t.file}:{t.line}  {t.text}")
+        for i in range(t.line - 1, min(t.line + 4, len(lines[t.file]))):
+            print(f"    {i + 1:>5}  {lines[t.file][i]}")
+    print(f"{len(chosen)} of {len(pool)} traces, seed {seed}")
+    return 0
+
+
 # ---------------------------------------------------------------- main
 
 def main(argv=None):
@@ -548,6 +568,11 @@ def main(argv=None):
         if rev:
             p.add_argument("--rev", help="git revision of the workspace to read")
         p.add_argument("files", nargs="*")
+    p = sub.add_parser("sample")
+    p.set_defaults(fn=cmd_sample)
+    p.add_argument("n", type=int, help="how many traces to draw")
+    p.add_argument("--seed", type=int, help="draw the same sheet again")
+    p.add_argument("files", nargs="*")
     args = ap.parse_args(argv)
     try:
         return args.fn(args)

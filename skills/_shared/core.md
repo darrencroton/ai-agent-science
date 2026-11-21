@@ -6,7 +6,7 @@ The rules every session and every subagent works under, whatever the task. Read 
 
 1. **Trace or gap.** Every checkable statement carries a trace that names a primary source precisely enough to open in one step, or it is a `\gap{kind}{note}`. There is no third option. *Checkable* means a number, unit, date or count; a named method; a comparison; an absence ("no test covers..."); a quantifier ("every", "only", "first"); and anything said about what another paper says. It applies in the body, a caption, a table and a figure. Connective and qualitative prose carries nothing. Under this rule:
    - **Primary sources only.** Never the manuscript itself, a note an agent wrote, a brief, a survey or memory. The author's recollection is a claim like any other; the author's dated testimony is a source where nothing else can be.
-   - **Copy, do not convert.** A value is written with the unit and convention its source uses (units and h-scalings, IMF, cosmology, aperture). A value read off a figure is an estimate and is labelled as one.
+   - **Copy, do not convert.** A value is written with the unit and convention its source uses (units and h-scalings, IMF, cosmology, aperture). Typesetting a unit is notation, not conversion; changing its value, scaling or convention is conversion. A value read off a figure is an estimate and is labelled as one.
    - **Derive in the open.** A number the paper derives (a percentage, a ratio) carries its derivation: the arithmetic in the trace, or a recorded check (rule 6).
    - **Pin what moves.** A source that can change is read at a version the workspace records, and the trace is written from that version. A measurement made on an earlier version is quoted with that version.
 2. **References are exported, never composed.** BibTeX comes from an authority, byte for byte (`tools/ads.py export`, or the arXiv or DOI export), never rekeyed and never hand-edited; a record that will not render is fixed in the preamble. With no export, the citation is a `\gap{cite}`. A paper is cited only for what the agent has opened and read there.
@@ -15,7 +15,7 @@ The rules every session and every subagent works under, whatever the task. Read 
 5. **The author owns the argument and their prose.** Propose, do not apply. Edit in place; never regenerate text the author wrote without showing what would be replaced and being told to go ahead. Ask with a recommendation, so that one reply can settle many questions. Act on a recommendation without an answer only where the author has delegated that kind of decision, and mark the result provisional. "Look into" is not "do": restate what is authorised before a round of changes.
 6. **Read, do not run, with one exception.** The agent never runs the author's notes and analysis or the code the paper is about, and modifies them only where the author has authorised a named change: a run would make a new result nobody has reviewed. A number that exists only as the output of such a run is a `\gap{number}` that names the command that would produce it. The exception is the agent's own small read-only script over files already pinned in the workspace (a count, a ratio, a recomputation of a reported verdict). It is kept under `paper/checks/<slug>/` with its script, command and output; it is checked independently like any other trace; and a trace may then point at it. A check derives from sources and never adds a fact they do not hold.
 7. **Shorter, and never by silent omission.** Every section has a budget in `paper/outline.md`, and a report or a question is as long as its decision needs. What the outline says a section must carry is never dropped to meet a budget: where the two conflict, the conflict goes to the author before the prose is written. A cut keeps every traced fact or names it as dropped.
-8. **Memory.** A session reads `paper/STATE.md` first; a reader reads only what its brief allows. The argument lives in `paper/outline.md` only. End every session by recording (below). Nothing the author owns is moved to tidy the layout.
+8. **Memory.** A session starts and ends as below; a reader reads only what its brief allows. The argument lives in `paper/outline.md` only. Nothing the author owns is moved to tidy the layout.
 
 ## Trace forms
 
@@ -29,7 +29,7 @@ A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports
 | A paper | its `refs.bib` key and the page, equation, table or figure: `2021MNRAS.506.4210I Table 1` |
 | An absence or a search | `search <command> (<date>, <version>) -> <result>` |
 | A count | the file and how it was counted, with the items nameable: `code/run.cfg (grep -c '^model_' -> 64)` |
-| A pinned copy | a path inside it: `findings/<id>/findings.md "claim C3"` |
+| A pinned copy | a path inside it: `campaign-findings/<id>/findings.md "claim C3"` |
 | The author's testimony | `notes/<date>-<slug>.md` with the quoted words |
 
 ## Gap kinds
@@ -51,16 +51,16 @@ The workspace is its own git repository and the working directory of every sessi
 | File under `paper/` | Holds |
 |---|---|
 | `STATE.md` | what is true today; rewritten, never appended; two pages at most; no history |
-| `outline.md` | the intent, the argument, and the sections table with role, budget and what each must carry; changed only on the author's decision |
+| `outline.md` | the intent, the narrative, the argument, and the sections table with role, budget, what each must carry and its hand-off; changed only on the author's decision |
 | `claims.md` | one row per claim: id, the claim as the paper may word it, what it rests on, the paper's verdict (and, for a result pinned from an investigation run elsewhere, that investigation's own verdict beside it) |
 | `open-questions.md` | open questions only, each with a recommendation; a resolved one becomes a journal line |
-| `journal.md` | append-only; decisions, by whom and why; no list of work done, which git holds |
+| `journal.md` | append-only; one line per decision, by whom and why, pointing to the file or record that holds any detail; no list of work done, which git holds |
 
 Also three reference files, each built once at first need by its technique in `skills/paper/techniques/`, kept current, and never a source: `style.md` (the paper's style sheet, two pages), `venue.md` (the journal: its policies, its class and its instructions to referees) and `field.md` (what papers of this kind contain and what the field accepts). And `lit/` (the literature notebook), `ingest/` (agent-written indexes: never a source), `checks/` (rule 6) and `reviews/` (one directory per milestone review).
 
 ## The author's words
 
-Sort what the author says by what will rest on it. **Testimony** (why the work was done; a fact only the author knows): verbatim, dated, to a new `notes/<date>-<slug>.md`, never edited; a trace may point at it. **Direction** (a decision about the paper): into the live file it changes, with one journal line quoting the words. **Standing instruction** (how the work is run): into `AGENTS.md`, with one journal line quoting it. **Conversation**: not kept. In doubt, classify upward. The closing message of a session lists, one line each, what it recorded from the author.
+Sort what the author says by what will rest on it. **Testimony** (why the work was done; a fact only the author knows): verbatim, dated, to a new `notes/<date>-<slug>.md`, never edited; a trace may point at it. A note may open with the question it answers, quoted and marked as the agent's; nothing else in it is the agent's. **Direction** (a decision about the paper): into the live file it changes, with one journal line quoting the words. **Standing instruction** (how the work is run): into `AGENTS.md`, with one journal line quoting it. **Conversation**: not kept. In doubt, classify upward. The closing message of a session lists, one line each, what it recorded from the author.
 
 ## Start and end of a session
 
