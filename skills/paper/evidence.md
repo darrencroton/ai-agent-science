@@ -23,6 +23,8 @@ An investigation returns a findings report whose last section lists every file i
 5. Add the rows to `paper/claims.md` with both verdicts, the investigation's and the paper's, and write the long reading in `paper/ingest/<id>.md`, which opens with the dossier's head, the code's commit and the date read, and closes with what the investigation did not test. The *Checked by* cell names who checked the paper's verdict and against what. The challenger's `as worded` is *supportable*.
 6. Bring the author the results, with a recommendation of which the paper uses.
 
+An investigation may already have run the checker on its findings and the referee on its headline result (`skills/paper/review.md`, *Outside a paper workspace*). That surfaces problems earlier; the paper still checks each verdict against its receipts.
+
 ## Before a results section
 
 An inventory, before the paragraph plan: for each claim the section must carry, open what it rests on now and ask whether the wording still holds; the challenger reads any row no independent reader has. Corrections go into `paper/claims.md` first, because the drafter is bound to the rows.

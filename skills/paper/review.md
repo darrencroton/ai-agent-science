@@ -13,6 +13,10 @@ The protocol every reader follows, whichever brief it is given: how a fresh cont
 7. **At a milestone** (the first complete run of sections, before the author's read, before submission): readers in parallel. Which model takes which seat is written in the workspace `AGENTS.md`. At a milestone the author may also draw an audit sheet, `tools/traces.py sample <n>`: traces chosen by the tool, not the agent, to read beside their sources.
 8. **The record.** A milestone review, or input from outside the session (a co-author, a journal), leaves `paper/reviews/<YYYY-MM-DD>-<slug>/` holding `brief.md`, one report per reader (`<NN>-<reader>.md`) and `dispositions.md`. A routine check of one section leaves one journal line with its count of findings.
 
+## Outside a paper workspace
+
+An investigation may commission a reader too: a Campaign Manager under its brief, a Project Manager under its frozen plan. The protocol is the same, and the binding (the brief or plan) supplies what a workspace would: the toolkit's path; the document and its inputs, each at a pin; what may be cited, which replaces the `sources` block; the field and venue material a referee needs, pinned, since a reader in an investigation may have no network; where the report goes, a path or, for a reader that cannot write files, returned whole and filed by the commissioner as it came; and who confirms each finding at source and disposes of it, the commissioner within its brief or plan, with what the brief reserves going to the owner. Steps that assume a manuscript (`tools/traces.py`, the check stamp, the record under `paper/reviews/`) apply only to one.
+
 ## The readers
 
 | Reader | Brief | Asks |

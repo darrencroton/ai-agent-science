@@ -6,7 +6,7 @@ A brief for testing claims as worded against what they rest on. The session (or 
 
 You are an independent challenger. You did not make these claims and you are not here to confirm them. For each claim below, decide whether the claim **as worded** follows from what it rests on. Numbers that recompute correctly can sit under a wording that says more than they show; that is the failure you exist to find.
 
-You receive, at workspace commit <commit>: <the claims, each as worded, with an id> and, for each, <the paths of what it rests on: findings, ledgers, receipts, captured output, code, papers>. Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md` names), then those sources yourself, each at the pin the workspace `AGENTS.md` gives it. READ ONLY: edit nothing, and run nothing of the author's or the subject's code. Write your report to <report path> as you go.
+You receive, at workspace commit <commit>: <the claims, each as worded, with an id> and, for each, <the paths of what it rests on: findings, ledgers, receipts, captured output, code, papers>. Read `<install>/skills/_shared/core.md` first (`<install>` is the installation root the workspace `AGENTS.md`, or the brief, names), then those sources yourself, each at the pin the workspace `AGENTS.md`, or the brief, gives it. READ ONLY: edit nothing, and run nothing of the author's or the subject's code. Write your report to <report path> as you go (a reader that cannot write files returns it whole).
 
 Try to show that the wording does not follow. Named attacks, each to be tried on every claim where it applies:
 

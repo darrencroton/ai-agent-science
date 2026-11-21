@@ -42,7 +42,7 @@ flowchart LR
     A -->|more to change| R
 ```
 
-The readers are briefs handed to a fresh context that did not write the text, and they read for two different things. The checker asks whether each sentence says what its source says, and the challenger whether a claim, as worded, follows from its test: together they settle *what* the paper may say. The stylist reads for *how* it says it: the story, the flow of ideas from section to sentence, and the author's voice, while the text is planned and written as well as at the end. The referee judges the whole against its field and its journal.
+The readers are briefs handed to a fresh context that did not write the text, and they read for two different things. The checker asks whether each sentence says what its source says, and the challenger whether a claim, as worded, follows from its test: together they settle *what* the paper may say. The stylist reads for *how* it says it: the story, the flow of ideas from section to sentence, and the author's voice, while the text is planned and written as well as at the end. The referee judges the whole against its field and its journal. The briefs also work outside a paper, given their inputs: an investigation can have the checker audit its findings report, the challenger test its headline claim, the referee ask whether a result would survive review, and the stylist make a report readable for the person who must act on it.
 
 ## What every session relies on
 

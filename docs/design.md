@@ -93,13 +93,13 @@ The test for any sentence is whether a paper on a different subject, by a differ
 
 ## 5. The boundary with ai-agent-coder
 
-The engine that runs campaigns names no domain, this toolkit names no subject, and only a brief names all the parts. The meeting point is three plain files that cross the boundary, and nothing else.
+The engine that runs campaigns names no domain, this toolkit names no subject, and only a brief names all the parts. The meeting point is three kinds of plain file that cross the boundary, and nothing else.
 
 | Crossing | Direction | Form | Owner of the form |
 |---|---|---|---|
 | A question with a declared test | paper to campaign | sections of the engine's brief | the engine owns the brief's format; `evidence.md` owns what a science brief puts in it |
 | A findings report, its ledger and its manifest | campaign to paper | a document in the dossier that ends with a list of every file it cites | `evidence.md` |
-| A brief for an independent challenge | either | `skills/paper/readers/challenger.md`, loaded by a task node as a pinned input | the paper skill, shared |
+| A reader brief: the challenger, the checker, the referee or the stylist | either | a file in `skills/paper/readers/`, loaded by a task node as a pinned input, with the binding supplying what a workspace would (`skills/paper/review.md`, *Outside a paper workspace*) | the paper skill, shared |
 
 The conventions for scoping a claim and for reporting findings were written by hand into several campaign briefs and need one home, which is `evidence.md` and the shared challenger brief. What is generic to any investigation and already lives in the engine stays there.
 
@@ -140,7 +140,7 @@ The stylist and the referee are judged against the author's own reading. The sty
 
 ## 8. Settled decisions
 
-All fourteen recommendations were accepted by the owner on 2026-11-19; decisions 15 and 16 followed the same day, and 17 on 2026-11-21.
+All fourteen recommendations were accepted by the owner on 2026-11-19; decisions 15 and 16 followed the same day, and 17 and 18 on 2026-11-21.
 
 1. One loop: `review` with four reader briefs, and `revise`; no separate style, referee or respond procedures.
 2. Eight core rules, not five.
@@ -159,3 +159,4 @@ All fourteen recommendations were accepted by the owner on 2026-11-19; decisions
 15. The owner's later decision the same day: the referee brief is written now, from the author's own refereeing instructions and reports (their form only, no content). It judges a paper against its field's culture, accepted practice and tolerances, surveyed once per paper, and against the journal's referee guidelines, fetched once; both are kept in the workspace.
 16. The owner's later decision the same day: no venue files in the toolkit. What a paper can determine once (its journal's facts and referee instructions, its field's norms, its style) is determined at first need and kept in its workspace as a reference file, current for that paper.
 17. The owner's decision of 2026-11-21: the toolkit is finished now as a complete first version, every stage with a file written to the depth its first use needs, and refined from that use, rather than each component waiting for its second need. The reply letter is left out. The stylist gets the most depth and is "central to the process and all planning of text and writing of the text": it reads the outline, each paragraph plan and each drafted section, as well as the whole at milestones.
+18. The owner's later decision of 2026-11-21: the readers are generalised so that an investigation can commission them under its brief (a Campaign Manager) or plan (a Project Manager), with light touches that leave their paper use unchanged: one rule for what the binding supplies, a source policy for the checker, an early read for the referee on pinned material, and a document mode for the stylist.
