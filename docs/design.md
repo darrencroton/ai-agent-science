@@ -105,7 +105,7 @@ The conventions for scoping a claim and for reporting findings were written by h
 
 A Campaign Manager in the author's seat needs one rule, not a table of defaults, and it is core rule 5: where a procedure says the author decides, an unattended caller takes the recorded recommendation if the brief's author policy delegates that kind of decision, marks the result provisional, and otherwise leaves a gap and a question. No paper has been written by a campaign; when one is, the brief's author policy lists what is reserved.
 
-The ai-agent-coder engine needs no change for this design. Three small generic sentences are worth adding there, at a time when no campaign depends on the engine's pinned version: a campaign's final report ends with a list of every file it cites and stays short with listings left in the receipts; an auditor may ask for a check of an input and is not limited to re-reading captures; and a brief may name a pinned input as the prompt for the independent challenge.
+The ai-agent-coder engine carries the boundary in three generic sentences of its campaign mode (since its commit `401a9f6`): a task node's prompt may be a reader brief from a method toolkit the brief pins, filled as that toolkit's own rule for an outside commissioner says; the acceptance audit may ask for a read-only check of an input; and a findings report stays short, leaves listings in the receipts, and ends with a list of every file it cites.
 
 ## 6. What is deliberately left out
 
