@@ -56,7 +56,7 @@ The workspace is its own git repository and the working directory of every sessi
 | `open-questions.md` | open questions only, each with a recommendation; a resolved one becomes a journal line |
 | `journal.md` | append-only; one line per decision, by whom and why, pointing to the file or record that holds any detail; no list of work done, which git holds |
 
-Also three reference files, each built once at first need by its technique in `skills/paper/techniques/`, kept current, and never a source: `style.md` (the paper's style sheet, two pages), `venue.md` (the journal: its policies, its class and its instructions to referees) and `field.md` (what papers of this kind contain and what the field accepts). And `lit/` (the literature notebook), `ingest/` (agent-written indexes: never a source), `checks/` (rule 6) and `reviews/` (one directory per milestone review).
+Also three reference files, each built once at first need by its technique in `skills/paper/techniques/`, kept current, and never a source: `style.md` (the paper's style sheet), `venue.md` (the journal: its policies, its class and its instructions to referees) and `field.md` (what papers of this kind contain and what the field accepts). And `lit/` (the literature notebook), `ingest/` (agent-written indexes: never a source), `checks/` (rule 6) and `reviews/` (one directory per milestone review).
 
 ## The author's words
 

@@ -29,7 +29,7 @@ Short notes, read only when the case arises.
 
 | Read | When |
 |---|---|
-| `skills/paper/techniques/subject-repository.md` | the paper describes software or an instrument: pin its version, build the feature map, follow the code where a guide disagrees |
+| `skills/paper/techniques/subject-repository.md` | the paper describes software or an instrument: pin its version, build the feature map, follow the code where a guide disagrees, keep the delta list, leave detail to the guides |
 | `skills/paper/techniques/many-drafters.md` | several drafters write at once: one writer per file, shared files written by the owning session only |
 | `skills/paper/techniques/style-sheet.md` | building `paper/style.md` from the author's past papers, once per paper |
 | `skills/paper/techniques/field.md` | what papers of this kind contain and what the field accepts, written once per paper to `paper/field.md` |

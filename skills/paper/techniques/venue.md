@@ -6,7 +6,7 @@ Choosing a journal, recording it in `paper/venue.md`, and switching the manuscri
 
 Ask the `literature` skill where the closest papers (the build-on question) were published, or use `paper/field.md` if it exists, then read each candidate journal's own pages. Policy pages drift as class files do, so every fact is recorded with its URL and the date fetched.
 
-For each journal quote its scope rather than characterising it, and record what discriminates: length norms; code and data requirements; the review model, **including anonymity** (a double-anonymous journal can be impossible for a software paper that names its package); cost; the **policy on AI use**, which for a paper where a model is part of the method can outweigh scope and prestige; and turnaround if it can be found. Name the journals ruled out and why, including any archived or closed: a journal that published an obvious precedent may no longer take submissions.
+For each journal quote its scope rather than characterising it, and record what discriminates: length norms; spelling; code and data requirements; the review model, **including anonymity** (a double-anonymous journal can be impossible for a software paper that names its package); cost; the **policy on AI use**, which for a paper where a model is part of the method can outweigh scope and prestige; and turnaround if it can be found. Name the journals ruled out and why, including any archived or closed: a journal that published an obvious precedent may no longer take submissions.
 
 Publisher sites refuse automated readers. Expect `403`; where text was recovered only through a search index, say so and mark it lower confidence; treat a redirect off the publisher's own domain as a failed fetch.
 

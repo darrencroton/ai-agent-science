@@ -24,3 +24,16 @@ For a paper that describes software or an instrument: the repository itself is t
 - Prose follows the code. The disagreement goes on one list for the subject's owner: the subject's own backlog only where the author has authorised writing to it (named in the workspace `AGENTS.md`), otherwise `paper/subject-notes.md`. Each entry gives the guide's words, the code's behaviour and both locations. So does a quirk that is neither a disagreement nor a hole in the draft, such as a configuration key nothing reads.
 - It does not go in the paper's open questions, which would bury the author's decisions under the owner's chores. It becomes a `\gap{q}` in the manuscript only when it changes what a sentence says.
 - A disagreement between the code and the **author's** notes is different: it is always a `\gap{q}` (`skills/paper/draft.md`).
+
+## When the subject moves under a draft
+
+While the subject is still changing (investigations running, a release coming), keep `paper/ingest/subject-delta.md`: one line per change to the subject that touches drafted text, giving what changed, the drafted passages it touches (section file and subsection) and whether it is released. Add a line when a change becomes known, and when a passage is drafted that a known change touches. At a re-pin, check the list against the files `git diff --name-only <old> <new>` names that the draft's traces anchor (`tools/traces.py list`); the revision that follows works from it, and a line leaves once its passages are rewritten. It is an index, never a source.
+
+## Leaving detail to the subject's documentation
+
+A paper may leave detail to the subject's own guides and cite them at the pin. Before a cut does so:
+
+- Check that the guide holds each fact at the pin. A fact it lacks stays in the paper; it may also go on the owner's list (*Follow the code where a guide disagrees*).
+- Check that the release is citable as a stable, archived version with a persistent identifier (e.g. a DOI minted by a release-archiving service). A git tag or repository URL alone is not.
+
+Until both hold, the detail stays in the paper (core rule 7).
