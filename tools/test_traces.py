@@ -252,6 +252,70 @@ class TestListAndLost(Workspace):
         self.assertIn("0 lost, 0 moved", out)
 
 
+class TestMoved(Workspace):
+    def code_commit(self, tag=None):
+        git("code", "add", "-A")
+        git("code", "commit", "-q", "-m", "change")
+        if tag:
+            git("code", "tag", tag)
+
+    def test_repin_reports_traces_in_changed_files_only(self):
+        self.section("% src: code/src/a.c:2\n% src: code/models/m1/props.yaml\n% src: notes/n.md\n")
+        self.write("code/src/a.c", "one\nTWO\nthree\n")
+        self.code_commit("v2")
+        code, out, _ = self.run_cmd("moved", "code/", "--to", "v2")  # --from defaults to the pin v1
+        self.assertEqual(code, 1)
+        self.assertEqual(out.splitlines()[0], "manuscript/sections/s.tex:1  src  code/src/a.c:2")
+        self.assertEqual(out.splitlines()[-1], "1 traces anchor in 2 changed files of code/ (v1..v2)")
+        self.assertNotIn("props.yaml", out)
+        self.assertNotIn("n.md", out)
+
+    def test_renamed_file_is_reported_under_its_old_path(self):
+        self.section("% src: code/models/m1/props.yaml\n% src: code/models/m2/props.yaml\n")
+        git("code", "mv", "models/m1/props.yaml", "models/m1/renamed.yaml")
+        self.code_commit()
+        code, out, _ = self.run_cmd("moved", "code/", "--to", "HEAD")
+        self.assertEqual(code, 1)
+        self.assertIn("s.tex:1  src  code/models/m1/props.yaml", out)
+        self.assertNotIn("s.tex:2", out)
+
+    def test_glob_directory_and_brace_anchors(self):
+        self.section("% src: code/models/*/props.yaml\n% src: code/models/m2/\n"
+                     "% src: code/models/m1/\n% src: code/models/{m1,m2}/props.yaml\n")
+        self.write("code/models/m2/props.yaml", "a: 3\n")  # edited, not committed: the working tree counts
+        code, out, _ = self.run_cmd("moved", "code", "manuscript/sections/s.tex")
+        self.assertEqual(code, 1)
+        lines = out.splitlines()
+        self.assertEqual([l.split()[0] for l in lines[:-1]], [f"manuscript/sections/s.tex:{n}" for n in (1, 2, 4)])
+        self.assertIn("changed files of code/ (v1..working tree)", lines[-1])
+
+    def test_fixed_root_edited_in_the_working_tree(self):
+        self.section("% src: notes/n.md:2\n% src: code/src/a.c\n% src: notes/[n].md\n% src: notes/*p.md\n")
+        self.write("notes/sub/deep.md", "d\n")  # `*p.md` would reach it only by crossing a `/`
+        self.commit()
+        code, out, _ = self.run_cmd("moved", "--from", "HEAD", "notes", "manuscript/sections/s.tex")
+        self.assertEqual((code, out.strip()), (0, "0 traces anchor in 0 changed files of notes/ (HEAD..working tree)"))
+        self.write("notes/n.md", "a\nB\n")
+        self.write("notes/sub/deep.md", "D\n")
+        self.write("notes/untracked.md", "u\n")
+        code, out, _ = self.run_cmd("moved", "--from", "HEAD", "notes", "manuscript/sections/s.tex")
+        self.assertEqual(code, 1)
+        self.assertIn("s.tex:1  src  notes/n.md:2", out)
+        self.assertIn("s.tex:3  src  notes/[n].md", out)
+        self.assertNotIn("s.tex:4", out)
+        self.assertIn("2 traces anchor in 2 changed files of notes/ (HEAD..working tree); "
+                      "1 untracked files not compared", out)
+
+    def test_configuration_and_git_failures_exit_2(self):
+        self.section("% src: notes/n.md\n")
+        for argv, word in ((("lib/",), "declared"), (("manuscript/",), "`-` root"), (("notes/",), "--from"),
+                           (("code/", "--from", "nosuchrev"), "nosuchrev")):
+            with self.subTest(argv=argv):
+                code, _, err = self.run_cmd("moved", *argv)
+                self.assertEqual(code, 2)
+                self.assertIn(word, err)
+
+
 class TestSample(Workspace):
     def test_sample_is_reproducible_and_shows_the_tex(self):
         self.section("% src: code/src/a.c:1\nFirst sentence.\n% src: notes/n.md\nSecond.\n% src: code/src/a.c:2\nThird.\n")

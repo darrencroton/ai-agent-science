@@ -61,7 +61,7 @@ Five memory files keep apart what is true today (`STATE.md`, rewritten each sess
 ## The tools
 
 - `tools/ads.py` searches ADS/SciX and exports BibTeX byte for byte. It needs an [ADS/SciX API token](https://ui.adsabs.harvard.edu/user/settings/token).
-- `tools/traces.py` is run from the workspace root. `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check; `sample` draws traces at random for the author to audit.
+- `tools/traces.py` is run from the workspace root. `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check; `moved` names the traces anchored in files that changed in a source; `sample` draws traces at random for the author to audit.
 - `skeleton/workspace/manuscript/scipaper.sty` is the gap macro.
 
 Both tools use only the Python standard library. A paper needs `latexmk` and git. The procedures also call `curl` to fetch references and full texts, `latexpand` and `latexdiff` for the bundle sent to the journal and the reply to its referee, and Ghostscript (`gs`) for EPS figures.

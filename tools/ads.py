@@ -98,7 +98,7 @@ def _find_token():
         try:
             found = subprocess.run(
                 ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
-                capture_output=True, text=True, timeout=10)
+                capture_output=True, text=True, timeout=10, check=False)
             if found.returncode == 0 and found.stdout.strip():
                 return found.stdout.strip()
         except (OSError, subprocess.SubprocessError):
@@ -200,9 +200,13 @@ def _request(path, params=None, payload=None):
         hint = {401: "  token rejected -- check it is current",
                 403: "  token lacks permission for this endpoint",
                 429: "  rate limit exhausted -- ADS resets daily"}.get(exc.code, "")
+        # Close it here: an HTTPError left to the garbage collector warns on
+        # stderr with its reason phrase, which has not been through `_scrub`.
+        with exc:
+            body = exc.read()
         # Scrub first, then truncate: truncating first can cut the token in
         # half, and half a token is still most of a token.
-        detail = _scrub(exc.read().decode(errors="replace").strip())[:400]
+        detail = _scrub(body.decode(errors="replace").strip())[:400]
         raise AdsError(
             f"{_safe(url)}: HTTP {exc.code} {_scrub(exc.reason)}{hint}\n{detail}")
     except urllib.error.URLError as exc:

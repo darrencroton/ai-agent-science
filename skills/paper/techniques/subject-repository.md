@@ -27,7 +27,7 @@ For a paper that describes software or an instrument: the repository itself is t
 
 ## When the subject moves under a draft
 
-While the subject is still changing (investigations running, a release coming), keep `paper/ingest/subject-delta.md`: one line per change to the subject that touches drafted text, giving what changed, the drafted passages it touches (section file and subsection) and whether it is released. Add a line when a change becomes known, and when a passage is drafted that a known change touches. At a re-pin, check the list against the files `git diff --name-only <old> <new>` names that the draft's traces anchor (`tools/traces.py list`); the revision that follows works from it, and a line leaves once its passages are rewritten. It is an index, never a source.
+While the subject is still changing (investigations running, a release coming), keep `paper/ingest/subject-delta.md`: one line per change to the subject that touches drafted text, giving what changed, the drafted passages it touches (section file and subsection) and whether it is released. Add a line when a change becomes known, and when a passage is drafted that a known change touches. At a re-pin, check the list against the traces that `tools/traces.py moved --from <old> --to <new> <root>` reports as anchored in files the re-pin changed; the revision that follows works from it, and a line leaves once its passages are rewritten. It is an index, never a source.
 
 ## Leaving detail to the subject's documentation
 

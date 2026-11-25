@@ -1,4 +1,5 @@
-"""Unit tests for ads.py, limited to the two security properties whose failure is silent.
+"""Unit tests for ads.py, limited to failures that are silent: two security properties,
+and two ways a valid paper would look absent with nothing to say so.
 
 A leaked token raises no error, so nothing else would catch it:
 
@@ -6,10 +7,15 @@ A leaked token raises no error, so nothing else would catch it:
     back (error body, reason phrase, redirect Location);
   * a redirect is refused, and the Authorization header never reaches its target.
 
-The tool is driven through `_request`, which is where those messages are built;
+A paper is likewise lost without a sound when `resolve` is handed a URL and
+sends ADS a query that matches nothing, or when `export` calls a truncated
+bibcode present and exits 0.
+
+The security tests drive `_request`, which is where those messages are built;
 `main` only prefixes and prints the same text, and going through it would add
-argparse and stdout/stderr capture without adding coverage. The far end is a
-stub HTTP server on 127.0.0.1, which the tool permits over plain http and
+argparse and stdout/stderr capture without adding coverage. The export test
+does go through `main`, because the exit code is what it checks. The far end
+is a stub HTTP server on 127.0.0.1, which the tool permits over plain http and
 reaches without a proxy.
 
 Run from the repository root:
@@ -17,12 +23,15 @@ Run from the repository root:
     python3 -m unittest discover -s tools -p 'test_*.py'
 """
 
+import contextlib
 import http.server
+import io
 import json
 import os
 import sys
 import threading
 import unittest
+import urllib.parse
 from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -32,18 +41,22 @@ TOKEN = "tok_Zq81xV4mR7"
 
 
 class Stub(http.server.HTTPServer):
-    """Answers every GET with one fixed response and records each Authorization header."""
+    """Answers every GET and POST with one fixed response, recording each request's
+    Authorization header and path (query string included)."""
 
     def __init__(self, status, reason=None, headers=None, body=b""):
         super().__init__(("127.0.0.1", 0), _Handler)
         self.response = (status, reason, headers or {}, body)
         self.seen = []
+        self.paths = []
         self.base = f"http://127.0.0.1:{self.server_port}"
 
 
 class _Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         self.server.seen.append(self.headers.get("Authorization"))
+        self.server.paths.append(self.path)
+        self.rfile.read(int(self.headers.get("Content-Length", 0)))  # a POST body
         status, reason, headers, body = self.server.response
         self.send_response(status, reason)
         for name, value in headers.items():
@@ -52,11 +65,13 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    do_POST = do_GET
+
     def log_message(self, *args):
         pass
 
 
-class Security(unittest.TestCase):
+class Silent(unittest.TestCase):
     def setUp(self):
         # Setting the cached token skips `_find_token`, so neither the macOS
         # Keychain nor ~/.ads/dev_key is consulted and the test is hermetic.
@@ -117,6 +132,39 @@ class Security(unittest.TestCase):
         self.assertNotIn(TOKEN, message)
         self.assertEqual(origin.seen, [f"Bearer {TOKEN}"])  # the request did go out
         self.assertEqual(target.seen, [])  # and nothing followed it
+
+    def test_resolve_strips_url_down_to_the_identifier(self):
+        # An unstripped URL builds a query that matches nothing, which reads as
+        # "ADS does not have this paper". So check the query ADS is sent, not
+        # only what `_resolve` says it sent.
+        doc = {"bibcode": "2020ApJ...900....1A", "property": ["REFEREED"]}
+        stub = self.serve(200, body=json.dumps({"response": {"docs": [doc]}}).encode())
+        os.environ["SCI_PAPER_ADS_BASE"] = stub.base + "/v1"
+        doi, arxiv = 'doi:"10.1088/0004-637X/900/1/1"', 'identifier:"arXiv:2001.01234"'
+        for given, query in [
+                ("https://doi.org/10.1088/0004-637X/900/1/1", doi),
+                ("https://doi.org/10.1088/0004-637X/900/1/1?ref=x#top", doi),
+                ("https://arxiv.org/abs/2001.01234v2?context=astro-ph#top", arxiv),
+                ("https://arxiv.org/pdf/2001.01234v1.pdf", arxiv),
+                ("https://arxiv.org/pdf/2001.01234.pdf?download=1", arxiv)]:
+            with self.subTest(given=given):
+                ads._resolve(given, 20)
+                sent = urllib.parse.parse_qs(urllib.parse.urlsplit(stub.paths[-1]).query)
+                self.assertEqual(sent["q"], [query])
+
+    def test_export_reports_a_prefix_bibcode_missing_and_exits_3(self):
+        # ADS returned `...1AB` only. A bare substring test would find `...1A`
+        # inside it and call the requested bibcode present.
+        bibtex = "@ARTICLE{2020ApJ...900....1AB,\n  title = {A Paper},\n}\n"
+        stub = self.serve(200, body=json.dumps({"export": bibtex}).encode())
+        os.environ["SCI_PAPER_ADS_BASE"] = stub.base + "/v1"
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            status = ads.main(["export", "2020ApJ...900....1A", "2020ApJ...900....1AB"])
+        self.assertEqual(status, 3)
+        self.assertEqual(out.getvalue(), bibtex)  # what did come back, verbatim
+        self.assertEqual(err.getvalue(), "no BibTeX returned for: 2020ApJ...900....1A\n")
+        self.assertEqual(stub.paths, ["/v1/export/bibtex"])
 
 
 if __name__ == "__main__":

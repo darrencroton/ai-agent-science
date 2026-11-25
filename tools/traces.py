@@ -2,14 +2,16 @@
 """Trace inventory and lint for a paper workspace. Python standard library only.
 
 Every checkable sentence of the paper carries a `% src:` comment naming its
-primary source (a "trace") or a `\\gap{kind}{note}` marker. Five commands read
+primary source (a "trace") or a `\\gap{kind}{note}` marker. Six commands read
 them, from the workspace root (the working directory):
 
     traces.py list  [--rev REV] [files...]   every trace and gap, one per line
     traces.py lost  [--rev REV] [files...]   traces and gaps at REV missing now
     traces.py lint  [files...]               anchors, pins, paths, lines, cites
     traces.py stale [files...]               sections changed since their check stamp
-    traces.py sample N [--seed S] [files...] N traces drawn at random, with their TeX
+    traces.py moved [--from OLD] [--to NEW] ROOT [files...]
+                                             traces anchored in files of ROOT that changed
+    traces.py sample [--seed S] N [files...] N traces drawn at random, with their TeX
 
 Files default to manuscript/main.tex, manuscript/sections/*.tex and
 manuscript/figures/*.tex; a directory stands for its *.tex files (not its
@@ -53,8 +55,19 @@ needs one only when it holds traces or citations, and is otherwise `no traces`
 and not counted. A stamp whose line is not yet committed is reported as such and counts as not
 clean, since the section can still change under it; `stale` is a submission gate.
 
+`moved` is for a source that changes under a checked trace, which `stale` cannot see.
+ROOT is one declared in AGENTS.md. It takes the files that `git diff --name-only OLD [NEW]`
+names in the repository holding ROOT (a renamed or deleted file under its old path too),
+and reports every trace with a path anchor in ROOT that names one of them: exactly, by
+glob, or as a directory holding one. OLD defaults to a `git:` root's pin; a `fixed`
+root needs --from. NEW defaults to the working tree, so an uncommitted edit counts.
+A root is compared only as far as git tracks it: against the working tree, untracked files
+are counted, not compared. Commit anchors never move and are not reported. It narrows attention only: a section
+whose sources moved still gets its full check.
+
 Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
-or uncommitted file (stale); 2 the request, the configuration or git failed.
+or uncommitted file (stale), a trace anchored in a changed file (moved); 2 the
+request, the configuration or git failed.
 """
 
 import argparse
@@ -344,6 +357,19 @@ def glob_rx(pat):
     return re.compile("".join("[^/]*" if c == "*" else "[^/]" if c == "?" else re.escape(c) for c in pat))
 
 
+def repo_of(name):
+    """(top level, the root's path within it as '' or 'dir/') of the git repository
+    holding the directory `name`, or None if it is in none."""
+    if not os.path.isdir(name):
+        return None
+    rc, top = git("rev-parse", "--show-toplevel", cwd=name)
+    if rc:
+        return None
+    top = os.path.realpath(top.strip())
+    prefix = os.path.relpath(os.path.realpath(name), top)
+    return top, "" if prefix == "." else prefix + "/"
+
+
 class Pins:
     """Existence and length of a path at its root's pin, with every git call cached."""
 
@@ -353,18 +379,16 @@ class Pins:
 
     def _tree(self, root):
         if root.name not in self._trees:
-            rc, top = git("rev-parse", "--show-toplevel", cwd=root.name)
-            if rc:
+            if not (repo := repo_of(root.name)):
                 raise Error(f"{root.name} is not a git repository, but its pin is {root.pin}")
-            top = os.path.realpath(top.strip())
-            prefix = os.path.relpath(os.path.realpath(root.name), top)
+            top, prefix = repo
             rev = root.pin[4:]
             rc, out = git("ls-tree", "-r", "-z", "--name-only", rev, cwd=top)
             if rc:
                 raise Error(f"the pin {rev} does not resolve in {root.name}")
             files = set(out.split("\0")[:-1])
             dirs = {d for f in files for d in _parents(f)}
-            self._trees[root.name] = (top, "" if prefix == "." else prefix + "/", files, dirs, rev)
+            self._trees[root.name] = (top, prefix, files, dirs, rev)
         return self._trees[root.name]
 
     def matches(self, root, path):
@@ -533,6 +557,68 @@ def cmd_stale(args):
     return 1 if bad else 0
 
 
+# ---------------------------------------------------------------- moved
+
+def fnmatch_segments(name, pat):
+    """Whether `name` matches the glob `pat` with no `*` or `?` reaching across a `/`."""
+    ns, ps = name.split("/"), pat.split("/")
+    # No zip(strict=): the lengths are equal by the first test, and strict= needs Python 3.10.
+    return len(ns) == len(ps) and all(fnmatch.fnmatchcase(n, p) for n, p in zip(ns, ps))  # noqa: B905
+
+
+def anchors_changed(t, root, roots, keys, changed):
+    """Whether trace `t` has a path anchor in `root` naming a changed file, a glob matching
+    one, or a directory holding one. `changed` holds files and their parent directories."""
+    paths = [tok for kind, tok, _ in anchors(t.body, [r.name for r in roots], keys) if kind == "path"]
+    for path in (p for tok in paths for p in expand_braces(tok)):
+        if root_of(path, roots) == root:
+            rx, pat = glob_rx(path.rstrip("/")), path.rstrip("/")
+            if any(rx.fullmatch(n) or (root.pin == "fixed" and fnmatch_segments(n, pat))
+                   for n in changed):
+                return True
+    return False
+
+
+def cmd_moved(args):
+    roots, keys = parse_sources(), read_keys()
+    name = args.root.rstrip("/") + "/"
+    root = next((r for r in roots if r.name == name), None)
+    if not root:
+        raise Error(f"{name} is not a root declared in the `sources` block of AGENTS.md")
+    if root.pin == "-":
+        raise Error(f"{name} is a `-` root: nothing may cite it")
+    old = args.old or (root.pin[4:] if root.pin != "fixed" else None)
+    if not old:
+        raise Error(f"{name} is `fixed`: say which revision to compare from with --from")
+    if old.startswith("-") or (args.to or "").startswith("-"):
+        raise Error("a revision may not begin with '-'")
+    if not (repo := repo_of(name)):
+        raise Error(f"{name} is missing or not in a git repository")
+    top, prefix = repo
+    span = f"{old}..{args.to}" if args.to else f"{old}..working tree"
+    rc, out = git("--literal-pathspecs", "diff", "--name-only", "--no-renames", "-z", old,
+                  *([args.to] if args.to else []), "--", prefix or ".", cwd=top)
+    if rc:
+        raise Error(f"git diff {span} failed in {name}: "
+                    f"{f'do {old} and {args.to}' if args.to else f'does {old}'} exist in the repository "
+                    "holding it?")
+    files = sorted(name + f[len(prefix):] for f in out.split("\0")[:-1])
+    changed = {n for f in files for n in (f, *_parents(f))}
+    hits = [t for v in load(args.files).values() for t in v[0]
+            if anchors_changed(t, root, roots, keys, changed)]
+    untracked = ""
+    if not args.to:
+        rc, other = git("--literal-pathspecs", "ls-files", "--others", "-z", "--", prefix or ".", cwd=top)
+        if rc:
+            raise Error(f"git ls-files failed in {name}: the untracked files were not scanned")
+        if k := len(other.split("\0")[:-1]):
+            untracked = f"; {k} untracked files not compared"
+    for t in hits:
+        print(f"{t.file}:{t.line}  src  {t.text}")
+    print(f"{len(hits)} traces anchor in {len(files)} changed files of {name} ({span}){untracked}")
+    return 1 if hits else 0
+
+
 # ---------------------------------------------------------------- sample
 
 def cmd_sample(args):
@@ -568,6 +654,12 @@ def main(argv=None):
         if rev:
             p.add_argument("--rev", help="git revision of the workspace to read")
         p.add_argument("files", nargs="*")
+    p = sub.add_parser("moved")
+    p.set_defaults(fn=cmd_moved)
+    p.add_argument("root", help="a root declared in AGENTS.md")
+    p.add_argument("--from", dest="old", help="revision to compare from (default: the root's pin)")
+    p.add_argument("--to", help="revision to compare to (default: the working tree)")
+    p.add_argument("files", nargs="*")
     p = sub.add_parser("sample")
     p.set_defaults(fn=cmd_sample)
     p.add_argument("n", type=int, help="how many traces to draw")
