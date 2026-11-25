@@ -10,7 +10,7 @@ Then read the sections already drafted, for the notation and terms the paper alr
 
 ## 1. The paragraph plan, before any prose
 
-One line per paragraph: its point, why it follows the one before, and its sources. Every item the outline row says the section must carry appears in it, and the plan as a whole delivers the section's hand-off. Sum the lines to an estimate against the budget, and name the lines that may shrink if the section runs long. The plan is written to a file the session names (in `.scratch/` until accepted) and goes to the stylist's plan mode (`skills/paper/readers/stylist.md`) before any prose.
+One line per paragraph: its point, why it follows the one before, and its sources. Every item the outline row says the section must carry appears in it, and the plan as a whole delivers the section's hand-off. Sum the lines to an estimate against the budget, and name the lines that may shrink if the section runs long. The plan is written to a file the session names (in `.scratch/` until accepted); the session, not the drafter, sends it to the stylist's plan mode (`skills/paper/readers/stylist.md`) before any prose.
 
 **Coverage beats budget, and the conflict is settled before the prose exists.** If the estimate is over budget the drafter does not choose what to drop (core rule 7). It returns the plan with the overrun and the options: raise the budget; move named items to another section or an appendix; state an item more briefly. The owning session accepts the plan; the author does, for the first section of each role and whenever what the section must carry does not fit its budget. The outline is changed to match. A budget for a section of an unfamiliar kind is a guess, and the plan is where it is corrected cheaply.
 

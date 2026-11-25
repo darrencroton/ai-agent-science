@@ -6,7 +6,7 @@ Read `skills/_shared/core.md` first.
 
 ## 1. Make the workspace
 
-The session works in the workspace, which is its working directory. Ask the author which directory it is, and whether any other git repository contains it.
+The session works in the workspace, which is its working directory. Ask the author which git repository, if any, will contain it, then which directory it is, offering a default: that repository's directory name with `-workspace` appended or, with none, the paper's short name with `-workspace` appended.
 
 1. Copy the scaffold without overwriting anything: `cp -Rn <install>/skeleton/workspace/. <directory>/` (`<install>` is the installation root), then `git init` there. Write the installation root into `AGENTS.md` where the scaffold names it, and the paper's short name and author list where the scaffold has placeholders. Create `manuscript/sections/`, which git cannot ship empty. Say which files were already there and left alone.
 2. If the workspace sits inside another repository, add it to that repository's `.git/info/exclude` (local, untracked), never to its tracked files, unless the author asks otherwise. Nothing the toolkit writes may reach another repository's history.
