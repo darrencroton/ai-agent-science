@@ -78,7 +78,7 @@ Ask the agent to start one. It follows `skills/paper/start.md`: it copies the sc
 
 ## Design
 
-The reasons for the shape, what is deliberately left out, how components are tested and the decisions settled so far are in [`docs/design.md`](docs/design.md).
+Why the toolkit exists, who it serves and the commitments that define it are in [`docs/VISION.md`](docs/VISION.md). The reasons for the shape, what is deliberately left out, how components are tested and the decisions settled so far are in [`docs/design.md`](docs/design.md).
 
 ## Licence
 

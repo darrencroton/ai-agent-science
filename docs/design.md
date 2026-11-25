@@ -77,7 +77,7 @@ The `literature` skill's five questions each prevent a failure an agent shows wh
 
 - **The gap macro** (`scipaper.sty`): a gap prints loudly in a draft and fails the build in final mode.
 - **`tools/ads.py`**: search, and BibTeX exported byte for byte from an authority.
-- **`tools/traces.py`** (standard library only): `list`, `lost`, `lint`, `stale`, `sample`. A lost trace is silent, and two rule-level failures in the first paper were mechanical enough to check by rule rather than by reading. Whether the source says what the sentence says remains the checker's reading. `stale` reads the check stamp, one comment line at the top of a section naming the date and the reader of its last independent check; under an ask-first commit policy a section reads "checked, not yet committed" until the author approves. `sample` draws an audit sheet for the author, with the traces chosen by the tool so that the agent cannot choose them.
+- **`tools/traces.py`** (standard library only): `list`, `lost`, `lint`, `stale`, `sample`. A lost trace is silent, and two rule-level failures in the first paper were mechanical enough to check by rule rather than by reading. Whether the source says what the sentence says remains the checker's reading. `stale` reads the check stamp, one comment line at the top of a section naming the date and the reader of its last independent check; under an ask-first commit policy a section reads "checked, not yet committed" until the author approves. `sample` draws an audit sheet for the author, with the traces drawn at random by the tool.
 
 ### The workspace contract
 
