@@ -75,8 +75,7 @@ class Silent(unittest.TestCase):
     def setUp(self):
         # Setting the cached token skips `_find_token`, so neither the macOS
         # Keychain nor ~/.ads/dev_key is consulted and the test is hermetic.
-        patches = [mock.patch.object(ads, "_TOKEN", TOKEN),
-                   mock.patch.dict(os.environ)]
+        patches = [mock.patch.object(ads, "_TOKEN", TOKEN), mock.patch.dict(os.environ)]
         for patch in patches:
             patch.start()
             self.addCleanup(patch.stop)
@@ -102,7 +101,9 @@ class Silent(unittest.TestCase):
         return str(caught.exception)
 
     def test_error_body_is_scrubbed(self):
-        stub = self.serve(401, body=f"debug page: Authorization: Bearer {TOKEN}".encode())
+        stub = self.serve(
+            401, body=f"debug page: Authorization: Bearer {TOKEN}".encode()
+        )
         message = self.failure(stub)
         self.assertIn("HTTP 401", message)  # the error path ran, not some other one
         self.assertNotIn(TOKEN, message)
@@ -142,14 +143,17 @@ class Silent(unittest.TestCase):
         os.environ["SCI_PAPER_ADS_BASE"] = stub.base + "/v1"
         doi, arxiv = 'doi:"10.1088/0004-637X/900/1/1"', 'identifier:"arXiv:2001.01234"'
         for given, query in [
-                ("https://doi.org/10.1088/0004-637X/900/1/1", doi),
-                ("https://doi.org/10.1088/0004-637X/900/1/1?ref=x#top", doi),
-                ("https://arxiv.org/abs/2001.01234v2?context=astro-ph#top", arxiv),
-                ("https://arxiv.org/pdf/2001.01234v1.pdf", arxiv),
-                ("https://arxiv.org/pdf/2001.01234.pdf?download=1", arxiv)]:
+            ("https://doi.org/10.1088/0004-637X/900/1/1", doi),
+            ("https://doi.org/10.1088/0004-637X/900/1/1?ref=x#top", doi),
+            ("https://arxiv.org/abs/2001.01234v2?context=astro-ph#top", arxiv),
+            ("https://arxiv.org/pdf/2001.01234v1.pdf", arxiv),
+            ("https://arxiv.org/pdf/2001.01234.pdf?download=1", arxiv),
+        ]:
             with self.subTest(given=given):
                 ads._resolve(given, 20)
-                sent = urllib.parse.parse_qs(urllib.parse.urlsplit(stub.paths[-1]).query)
+                sent = urllib.parse.parse_qs(
+                    urllib.parse.urlsplit(stub.paths[-1]).query
+                )
                 self.assertEqual(sent["q"], [query])
 
     def test_export_reports_a_prefix_bibcode_missing_and_exits_3(self):
@@ -163,7 +167,9 @@ class Silent(unittest.TestCase):
             status = ads.main(["export", "2020ApJ...900....1A", "2020ApJ...900....1AB"])
         self.assertEqual(status, 3)
         self.assertEqual(out.getvalue(), bibtex)  # what did come back, verbatim
-        self.assertEqual(err.getvalue(), "no BibTeX returned for: 2020ApJ...900....1A\n")
+        self.assertEqual(
+            err.getvalue(), "no BibTeX returned for: 2020ApJ...900....1A\n"
+        )
         self.assertEqual(stub.paths, ["/v1/export/bibtex"])
 
 

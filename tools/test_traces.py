@@ -16,9 +16,14 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import traces
 
-GIT_ENV = {"GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@example.org",
-           "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@example.org",
-           "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1"}
+GIT_ENV = {
+    "GIT_AUTHOR_NAME": "t",
+    "GIT_AUTHOR_EMAIL": "t@example.org",
+    "GIT_COMMITTER_NAME": "t",
+    "GIT_COMMITTER_EMAIL": "t@example.org",
+    "GIT_CONFIG_GLOBAL": os.devnull,
+    "GIT_CONFIG_NOSYSTEM": "1",
+}
 
 SOURCES = """# Workspace
 
@@ -34,8 +39,14 @@ BIB = "@article{good2020,\n  title={x}\n}\n@book{other21, title={y}}\n"
 
 
 def git(cwd, *args):
-    p = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, check=False,
-                       env={**os.environ, **GIT_ENV})
+    p = subprocess.run(
+        ["git", *args],
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        check=False,
+        env={**os.environ, **GIT_ENV},
+    )
     assert p.returncode == 0, p.stderr
     return p.stdout.strip()
 
@@ -100,28 +111,46 @@ class TestParsing(unittest.TestCase):
 
     def test_line_lists_ranges_and_brace_paths(self):
         got = self.kinds("code/a.c:156 (f), :162; code/b.c:3-7, code/{x,y}/r.md")
-        self.assertEqual(got, [("path", "code/a.c", [156, 162]), ("path", "code/b.c", [3, 7]),
-                               ("path", "code/{x,y}/r.md", [])])
-        self.assertEqual(traces.expand_braces("code/{x,y}/r.md"), ["code/x/r.md", "code/y/r.md"])
+        self.assertEqual(
+            got,
+            [
+                ("path", "code/a.c", [156, 162]),
+                ("path", "code/b.c", [3, 7]),
+                ("path", "code/{x,y}/r.md", []),
+            ],
+        )
+        self.assertEqual(
+            traces.expand_braces("code/{x,y}/r.md"), ["code/x/r.md", "code/y/r.md"]
+        )
 
     def test_quoted_text_and_bare_names_are_free_text(self):
-        got = self.kinds('code/a.c:5 "see code/zzz.c" and ``code/qq.c\'\' in plain.h, search')
+        got = self.kinds(
+            "code/a.c:5 \"see code/zzz.c\" and ``code/qq.c'' in plain.h, search"
+        )
         self.assertEqual([k for k, _, _ in got], ["path", "search"])
 
     def test_commit_and_key(self):
-        got = self.kinds("code@a654c228 (2026) 2021MNRAS.506.4210I Table 1", ["2021MNRAS.506.4210I"])
+        got = self.kinds(
+            "code@a654c228 (2026) 2021MNRAS.506.4210I Table 1", ["2021MNRAS.506.4210I"]
+        )
         self.assertEqual([k for k, _, _ in got], ["commit", "key"])
 
     def test_gaps_with_nested_braces_and_comments_ignored(self):
         text = "a \\gap{q}{why \\texttt{x}?\n  really} b\n% \\gap{todo}{commented}\n"
-        self.assertEqual(traces.parse_gaps("f", text), [("f", 1, "q: why \\texttt{x}? really")])
+        self.assertEqual(
+            traces.parse_gaps("f", text), [("f", 1, "q: why \\texttt{x}? really")]
+        )
 
     def test_continuation_qualifier_and_stamp(self):
-        text = ("% checked: 2026-01-01 me\n% src (footnote): code/a.c:1\n%   and more\n"
-                "% src: notes/n.md\nText % src: code/b.c\n")
+        text = (
+            "% checked: 2026-01-01 me\n% src (footnote): code/a.c:1\n%   and more\n"
+            "% src: notes/n.md\nText % src: code/b.c\n"
+        )
         got = traces.parse_traces("f", text)
-        self.assertEqual([t.text for t in got],
-                         ["(footnote) code/a.c:1 and more", "notes/n.md", "code/b.c"])
+        self.assertEqual(
+            [t.text for t in got],
+            ["(footnote) code/a.c:1 and more", "notes/n.md", "code/b.c"],
+        )
         self.assertEqual([t.line for t in got], [2, 4, 5])
 
 
@@ -134,8 +163,9 @@ class TestLint(Workspace):
         code, out, _ = self.lint(
             "Text \\citet[p.~2]{good2020, other21}.\n"
             "% src: code/src/a.c:3 (f), :2; code/models/*/props.yaml; notes/n.md:2\n"
-            f"% src (footnote): code@{self.commit_hex} \"a message\"; good2020 Table 1\n"
-            "% src: search grep -c x code/src (2026-11-19) -> 0\n")
+            f'% src (footnote): code@{self.commit_hex} "a message"; good2020 Table 1\n'
+            "% src: search grep -c x code/src (2026-11-19) -> 0\n"
+        )
         self.assertEqual((code, out.strip()), (0, "0 findings"))
 
     def test_missing_sources_block_exits_2(self):
@@ -157,21 +187,30 @@ class TestLint(Workspace):
             self.assertIn(f"never-root  {tok}", out)
 
     def test_never_policy_is_applied_to_what_is_named(self):
-        for tok, shown in (("code/docs/{dev,public}/plan.md", "never-root  code/docs/dev/plan.md"),
-                           ("code/docs/*/plan.md", "never-root  code/docs/dev/plan.md"),
-                           ("code/docs/dev@0123abcd", "never-root  code/docs/dev@0123abcd"),
-                           ("notes/../manuscript/x.tex", "parent-path  notes/../manuscript/x.tex"),
-                           ("notes/./n.md", "unplain-path  notes/./n.md"),
-                           ("code//docs/dev@0123abcd", "unplain-path  code//docs/dev@0123abcd")):
+        for tok, shown in (
+            ("code/docs/{dev,public}/plan.md", "never-root  code/docs/dev/plan.md"),
+            ("code/docs/*/plan.md", "never-root  code/docs/dev/plan.md"),
+            ("code/docs/dev@0123abcd", "never-root  code/docs/dev@0123abcd"),
+            ("notes/../manuscript/x.tex", "parent-path  notes/../manuscript/x.tex"),
+            ("notes/./n.md", "unplain-path  notes/./n.md"),
+            ("code//docs/dev@0123abcd", "unplain-path  code//docs/dev@0123abcd"),
+        ):
             with self.subTest(tok=tok):
                 code, out, _ = self.lint(f"% src: {tok}\n")
                 self.assertEqual(code, 1)
                 self.assertIn(shown, out)
 
     def test_glob_reaching_another_cited_root(self):
-        self.write("AGENTS.md", SOURCES.replace("notes/", "code/models/m2/  fixed  cite\nnotes/", 1))
-        code, out, _ = self.lint("% src: code/models/*/props.yaml\n% src: code/models/m1/props.yaml\n")
-        shown = "manuscript/sections/s.tex:1  glob-spans-roots  code/models/*/props.yaml"
+        self.write(
+            "AGENTS.md",
+            SOURCES.replace("notes/", "code/models/m2/  fixed  cite\nnotes/", 1),
+        )
+        code, out, _ = self.lint(
+            "% src: code/models/*/props.yaml\n% src: code/models/m1/props.yaml\n"
+        )
+        shown = (
+            "manuscript/sections/s.tex:1  glob-spans-roots  code/models/*/props.yaml"
+        )
         self.assertEqual((code, out.strip()), (1, f"{shown}\n1 findings"))
 
     def test_path_absent_at_pin(self):
@@ -182,8 +221,10 @@ class TestLint(Workspace):
         self.assertEqual(code, 1)
 
     def test_line_beyond_end_and_glob_matching_nothing(self):
-        _, out, _ = self.lint("% src: code/src/a.c:4\n% src: code/nope/*/props.yaml\n"
-                                 "% src: code/src/a.c:3-3\n")
+        _, out, _ = self.lint(
+            "% src: code/src/a.c:4\n% src: code/nope/*/props.yaml\n"
+            "% src: code/src/a.c:3-3\n"
+        )
         self.assertIn("s.tex:1  line-beyond-end  code/src/a.c:4", out)
         self.assertIn("s.tex:2  missing-at-pin  code/nope/*/props.yaml", out)
         self.assertNotIn("s.tex:3", out)
@@ -195,7 +236,9 @@ class TestLint(Workspace):
         self.assertNotIn("good2020", out)
 
     def test_no_anchor_and_parent_path(self):
-        _, out, _ = self.lint("% src: grep somewhere for a thing\n% src: ../code/src/a.c\n")
+        _, out, _ = self.lint(
+            "% src: grep somewhere for a thing\n% src: ../code/src/a.c\n"
+        )
         self.assertIn("s.tex:1  no-anchor", out)
         self.assertIn("s.tex:2  parent-path", out)
 
@@ -219,8 +262,11 @@ class TestListAndLost(Workspace):
         self.assertEqual(out.strip().splitlines()[-1], "1 traces, 1 gaps in 1 files")
 
     def test_lost_moved_and_gap_closed(self):
-        self.section("% src: code/src/a.c:1\n% src: notes/n.md\n% src: code/src/a.c:2\n"
-                     "\\gap{q}{open}\n", "a.tex")
+        self.section(
+            "% src: code/src/a.c:1\n% src: notes/n.md\n% src: code/src/a.c:2\n"
+            "\\gap{q}{open}\n",
+            "a.tex",
+        )
         self.write("manuscript/sections/b.tex", "")
         self.commit()
         self.section("% src: notes/n.md\n", "a.tex")  # the other two go
@@ -228,7 +274,9 @@ class TestListAndLost(Workspace):
         code, out, _ = self.run_cmd("lost")
         self.assertEqual(code, 1)
         self.assertIn("lost  manuscript/sections/a.tex:3  code/src/a.c:2", out)
-        self.assertIn("moved  manuscript/sections/a.tex:1 -> manuscript/sections/b.tex:1", out)
+        self.assertIn(
+            "moved  manuscript/sections/a.tex:1 -> manuscript/sections/b.tex:1", out
+        )
         self.assertIn("gap closed  manuscript/sections/a.tex:4  q: open", out)
         self.assertNotIn("notes/n.md", out)
 
@@ -246,7 +294,9 @@ class TestListAndLost(Workspace):
     def test_nothing_lost_exits_0(self):
         self.section("% src: code/src/a.c:1\n")
         self.commit()
-        self.section("% src:   code/src/a.c:1\n\nExtra text.\n")  # whitespace and line moves are not losses
+        self.section(
+            "% src:   code/src/a.c:1\n\nExtra text.\n"
+        )  # whitespace and line moves are not losses
         code, out, _ = self.run_cmd("lost")
         self.assertEqual(code, 0)
         self.assertIn("0 lost, 0 moved", out)
@@ -260,18 +310,28 @@ class TestMoved(Workspace):
             git("code", "tag", tag)
 
     def test_repin_reports_traces_in_changed_files_only(self):
-        self.section("% src: code/src/a.c:2\n% src: code/models/m1/props.yaml\n% src: notes/n.md\n")
+        self.section(
+            "% src: code/src/a.c:2\n% src: code/models/m1/props.yaml\n% src: notes/n.md\n"
+        )
         self.write("code/src/a.c", "one\nTWO\nthree\n")
         self.code_commit("v2")
-        code, out, _ = self.run_cmd("moved", "code/", "--to", "v2")  # --from defaults to the pin v1
+        code, out, _ = self.run_cmd(
+            "moved", "code/", "--to", "v2"
+        )  # --from defaults to the pin v1
         self.assertEqual(code, 1)
-        self.assertEqual(out.splitlines()[0], "manuscript/sections/s.tex:1  src  code/src/a.c:2")
-        self.assertEqual(out.splitlines()[-1], "1 traces anchor in 2 changed files of code/ (v1..v2)")
+        self.assertEqual(
+            out.splitlines()[0], "manuscript/sections/s.tex:1  src  code/src/a.c:2"
+        )
+        self.assertEqual(
+            out.splitlines()[-1], "1 traces anchor in 2 changed files of code/ (v1..v2)"
+        )
         self.assertNotIn("props.yaml", out)
         self.assertNotIn("n.md", out)
 
     def test_renamed_file_is_reported_under_its_old_path(self):
-        self.section("% src: code/models/m1/props.yaml\n% src: code/models/m2/props.yaml\n")
+        self.section(
+            "% src: code/models/m1/props.yaml\n% src: code/models/m2/props.yaml\n"
+        )
         git("code", "mv", "models/m1/props.yaml", "models/m1/renamed.yaml")
         self.code_commit()
         code, out, _ = self.run_cmd("moved", "code/", "--to", "HEAD")
@@ -280,36 +340,61 @@ class TestMoved(Workspace):
         self.assertNotIn("s.tex:2", out)
 
     def test_glob_directory_and_brace_anchors(self):
-        self.section("% src: code/models/*/props.yaml\n% src: code/models/m2/\n"
-                     "% src: code/models/m1/\n% src: code/models/{m1,m2}/props.yaml\n")
-        self.write("code/models/m2/props.yaml", "a: 3\n")  # edited, not committed: the working tree counts
+        self.section(
+            "% src: code/models/*/props.yaml\n% src: code/models/m2/\n"
+            "% src: code/models/m1/\n% src: code/models/{m1,m2}/props.yaml\n"
+        )
+        self.write(
+            "code/models/m2/props.yaml", "a: 3\n"
+        )  # edited, not committed: the working tree counts
         code, out, _ = self.run_cmd("moved", "code", "manuscript/sections/s.tex")
         self.assertEqual(code, 1)
         lines = out.splitlines()
-        self.assertEqual([l.split()[0] for l in lines[:-1]], [f"manuscript/sections/s.tex:{n}" for n in (1, 2, 4)])
+        self.assertEqual(
+            [l.split()[0] for l in lines[:-1]],
+            [f"manuscript/sections/s.tex:{n}" for n in (1, 2, 4)],
+        )
         self.assertIn("changed files of code/ (v1..working tree)", lines[-1])
 
     def test_fixed_root_edited_in_the_working_tree(self):
-        self.section("% src: notes/n.md:2\n% src: code/src/a.c\n% src: notes/[n].md\n% src: notes/*p.md\n")
-        self.write("notes/sub/deep.md", "d\n")  # `*p.md` would reach it only by crossing a `/`
+        self.section(
+            "% src: notes/n.md:2\n% src: code/src/a.c\n% src: notes/[n].md\n% src: notes/*p.md\n"
+        )
+        self.write(
+            "notes/sub/deep.md", "d\n"
+        )  # `*p.md` would reach it only by crossing a `/`
         self.commit()
-        code, out, _ = self.run_cmd("moved", "--from", "HEAD", "notes", "manuscript/sections/s.tex")
-        self.assertEqual((code, out.strip()), (0, "0 traces anchor in 0 changed files of notes/ (HEAD..working tree)"))
+        code, out, _ = self.run_cmd(
+            "moved", "--from", "HEAD", "notes", "manuscript/sections/s.tex"
+        )
+        self.assertEqual(
+            (code, out.strip()),
+            (0, "0 traces anchor in 0 changed files of notes/ (HEAD..working tree)"),
+        )
         self.write("notes/n.md", "a\nB\n")
         self.write("notes/sub/deep.md", "D\n")
         self.write("notes/untracked.md", "u\n")
-        code, out, _ = self.run_cmd("moved", "--from", "HEAD", "notes", "manuscript/sections/s.tex")
+        code, out, _ = self.run_cmd(
+            "moved", "--from", "HEAD", "notes", "manuscript/sections/s.tex"
+        )
         self.assertEqual(code, 1)
         self.assertIn("s.tex:1  src  notes/n.md:2", out)
         self.assertIn("s.tex:3  src  notes/[n].md", out)
         self.assertNotIn("s.tex:4", out)
-        self.assertIn("2 traces anchor in 2 changed files of notes/ (HEAD..working tree); "
-                      "1 untracked files not compared", out)
+        self.assertIn(
+            "2 traces anchor in 2 changed files of notes/ (HEAD..working tree); "
+            "1 untracked files not compared",
+            out,
+        )
 
     def test_configuration_and_git_failures_exit_2(self):
         self.section("% src: notes/n.md\n")
-        for argv, word in ((("lib/",), "declared"), (("manuscript/",), "`-` root"), (("notes/",), "--from"),
-                           (("code/", "--from", "nosuchrev"), "nosuchrev")):
+        for argv, word in (
+            (("lib/",), "declared"),
+            (("manuscript/",), "`-` root"),
+            (("notes/",), "--from"),
+            (("code/", "--from", "nosuchrev"), "nosuchrev"),
+        ):
             with self.subTest(argv=argv):
                 code, _, err = self.run_cmd("moved", *argv)
                 self.assertEqual(code, 2)
@@ -318,7 +403,9 @@ class TestMoved(Workspace):
 
 class TestSample(Workspace):
     def test_sample_is_reproducible_and_shows_the_tex(self):
-        self.section("% src: code/src/a.c:1\nFirst sentence.\n% src: notes/n.md\nSecond.\n% src: code/src/a.c:2\nThird.\n")
+        self.section(
+            "% src: code/src/a.c:1\nFirst sentence.\n% src: notes/n.md\nSecond.\n% src: code/src/a.c:2\nThird.\n"
+        )
         code, out, _ = self.run_cmd("sample", "2", "--seed", "7")
         self.assertEqual(code, 0)
         self.assertEqual(out.strip().splitlines()[-1], "2 of 3 traces, seed 7")
@@ -345,10 +432,14 @@ class TestStale(Workspace):
         self.assertIn("never checked", out)
         self.section("Text, no traces.\n")  # a section needs a stamp whatever it holds
         self.assertEqual(self.stale()[0], 1)
-        self.assertIn("never checked", self.run_cmd("stale", "manuscript/main.tex")[1])  # the abstract
+        self.assertIn(
+            "never checked", self.run_cmd("stale", "manuscript/main.tex")[1]
+        )  # the abstract
         self.write("manuscript/figures/style.tex", "\\tikzset{x/.style={}}\n")
         code, out, _ = self.run_cmd("stale", "manuscript/figures/style.tex")
-        self.assertEqual((code, out.strip()), (0, "manuscript/figures/style.tex: no traces"))
+        self.assertEqual(
+            (code, out.strip()), (0, "manuscript/figures/style.tex: no traces")
+        )
 
     def test_git_failure_is_an_error(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
@@ -364,19 +455,32 @@ class TestStale(Workspace):
         self.assertIn("checked 2026-11-19, not yet committed", out)
         self.assertEqual(code, 1)
         self.commit()
-        self.section("% checked: 2026-11-20 a checker\nText.\n")  # re-stamped, uncommitted
+        self.section(
+            "% checked: 2026-11-20 a checker\nText.\n"
+        )  # re-stamped, uncommitted
         self.assertIn("not yet committed", self.stale()[1])
         git(".", "rm", "-qf", "manuscript/sections/s.tex")
         self.commit()
-        self.section("% checked: 2026-11-20 a checker\nText.\n")  # restored, in history but not HEAD
-        self.assertEqual(self.stale()[:2], (1, "manuscript/sections/s.tex: checked 2026-11-20, not yet committed\n"))
+        self.section(
+            "% checked: 2026-11-20 a checker\nText.\n"
+        )  # restored, in history but not HEAD
+        self.assertEqual(
+            self.stale()[:2],
+            (1, "manuscript/sections/s.tex: checked 2026-11-20, not yet committed\n"),
+        )
 
     def test_unchanged_then_stale(self):
         self.section("% checked: 2026-11-19 a checker\nText.\n")
         self.commit()
         sha = git(".", "rev-parse", "--short=8", "HEAD")
         code, out, _ = self.stale()
-        self.assertEqual((code, out.strip()), (0, f"manuscript/sections/s.tex: checked 2026-11-19, unchanged since {sha}"))
+        self.assertEqual(
+            (code, out.strip()),
+            (
+                0,
+                f"manuscript/sections/s.tex: checked 2026-11-19, unchanged since {sha}",
+            ),
+        )
         self.section("% checked: 2026-11-19 a checker\nText, changed.\nMore.\n")
         code, out, _ = self.stale()
         self.assertEqual(code, 1)

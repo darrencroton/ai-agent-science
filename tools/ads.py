@@ -50,8 +50,10 @@ MAX_ROWS = 200
 # Enough to screen a result set and then act on it. The abstract, the
 # identifiers and `esources` are load-bearing rather than optional: without the abstract nothing can be screened, and without the
 # identifiers no PDF can be found. The rest is what a shortlist has to show.
-FIELDS = ("bibcode,title,author,year,property,doctype,citation_count,"
-          "doi,identifier,esources,abstract")
+FIELDS = (
+    "bibcode,title,author,year,property,doctype,citation_count,"
+    "doi,identifier,esources,abstract"
+)
 
 
 class AdsError(Exception):
@@ -98,7 +100,11 @@ def _find_token():
         try:
             found = subprocess.run(
                 ["security", "find-generic-password", "-s", KEYCHAIN_SERVICE, "-w"],
-                capture_output=True, text=True, timeout=10, check=False)
+                capture_output=True,
+                text=True,
+                timeout=10,
+                check=False,
+            )
             if found.returncode == 0 and found.stdout.strip():
                 return found.stdout.strip()
         except (OSError, subprocess.SubprocessError):
@@ -117,7 +123,8 @@ def _find_token():
     raise AdsError(
         "no ADS/SciX token found. Register free at https://scixplorer.org, then\n"
         f'  security add-generic-password -a "$USER" -s {KEYCHAIN_SERVICE} -w <token>\n'
-        "or export ADS_API_TOKEN=<token>.")
+        "or export ADS_API_TOKEN=<token>."
+    )
 
 
 # --------------------------------------------------------------------------
@@ -128,7 +135,8 @@ def _safe(url):
     """A URL fit to print: scheme, host and path, with the query dropped."""
     parts = urllib.parse.urlsplit(url)
     return _scrub(
-        urllib.parse.urlunsplit((parts.scheme, parts.netloc, parts.path, "", "")) or url)
+        urllib.parse.urlunsplit((parts.scheme, parts.netloc, parts.path, "", "")) or url
+    )
 
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -145,7 +153,8 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         raise AdsError(
             f"refused an HTTP {code} redirect to {_safe(newurl)}. The token is "
             "only ever sent to the configured API host. If ADS has genuinely "
-            "moved, set SCI_PAPER_ADS_BASE to the new base URL.")
+            "moved, set SCI_PAPER_ADS_BASE to the new base URL."
+        )
 
 
 def _require_tls(base):
@@ -167,7 +176,8 @@ def _require_tls(base):
     raise AdsError(
         f"refusing to send the token to {_safe(base)}: SCI_PAPER_ADS_BASE must "
         "use https (localhost excepted). Both api.adsabs.harvard.edu and "
-        "api.scixplorer.org serve the v1 surface over https.")
+        "api.scixplorer.org serve the v1 surface over https."
+    )
 
 
 def _request(path, params=None, payload=None):
@@ -193,13 +203,16 @@ def _request(path, params=None, payload=None):
         handlers.append(urllib.request.ProxyHandler({}))
     opener = urllib.request.build_opener(*handlers)
     try:
-        with opener.open(urllib.request.Request(url, data=body, headers=headers),
-                         timeout=TIMEOUT) as response:
+        with opener.open(
+            urllib.request.Request(url, data=body, headers=headers), timeout=TIMEOUT
+        ) as response:
             return json.loads(response.read().decode())
     except urllib.error.HTTPError as exc:
-        hint = {401: "  token rejected -- check it is current",
-                403: "  token lacks permission for this endpoint",
-                429: "  rate limit exhausted -- ADS resets daily"}.get(exc.code, "")
+        hint = {
+            401: "  token rejected -- check it is current",
+            403: "  token lacks permission for this endpoint",
+            429: "  rate limit exhausted -- ADS resets daily",
+        }.get(exc.code, "")
         # Close it here: an HTTPError left to the garbage collector warns on
         # stderr with its reason phrase, which has not been through `_scrub`.
         with exc:
@@ -208,7 +221,8 @@ def _request(path, params=None, payload=None):
         # half, and half a token is still most of a token.
         detail = _scrub(body.decode(errors="replace").strip())[:400]
         raise AdsError(
-            f"{_safe(url)}: HTTP {exc.code} {_scrub(exc.reason)}{hint}\n{detail}")
+            f"{_safe(url)}: HTTP {exc.code} {_scrub(exc.reason)}{hint}\n{detail}"
+        )
     except urllib.error.URLError as exc:
         raise AdsError(f"{_safe(url)}: {_scrub(exc.reason)}")
     except TimeoutError:  # a read that stalls raises this bare, not as URLError
@@ -224,7 +238,7 @@ def _request(path, params=None, payload=None):
 def _arxiv(identifiers):
     for ident in identifiers:
         if ident.startswith("arXiv:"):
-            return ident[len("arXiv:"):]
+            return ident[len("arXiv:") :]
     return None
 
 
@@ -262,23 +276,31 @@ def _shape(doc, brief):
 
 def _rows(requested):
     if requested < 1 or requested > MAX_ROWS:
-        raise AdsError(f"--rows must be between 1 and {MAX_ROWS}; page with --start "
-                       "for more, and compare `returned` against `num_found`.")
+        raise AdsError(
+            f"--rows must be between 1 and {MAX_ROWS}; page with --start "
+            "for more, and compare `returned` against `num_found`."
+        )
     return requested
 
 
 def _search(query, rows, start, sort, brief):
-    params = {"q": query, "rows": _rows(rows), "start": start,
-              "fl": FIELDS.replace(",abstract", "") if brief else FIELDS}
+    params = {
+        "q": query,
+        "rows": _rows(rows),
+        "start": start,
+        "fl": FIELDS.replace(",abstract", "") if brief else FIELDS,
+    }
     if sort:
         params["sort"] = sort
     response = _request("search/query", params=params).get("response", {})
     docs = response.get("docs", [])
-    return {"query": query,
-            "num_found": response.get("numFound"),
-            "start": start,
-            "returned": len(docs),
-            "docs": [_shape(doc, brief) for doc in docs]}
+    return {
+        "query": query,
+        "num_found": response.get("numFound"),
+        "start": start,
+        "returned": len(docs),
+        "docs": [_shape(doc, brief) for doc in docs],
+    }
 
 
 def _year(doc):
@@ -303,7 +325,7 @@ def _resolve(identifier, rows):
             break
     for prefix in ("doi:", "arxiv:"):
         if ident.lower().startswith(prefix):
-            ident = ident[len(prefix):]
+            ident = ident[len(prefix) :]
             break
     if ident.startswith("10."):
         query = f'doi:"{ident}"'
@@ -318,12 +340,17 @@ def _resolve(identifier, rows):
     result = _search(query, rows, 0, None, brief=True)
     docs = result["docs"]
     # Prefer the refereed record where a preprint also has a published version.
-    best = max(docs, key=lambda d: (d["refereed"], d["doctype"] == "article",
-                                    _year(d))) if docs else None
-    return {"input": identifier,
-            "query": query,
-            "preferred": best["bibcode"] if best else None,
-            "matches": docs}
+    best = (
+        max(docs, key=lambda d: (d["refereed"], d["doctype"] == "article", _year(d)))
+        if docs
+        else None
+    )
+    return {
+        "input": identifier,
+        "query": query,
+        "preferred": best["bibcode"] if best else None,
+        "matches": docs,
+    }
 
 
 # --------------------------------------------------------------------------
@@ -332,7 +359,9 @@ def _resolve(identifier, rows):
 
 def _export(bibcodes):
     """Verbatim BibTeX. Whatever ADS returns is what goes into refs.bib."""
-    bibtex = _request("export/bibtex", payload={"bibcode": list(bibcodes)}).get("export", "")
+    bibtex = _request("export/bibtex", payload={"bibcode": list(bibcodes)}).get(
+        "export", ""
+    )
     # Match the citekey, `@ARTICLE{<bibcode>,`, not the bare string: one bibcode
     # is a prefix of another often enough that a substring test would call a
     # truncated one present and drop the reference silently.
@@ -346,17 +375,26 @@ def _export(bibcodes):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        prog="ads.py", description=__doc__.split("\n\n")[0],
-        formatter_class=argparse.RawDescriptionHelpFormatter)
+        prog="ads.py",
+        description=__doc__.split("\n\n")[0],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     def with_paging(sp):
-        sp.add_argument("--rows", type=int, default=DEFAULT_ROWS,
-                        help=f"records to return, 1-{MAX_ROWS} (default {DEFAULT_ROWS})")
+        sp.add_argument(
+            "--rows",
+            type=int,
+            default=DEFAULT_ROWS,
+            help=f"records to return, 1-{MAX_ROWS} (default {DEFAULT_ROWS})",
+        )
         sp.add_argument("--start", type=int, default=0, help="offset, for paging")
         sp.add_argument("--sort", help="e.g. 'citation_count desc', 'date desc'")
-        sp.add_argument("--brief", action="store_true",
-                        help="omit abstracts -- use when listing a long reference list")
+        sp.add_argument(
+            "--brief",
+            action="store_true",
+            help="omit abstracts -- use when listing a long reference list",
+        )
         return sp
 
     search = with_paging(sub.add_parser("search", help="run a Solr query"))
@@ -367,8 +405,12 @@ def main(argv=None):
     cites.add_argument("bibcode")
     resolve = sub.add_parser("resolve", help="arXiv id or DOI -> bibcode")
     resolve.add_argument("identifier")
-    resolve.add_argument("--rows", type=int, default=DEFAULT_ROWS,
-                         help="candidate records to weigh, when an id matches more than one")
+    resolve.add_argument(
+        "--rows",
+        type=int,
+        default=DEFAULT_ROWS,
+        help="candidate records to weigh, when an id matches more than one",
+    )
     export = sub.add_parser("export", help="verbatim BibTeX")
     export.add_argument("bibcodes", nargs="+")
 
@@ -384,9 +426,11 @@ def main(argv=None):
         if args.command == "resolve":
             result = _resolve(args.identifier, args.rows)
         else:
-            query = {"search": lambda: args.query,
-                     "refs": lambda: f"references({args.bibcode})",
-                     "cites": lambda: f"citations({args.bibcode})"}[args.command]()
+            query = {
+                "search": lambda: args.query,
+                "refs": lambda: f"references({args.bibcode})",
+                "cites": lambda: f"citations({args.bibcode})",
+            }[args.command]()
             result = _search(query, args.rows, args.start, args.sort, args.brief)
     except AdsError as exc:
         print(f"ads.py: {exc}", file=sys.stderr)

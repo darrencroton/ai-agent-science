@@ -86,8 +86,10 @@ DEFAULTS = (MAIN, SECTIONS + "*.tex", "manuscript/figures/*.tex")
 BIB = "manuscript/refs.bib"
 SRC_RE = re.compile(r"(?<!\\)%\s*src(?:\s*\(([^)]*)\))?\s*:(.*)$")
 STAMP_RE = re.compile(r"^\s*%\s*checked:\s*(\d{4}-\d{2}-\d{2})")
-CITE_RE = re.compile(r"\\(?:cite|citet|citep|citealt|citealp|citeauthor|citeyear|citeyearpar)"
-                     r"\*?\s*(?:\[[^\]]*\]\s*){0,2}\{([^}]*)\}")
+CITE_RE = re.compile(
+    r"\\(?:cite|citet|citep|citealt|citealp|citeauthor|citeyear|citeyearpar)"
+    r"\*?\s*(?:\[[^\]]*\]\s*){0,2}\{([^}]*)\}"
+)
 PATH_RE = re.compile(r"^(?P<p>.+?)(?::(?P<a>\d+)(?:[-\u2013]:?(?P<b>\d+))?)?$")
 LINE_RE = re.compile(r"^:(\d+)(?:[-\u2013]:?(\d+))?$")
 COMMIT_RE = re.compile(r"^([\w./-]+)@([0-9a-f]{7,40})$")
@@ -108,7 +110,12 @@ def git(*args, cwd=None):
     """Run git, caching by arguments; returns (exit code, stdout text)."""
     key = (cwd, args)
     if key not in _CACHE:
-        p = subprocess.run(["git", "--no-optional-locks", *args], cwd=cwd, capture_output=True, check=False)
+        p = subprocess.run(
+            ["git", "--no-optional-locks", *args],
+            cwd=cwd,
+            capture_output=True,
+            check=False,
+        )
         _CACHE[key] = (p.returncode, p.stdout.decode("utf-8", "replace"))
     return _CACHE[key]
 
@@ -118,6 +125,7 @@ def norm(s):
 
 
 # ---------------------------------------------------------------- parsing
+
 
 def strip_comments(text):
     """The text with every comment removed, keeping line numbers."""
@@ -134,8 +142,12 @@ def parse_traces(path, text):
             continue
         body, start = m.group(2), i
         if lines[i].lstrip().startswith("%"):
-            while i + 1 < len(lines) and lines[i + 1].lstrip().startswith("%") \
-                    and not SRC_RE.search(lines[i + 1]) and not STAMP_RE.match(lines[i + 1]):
+            while (
+                i + 1 < len(lines)
+                and lines[i + 1].lstrip().startswith("%")
+                and not SRC_RE.search(lines[i + 1])
+                and not STAMP_RE.match(lines[i + 1])
+            ):
                 i += 1
                 body += " " + lines[i].lstrip().lstrip("%")
         body = norm(body)
@@ -166,25 +178,38 @@ def parse_gaps(path, text):
                     if depth == 0:
                         break
                 j += 1
-            groups.append(code[pos + 1:j])
+            groups.append(code[pos + 1 : j])
             pos = j + 1
         if len(groups) == 2:
-            out.append((path, code.count("\n", 0, m.start()) + 1, norm(f"{groups[0]}: {groups[1]}")))
+            out.append(
+                (
+                    path,
+                    code.count("\n", 0, m.start()) + 1,
+                    norm(f"{groups[0]}: {groups[1]}"),
+                )
+            )
     return out
 
 
 def parse_cites(text):
     code = strip_comments(text)
-    return [(code.count("\n", 0, m.start()) + 1, k.strip())
-            for m in CITE_RE.finditer(code) for k in m.group(1).split(",") if k.strip()]
+    return [
+        (code.count("\n", 0, m.start()) + 1, k.strip())
+        for m in CITE_RE.finditer(code)
+        for k in m.group(1).split(",")
+        if k.strip()
+    ]
 
 
 def expand_braces(s):
     """`a/{x,y}/b` -> [`a/x/b`, `a/y/b`]; a brace group without a comma is left alone."""
     for m in re.finditer(r"\{([^{}]*)\}", s):
         if "," in m.group(1):
-            return [r for alt in m.group(1).split(",")
-                    for r in expand_braces(s[:m.start()] + alt + s[m.end():])]
+            return [
+                r
+                for alt in m.group(1).split(",")
+                for r in expand_braces(s[: m.start()] + alt + s[m.end() :])
+            ]
     return [s]
 
 
@@ -218,6 +243,7 @@ def anchors(body, roots, keys):
 
 # ---------------------------------------------------------------- files
 
+
 def tree_at(rev):
     rc, out = git("ls-tree", "-r", "-z", "--name-only", rev)
     if rc:
@@ -235,12 +261,16 @@ def find_files(specs, rev=None, strict=True):
             rx = glob_rx(spec if spec.endswith(".tex") else spec + "/*.tex")
             hits = [n for n in names if rx.fullmatch(n)]
         else:
-            hits = sorted(glob.glob(spec + "/*.tex") if os.path.isdir(spec) else glob.glob(spec))
+            hits = sorted(
+                glob.glob(spec + "/*.tex") if os.path.isdir(spec) else glob.glob(spec)
+            )
         if specs and not hits and strict:
             raise Error(f"no such .tex file or directory: {spec}")
         out += [h for h in hits if h not in out]
     if not out and strict:
-        raise Error("no .tex files found: run from the workspace root, or name the files")
+        raise Error(
+            "no .tex files found: run from the workspace root, or name the files"
+        )
     return out
 
 
@@ -259,17 +289,24 @@ def load(specs, rev=None, strict=True):
     out = {}
     for path in find_files(specs, rev, strict):
         text = read(path, rev)
-        out[path] = (parse_traces(path, text), parse_gaps(path, text), parse_cites(text))
+        out[path] = (
+            parse_traces(path, text),
+            parse_gaps(path, text),
+            parse_cites(text),
+        )
     return out
 
 
 # ---------------------------------------------------------------- list, lost
 
+
 def cmd_list(args):
     data = load(args.files, args.rev)
     n_t = n_g = 0
     for path, (traces, gaps, _) in data.items():
-        rows = [(t.line, "src", t.text) for t in traces] + [(g[1], "gap", g[2]) for g in gaps]
+        rows = [(t.line, "src", t.text) for t in traces] + [
+            (g[1], "gap", g[2]) for g in gaps
+        ]
         for line, kind, text in sorted(rows):
             print(f"{path}:{line}  {kind}  {text}")
         n_t, n_g = n_t + len(traces), n_g + len(gaps)
@@ -318,8 +355,10 @@ def cmd_lost(args):
         print(f"gap closed  {f}:{l}  {short(t)}")
     for f, l, (nf, nl), t in g_moved:
         print(f"gap moved  {f}:{l} -> {nf}:{nl}  {short(t)}")
-    print(f"{len(t_lost)} lost, {len(t_moved)} moved, {len(g_lost)} gaps closed, "
-          f"{len(g_moved)} gaps moved (against {rev})")
+    print(
+        f"{len(t_lost)} lost, {len(t_moved)} moved, {len(g_lost)} gaps closed, "
+        f"{len(g_moved)} gaps moved (against {rev})"
+    )
     return 1 if t_lost else 0
 
 
@@ -330,7 +369,9 @@ Root = collections.namedtuple("Root", "name pin policy")
 
 def parse_sources(path="AGENTS.md"):
     if not os.path.exists(path):
-        raise Error(f"{path} not found: lint needs its `sources` block (run from the workspace root)")
+        raise Error(
+            f"{path} not found: lint needs its `sources` block (run from the workspace root)"
+        )
     text = read(path)
     m = re.search(r"^```sources[ \t]*\n(.*?)^```", text, re.MULTILINE | re.DOTALL)
     if not m:
@@ -342,11 +383,17 @@ def parse_sources(path="AGENTS.md"):
         if not line:
             continue
         f = line.split()
-        ok = (len(f) == 3 and f[0].endswith("/") and f[2] in ("cite", "never")
-              and (f[1] in ("fixed", "-") or re.fullmatch(r"git:\S+", f[1]))
-              and (f[1] != "-" or f[2] == "never"))
+        ok = (
+            len(f) == 3
+            and f[0].endswith("/")
+            and f[2] in ("cite", "never")
+            and (f[1] in ("fixed", "-") or re.fullmatch(r"git:\S+", f[1]))
+            and (f[1] != "-" or f[2] == "never")
+        )
         if not ok:
-            raise Error(f"{path}:{start + i}: cannot parse sources line: {raw.strip()!r}")
+            raise Error(
+                f"{path}:{start + i}: cannot parse sources line: {raw.strip()!r}"
+            )
         roots.append(Root(*f))
     if not roots:
         raise Error(f"{path}: the `sources` block is empty")
@@ -354,7 +401,11 @@ def parse_sources(path="AGENTS.md"):
 
 
 def glob_rx(pat):
-    return re.compile("".join("[^/]*" if c == "*" else "[^/]" if c == "?" else re.escape(c) for c in pat))
+    return re.compile(
+        "".join(
+            "[^/]*" if c == "*" else "[^/]" if c == "?" else re.escape(c) for c in pat
+        )
+    )
 
 
 def repo_of(name):
@@ -380,7 +431,9 @@ class Pins:
     def _tree(self, root):
         if root.name not in self._trees:
             if not (repo := repo_of(root.name)):
-                raise Error(f"{root.name} is not a git repository, but its pin is {root.pin}")
+                raise Error(
+                    f"{root.name} is not a git repository, but its pin is {root.pin}"
+                )
             top, prefix = repo
             rev = root.pin[4:]
             rc, out = git("ls-tree", "-r", "-z", "--name-only", rev, cwd=top)
@@ -396,10 +449,12 @@ class Pins:
         if root.pin == "fixed":
             return glob.glob(path)
         _, prefix, files, dirs, _ = self._tree(root)
-        inner = (prefix + path[len(root.name):]).rstrip("/")
+        inner = (prefix + path[len(root.name) :]).rstrip("/")
         if "*" in inner or "?" in inner:
             rx = glob_rx(inner)
-            return [root.name + n[len(prefix):] for n in files | dirs if rx.fullmatch(n)]
+            return [
+                root.name + n[len(prefix) :] for n in files | dirs if rx.fullmatch(n)
+            ]
         return [path.rstrip("/")] if inner in files | dirs else []
 
     def length(self, root, match):
@@ -411,7 +466,7 @@ class Pins:
                 data = f.read()
         else:
             top, prefix, files, _, rev = self._tree(root)
-            inner = prefix + match[len(root.name):]
+            inner = prefix + match[len(root.name) :]
             if inner not in files:
                 return None
             _, out = git("cat-file", "blob", f"{rev}:{inner}", cwd=top)
@@ -437,7 +492,11 @@ def read_keys():
 def root_of(path, roots):
     """The declared root with the longest name that `path` lies under, or None."""
     p = path.rstrip("/") + "/"
-    return max((r for r in roots if p.startswith(r.name)), key=lambda r: len(r.name), default=None)
+    return max(
+        (r for r in roots if p.startswith(r.name)),
+        key=lambda r: len(r.name),
+        default=None,
+    )
 
 
 def spans_roots(path, root, roots):
@@ -447,8 +506,13 @@ def spans_roots(path, root, roots):
     segs = path.rstrip("/").split("/")
     for r in roots:
         cs = r.name.rstrip("/").split("/")
-        if (r is not root and r.name.startswith(root.name) and r.policy != "never"
-                and len(segs) >= len(cs) and all(fnmatch.fnmatchcase(c, p) for p, c in zip(segs, cs))):
+        if (
+            r is not root
+            and r.name.startswith(root.name)
+            and r.policy != "never"
+            and len(segs) >= len(cs)
+            and all(fnmatch.fnmatchcase(c, p) for p, c in zip(segs, cs))
+        ):
             return True
     return False
 
@@ -495,7 +559,10 @@ def lint_trace(t, roots, keys, pins):
                     if lines and len(hits) == 1 and not forbidden:
                         n = pins.length(root_of(hits[0], roots), hits[0])
                         if n is not None and max(lines) > n:
-                            yield "line-beyond-end", f"{path}:{max(lines)} (file has {n} lines)"
+                            yield (
+                                "line-beyond-end",
+                                f"{path}:{max(lines)} (file has {n} lines)",
+                            )
     if not found:
         yield "no-anchor", t.body[:70]
 
@@ -505,8 +572,12 @@ def cmd_lint(args):
     pins, findings = Pins(roots), []
     for path, (traces, _, cites) in load(args.files).items():
         for t in traces:
-            findings += [(path, t.line, p, tok) for p, tok in lint_trace(t, roots, keys, pins)]
-        findings += [(path, l, "unknown-cite-key", k) for l, k in cites if k not in keys]
+            findings += [
+                (path, t.line, p, tok) for p, tok in lint_trace(t, roots, keys, pins)
+            ]
+        findings += [
+            (path, l, "unknown-cite-key", k) for l, k in cites if k not in keys
+        ]
     for path, line, problem, tok in sorted(findings, key=lambda f: (f[0], f[1])):
         print(f"{path}:{line}  {problem}  {tok}")
     print(f"{len(findings)} findings")
@@ -514,6 +585,7 @@ def cmd_lint(args):
 
 
 # ---------------------------------------------------------------- stale
+
 
 def cmd_stale(args):
     if git("rev-parse", "--git-dir")[0]:
@@ -525,7 +597,12 @@ def cmd_stale(args):
         n = next((i for i, l in enumerate(lines, 1) if STAMP_RE.match(l)), None)
         if n is None:
             p = os.path.normpath(path)
-            if p == MAIN or p.startswith(SECTIONS) or parse_traces(path, text) or parse_cites(text):
+            if (
+                p == MAIN
+                or p.startswith(SECTIONS)
+                or parse_traces(path, text)
+                or parse_cites(text)
+            ):
                 print(f"{path}: never checked")
                 bad += 1
             else:
@@ -533,7 +610,9 @@ def cmd_stale(args):
             continue
         date = STAMP_RE.match(lines[n - 1]).group(1)
         sha = out = None
-        if not git("cat-file", "-e", f"HEAD:./{path}")[0]:  # in HEAD: blame dates the stamp line
+        if not git("cat-file", "-e", f"HEAD:./{path}")[
+            0
+        ]:  # in HEAD: blame dates the stamp line
             rc, out = git("blame", "--porcelain", "-L", f"{n},{n}", "--", path)
             if rc:
                 raise Error(f"git blame failed for {path}")
@@ -547,8 +626,14 @@ def cmd_stale(args):
         if rc:
             raise Error(f"git show {sha}:{old_name} failed")
         keep = lambda ls: [l for l in ls if not STAMP_RE.match(l)]
-        ops = difflib.SequenceMatcher(None, keep(old.splitlines()), keep(lines), autojunk=False)
-        k = sum(max(i2 - i1, j2 - j1) for tag, i1, i2, j1, j2 in ops.get_opcodes() if tag != "equal")
+        ops = difflib.SequenceMatcher(
+            None, keep(old.splitlines()), keep(lines), autojunk=False
+        )
+        k = sum(
+            max(i2 - i1, j2 - j1)
+            for tag, i1, i2, j1, j2 in ops.get_opcodes()
+            if tag != "equal"
+        )
         if k:
             print(f"{path}: STALE: checked {date}, changed since {sha[:8]} ({k} lines)")
             bad += 1
@@ -558,6 +643,7 @@ def cmd_stale(args):
 
 
 # ---------------------------------------------------------------- moved
+
 
 def fnmatch_segments(name, pat):
     """Whether `name` matches the glob `pat` with no `*` or `?` reaching across a `/`."""
@@ -569,12 +655,18 @@ def fnmatch_segments(name, pat):
 def anchors_changed(t, root, roots, keys, changed):
     """Whether trace `t` has a path anchor in `root` naming a changed file, a glob matching
     one, or a directory holding one. `changed` holds files and their parent directories."""
-    paths = [tok for kind, tok, _ in anchors(t.body, [r.name for r in roots], keys) if kind == "path"]
+    paths = [
+        tok
+        for kind, tok, _ in anchors(t.body, [r.name for r in roots], keys)
+        if kind == "path"
+    ]
     for path in (p for tok in paths for p in expand_braces(tok)):
         if root_of(path, roots) == root:
             rx, pat = glob_rx(path.rstrip("/")), path.rstrip("/")
-            if any(rx.fullmatch(n) or (root.pin == "fixed" and fnmatch_segments(n, pat))
-                   for n in changed):
+            if any(
+                rx.fullmatch(n) or (root.pin == "fixed" and fnmatch_segments(n, pat))
+                for n in changed
+            ):
                 return True
     return False
 
@@ -584,42 +676,75 @@ def cmd_moved(args):
     name = args.root.rstrip("/") + "/"
     root = next((r for r in roots if r.name == name), None)
     if not root:
-        raise Error(f"{name} is not a root declared in the `sources` block of AGENTS.md")
+        raise Error(
+            f"{name} is not a root declared in the `sources` block of AGENTS.md"
+        )
     if root.pin == "-":
         raise Error(f"{name} is a `-` root: nothing may cite it")
     old = args.old or (root.pin[4:] if root.pin != "fixed" else None)
     if not old:
-        raise Error(f"{name} is `fixed`: say which revision to compare from with --from")
+        raise Error(
+            f"{name} is `fixed`: say which revision to compare from with --from"
+        )
     if old.startswith("-") or (args.to or "").startswith("-"):
         raise Error("a revision may not begin with '-'")
     if not (repo := repo_of(name)):
         raise Error(f"{name} is missing or not in a git repository")
     top, prefix = repo
     span = f"{old}..{args.to}" if args.to else f"{old}..working tree"
-    rc, out = git("--literal-pathspecs", "diff", "--name-only", "--no-renames", "-z", old,
-                  *([args.to] if args.to else []), "--", prefix or ".", cwd=top)
+    rc, out = git(
+        "--literal-pathspecs",
+        "diff",
+        "--name-only",
+        "--no-renames",
+        "-z",
+        old,
+        *([args.to] if args.to else []),
+        "--",
+        prefix or ".",
+        cwd=top,
+    )
     if rc:
-        raise Error(f"git diff {span} failed in {name}: "
-                    f"{f'do {old} and {args.to}' if args.to else f'does {old}'} exist in the repository "
-                    "holding it?")
-    files = sorted(name + f[len(prefix):] for f in out.split("\0")[:-1])
+        raise Error(
+            f"git diff {span} failed in {name}: "
+            f"{f'do {old} and {args.to}' if args.to else f'does {old}'} exist in the repository "
+            "holding it?"
+        )
+    files = sorted(name + f[len(prefix) :] for f in out.split("\0")[:-1])
     changed = {n for f in files for n in (f, *_parents(f))}
-    hits = [t for v in load(args.files).values() for t in v[0]
-            if anchors_changed(t, root, roots, keys, changed)]
+    hits = [
+        t
+        for v in load(args.files).values()
+        for t in v[0]
+        if anchors_changed(t, root, roots, keys, changed)
+    ]
     untracked = ""
     if not args.to:
-        rc, other = git("--literal-pathspecs", "ls-files", "--others", "-z", "--", prefix or ".", cwd=top)
+        rc, other = git(
+            "--literal-pathspecs",
+            "ls-files",
+            "--others",
+            "-z",
+            "--",
+            prefix or ".",
+            cwd=top,
+        )
         if rc:
-            raise Error(f"git ls-files failed in {name}: the untracked files were not scanned")
+            raise Error(
+                f"git ls-files failed in {name}: the untracked files were not scanned"
+            )
         if k := len(other.split("\0")[:-1]):
             untracked = f"; {k} untracked files not compared"
     for t in hits:
         print(f"{t.file}:{t.line}  src  {t.text}")
-    print(f"{len(hits)} traces anchor in {len(files)} changed files of {name} ({span}){untracked}")
+    print(
+        f"{len(hits)} traces anchor in {len(files)} changed files of {name} ({span}){untracked}"
+    )
     return 1 if hits else 0
 
 
 # ---------------------------------------------------------------- sample
+
 
 def cmd_sample(args):
     """An audit sheet: traces chosen by the tool, not the agent, each with the
@@ -630,7 +755,9 @@ def cmd_sample(args):
         raise Error("N must be at least 1")
     data = load(args.files)
     pool = [t for traces_, _, _ in data.values() for t in traces_]
-    seed = args.seed if args.seed is not None else random.SystemRandom().randrange(10**6)
+    seed = (
+        args.seed if args.seed is not None else random.SystemRandom().randrange(10**6)
+    )
     chosen = sorted(random.Random(seed).sample(pool, min(args.n, len(pool))))
     lines = {path: read(path).splitlines() for path in {t.file for t in chosen}}
     for k, t in enumerate(chosen, 1):
@@ -643,12 +770,17 @@ def cmd_sample(args):
 
 # ---------------------------------------------------------------- main
 
+
 def main(argv=None):
     _CACHE.clear()
     ap = argparse.ArgumentParser(prog="traces.py", description=__doc__.split("\n\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name, fn, rev in (("list", cmd_list, True), ("lost", cmd_lost, True),
-                          ("lint", cmd_lint, False), ("stale", cmd_stale, False)):
+    for name, fn, rev in (
+        ("list", cmd_list, True),
+        ("lost", cmd_lost, True),
+        ("lint", cmd_lint, False),
+        ("stale", cmd_stale, False),
+    ):
         p = sub.add_parser(name)
         p.set_defaults(fn=fn)
         if rev:
@@ -657,7 +789,9 @@ def main(argv=None):
     p = sub.add_parser("moved")
     p.set_defaults(fn=cmd_moved)
     p.add_argument("root", help="a root declared in AGENTS.md")
-    p.add_argument("--from", dest="old", help="revision to compare from (default: the root's pin)")
+    p.add_argument(
+        "--from", dest="old", help="revision to compare from (default: the root's pin)"
+    )
     p.add_argument("--to", help="revision to compare to (default: the working tree)")
     p.add_argument("files", nargs="*")
     p = sub.add_parser("sample")
