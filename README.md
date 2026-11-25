@@ -64,7 +64,7 @@ Five memory files keep apart what is true today (`STATE.md`, rewritten each sess
 - `tools/traces.py` is run from the workspace root. `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check; `sample` draws traces at random for the author to audit.
 - `skeleton/workspace/manuscript/scipaper.sty` is the gap macro.
 
-Both tools use only the Python standard library. A paper also needs `latexmk` and git.
+Both tools use only the Python standard library. A paper needs `latexmk` and git. The procedures also call `curl` to fetch references and full texts, `latexpand` and `latexdiff` for the bundle sent to the journal and the reply to its referee, and Ghostscript (`gs`) for EPS figures.
 
 The `literature` skill answers five questions through `ads.py`: has this been done, what is the closest prior work and what did it leave open, what supports or contradicts one claim, what comparison values can be taken and with which conventions, and where a dataset or tool came from. It keeps a notebook of what was read, in the workspace's `paper/lit/`.
 

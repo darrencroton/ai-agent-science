@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ADS/SciX access for the sci-paper skills. Python standard library only.
+"""ADS/SciX access for the ai-agent-science skills. Python standard library only.
 
 Five commands over the ADS v1 API:
 

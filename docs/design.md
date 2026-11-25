@@ -128,6 +128,8 @@ The ai-agent-coder engine carries the boundary in three generic sentences of its
 | Scoring, voting or debate between reviewers | Independent readers, a merge and the author's judgement did the job |
 | Lists of banned words; detection of AI-written prose | The stylist judges against this paper's intent and this author's style, not a generic list |
 | Tools for fields beyond astronomy | `ads.py` is astronomy's; the rule (export from an authority) is generic, and the DOI path serves other fields until someone needs more |
+| Lint checks that each cited paper was read, or of gap kinds and question ids | Citing only what was read is the author's responsibility (owner, 2026-11-25); a gap prints in a draft and fails the final build whatever its kind, and question ids are the session's |
+| A record of the method's measures, kept for a paper about it (findings by kind, seeded recall, the author's time) | No paper about the workflow makes measured claims; revisit if one is wanted (owner, 2026-11-25) |
 
 ## 7. How components are tested
 
@@ -140,7 +142,7 @@ The stylist and the referee are judged against the author's own reading. The sty
 
 ## 8. Settled decisions
 
-All fourteen recommendations were accepted by the owner on 2026-11-19; decisions 15 and 16 followed the same day, and 17 and 18 on 2026-11-21.
+The first fourteen were accepted by the owner on 2026-11-19; later decisions carry their dates.
 
 1. One loop: `review` with four reader briefs, and `revise`; no separate style, referee or respond procedures.
 2. Eight core rules, not five.

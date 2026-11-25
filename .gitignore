@@ -12,3 +12,5 @@ docs/archive/
 archive/
 HANDOFF.md
 .claude/
+# a paper workspace linked into the development clone (its own git repository, kept elsewhere)
+/sci-paper-workspace*

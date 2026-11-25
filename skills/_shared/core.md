@@ -19,7 +19,7 @@ The rules every session and every subagent works under, whatever the task. Read 
 
 ## Trace forms
 
-A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports. It must contain at least one anchor a tool can recognise (a path from a declared root, a commit `<root>@<hex>`, a `refs.bib` key, or the keyword `search`); anything else in it is free text. Write a line number by looking at the file, never from memory.
+A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports. It must contain at least one anchor a tool can recognise (a path from a declared root, a commit `<root>@<hex>`, a `refs.bib` key, or the keyword `search`); anything else in it is free text. A qualifier may say which part of the sentence a trace supports, with the anchors after the colon: `% src (footnote): ...`. Write a line number by looking at the file, never from memory.
 
 | Source | Form |
 |---|---|

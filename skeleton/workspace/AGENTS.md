@@ -33,7 +33,7 @@ _Not yet set. The author's words go here at `start`, and only the author changes
 
 ## Conventions
 
-_This paper's conventions as they are decided: file names, labels, units, notation, citation keys. The style itself is in `paper/style.md`._
+_This paper's conventions as they are decided: file names, labels, units, notation, citation keys, the word counter. The style itself is in `paper/style.md`._
 
 ## How we work here
 

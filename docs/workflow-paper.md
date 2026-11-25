@@ -1,5 +1,7 @@
 # A workflow for writing science with AI agents: the idea for a paper
 
+*The paper has begun (2026-11-25), in a shorter form than this document proposes, in its own workspace, which holds its intent and decisions. This document is kept as a lead and is no longer maintained.*
+
 The idea for a paper that offers the research community a method: how to write a scientific paper with AI agents so that it meets professional and ethical standards, faster than by hand and without adding to the flood of unverifiable text. ai-agent-science is the method's demonstration, not its subject. This document holds the argument, the context, the prior work found so far, the evidence the paper would need and the decisions still open, so that the paper can be started when the first paper written with the toolkit is mature. It is a record of an idea, not a draft; nothing here is a source.
 
 The owner's intent, in their words (2026-11-21): "I don't want this to be about the repo itself, but the workflow as the community desparatly needs guidance on how to work in this new world and i'd like this paper to offer what i believe is an effective alternative. ai-agent-science can be the demonstration of this workflow, but it shouldn't be a paper just about it."
@@ -51,7 +53,7 @@ The field is crowded and moving fast. No single idea above is new in isolation; 
 | Denario / CMBAgent (astronomy; 2025arXiv251026887V) | 2025 | Most of the research lifecycle, from an astronomy group | Autonomous at the other pole; no per-claim provenance | abstract |
 | Agent-Native Research Artifacts (Liu et al., arXiv:2604.24658) | 2026 | Each claim linked to raw output | Replaces the paper with an executable artefact | abstract |
 | STORM, PaperQA2, OpenScholar | 2024–26 | Source-grounded synthesis | Literature only; no paper, no verification by a second reader | not read (search results only) |
-| showyourwork! (Luger et al., 2021arXiv211006271L) | 2021 | Figures linked to the exact code and data; the build as the paper's test | Pre-LLM; figures and data only | read |
+| showyourwork! (Luger et al., 2021arXiv211006271L, the Doppler-imaging paper that introduced it) | 2021 | Figures linked to the exact code and data; the build as the paper's test | Pre-LLM; figures and data only | read |
 
 **What appears new.** (a) Fail-closed, per-sentence traces in the manuscript source: every checkable sentence, not only numbers or citations, carries a pointer or a gap, and the final build refuses a gap. (b) One trace grammar across source kinds, including the author's dated testimony as a citable source class, for facts only the author knows. (c) The author writes and owns the prose; the agent never manufactures results. (d) Independent fresh-context readers with separate questions (accuracy, claim strength, narrative, referee), including a creative reader for how the paper communicates. (e) Deterministic tools for what fails silently: lint of traces, traces lost in an edit, sections changed since their last check, random audit samples, and verbatim export of references.
 
