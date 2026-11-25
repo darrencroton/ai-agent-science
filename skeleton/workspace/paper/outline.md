@@ -3,7 +3,7 @@
 The only authority for the argument. Changed only on the author's decision; a framing set aside is recorded in the journal, not kept here. Four parts, in this order: the intent, the narrative, the argument spine, and the sections table.
 
 ## Intent
-What the paper is for, who must be convinced, and what it is not, in the author's own words where they exist, each line dated. When the author changes their mind the line is rewritten and the journal records the change.
+What the paper is for, who must be convinced, and what it is not, as the author has confirmed it and in their own terms, each line dated. When the author changes their mind the line is replaced and the journal records the change.
 
 _Empty. `start` proposes the first version from the author's answers._
 

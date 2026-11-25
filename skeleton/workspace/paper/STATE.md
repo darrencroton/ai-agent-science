@@ -17,7 +17,7 @@ See `paper/outline.md`, the only authority. Note here only what is currently in 
 _Nothing yet. Each entry carries the date of the journal line that records its reasoning._
 
 ## Open
-_Nothing yet. Ids into `open-questions.md`._
+_Nothing yet. Ids into `open-questions.md`, and any record the author has not yet confirmed._
 
 ## Next
 Run `start` (or describe the paper): read the material, ask why the work was done, and propose an intent, an argument and the open questions.

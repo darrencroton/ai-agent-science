@@ -19,7 +19,7 @@ What the paper may cite, at what version, and what it may not. `python3 <install
 # code/docs/plans/    -          never   # forward plans are not delivered work
 # data/               fixed      cite    # files the paper reads as they are
 # campaign-findings/  fixed      cite    # pinned copies of investigations' findings (skills/paper/evidence.md)
-notes/              fixed      cite    # the author's testimony
+notes/              fixed      cite    # the author's confirmed testimony
 paper/lit/          fixed      cite    # a note records a reading; a trace names the location in the paper
 paper/checks/       fixed      cite    # the agent's own read-only checks
 paper/lit/reports/  -          never   # agent-written answers to literature questions
@@ -29,7 +29,7 @@ manuscript/         -          never   # the draft is never a source
 
 ## Commit policy
 
-_Not yet set. The author's words go here at `start`, and only the author changes them. Where none is stated, ask._
+_Not yet set. The author's confirmed policy goes here at `start`, and only the author changes it. Where none is stated, ask._
 
 ## Conventions
 
@@ -37,7 +37,7 @@ _This paper's conventions as they are decided: file names, labels, units, notati
 
 ## How we work here
 
-_Who drafts and who checks, and on which model (the stylist on the strongest available); the panel's membership; anything this paper teaches. A standing instruction from the author goes here, with one journal line quoting it._
+_Who drafts and who checks, and on which model (the stylist on the strongest available); the panel's membership; anything this paper teaches. A standing instruction from the author goes here once they have confirmed it, with one journal line recording the decision._
 
 ## Build
 
@@ -61,7 +61,7 @@ Not yet chosen; `main.tex` uses a plain `article` class. To choose one, and to s
 | `paper/checks/` | the agent's own read-only checks, one directory each, with script, command and output |
 | `paper/reviews/` | one directory per milestone review |
 | `manuscript/` | `main.tex`, `sections/`, `refs.bib`, `scipaper.sty`, `figures/`; the author edits here directly and constantly |
-| `notes/` | the author's testimony, in their own words, never edited |
+| `notes/` | the author's testimony, one confirmed record per subject (`<slug>.md`) |
 | `.scratch/` | scratch only; gitignored |
 
 Add a row marked **local** for anything else this paper keeps here.

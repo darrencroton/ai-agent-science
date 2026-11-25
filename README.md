@@ -9,7 +9,7 @@ A paper is verifiable when every checkable sentence has its source beside it, or
 The mechanism is one comment beside each checkable sentence in the manuscript source, or a gap that prints loudly in a draft and fails the build in final mode:
 
 ```latex
-% src: notes/2026-03-02-run-log.md "converged after 200 iterations"
+% src: notes/run-log.md "converged after 200 iterations"
 The fit converged after 200 iterations.
 
 The residual is below the noise \gap{number}{command that would measure the residual}.
@@ -46,12 +46,12 @@ The readers are briefs handed to a fresh context that did not write the text, an
 
 ## What every session relies on
 
-**The core** (`skills/_shared/core.md`) is read whole by every session and every subagent. It holds eight rules: trace or gap; references are exported, never composed; the writer does not check itself; a claim is worded no stronger than its test; the author owns the argument and their prose; read, do not run, with one exception; shorter, and never by silent omission; and memory. It also holds the trace forms, the gap kinds, and how the author's words are sorted into testimony, direction and standing instruction.
+**The core** (`skills/_shared/core.md`) is read whole by every session and every subagent. It holds eight rules: trace or gap; references are exported, never composed; the writer does not check itself; a claim is worded no stronger than its test; the author owns the argument and their prose; read, do not run, with one exception; shorter, and never by silent omission; and memory. It also holds the trace forms, the gap kinds, and how what the author says is recorded, once they confirm it, as testimony, direction or standing instruction.
 
 **The workspace** is the paper's own git repository and the working directory of every session; `skeleton/workspace/` is the scaffold. Three files carry the contract and every drafter reads them:
 
 - `AGENTS.md` says how we work here, names the installation root, sets the commit policy, and holds the `sources` block: which roots the paper may cite, at which version, and which it may not.
-- `paper/outline.md` holds the intent in the author's words, the narrative, the argument, and each section's role, budget, what it must carry and its hand-off to the next.
+- `paper/outline.md` holds the intent as the author confirmed it, the narrative, the argument, and each section's role, budget, what it must carry and its hand-off to the next.
 - `paper/style.md` holds the author's voice, distilled from their past papers by `techniques/style-sheet.md`: register, notation, defined terms and verbatim exemplar paragraphs, which the stylist also reads against.
 
 Five memory files keep apart what is true today (`STATE.md`, rewritten each session), what the paper argues (`outline.md`), what each claim rests on (`claims.md`), what the author must decide (`open-questions.md`) and what was decided and why (`journal.md`, append-only). Three reference files, `style.md`, `venue.md` and `field.md`, are each built once at first need by a technique, so that they are current for this paper, and are never a source. Each milestone review leaves a record in `paper/reviews/`.

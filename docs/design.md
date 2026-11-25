@@ -48,7 +48,7 @@ The toolkit never certifies anything. It makes the author's verification cheap a
 
 1. **The manuscript carries its own evidence.** Every checkable statement has a trace or a gap beside it, in the `.tex`. This is the one mechanism everything rests on; hundreds of traces across a paper's sections were each re-openable. A separate register of facts would drift from the text; a comment beside the sentence moves, and is cut, with it.
 2. **The writer never checks itself.** Independence is the unit of verification: draft, then a fresh context opens every trace, then the session that owns the paper confirms each finding at source before changing anything. It was the most valuable step in the loop, and a reader's finding is a lead and not an instruction.
-3. **Only primary sources are sources.** Not the draft, not an agent's survey, not a brief, not memory. Agent-written notes are an index. The author's recollection is a claim like any other; the author's dated testimony is a source where nothing else can be.
+3. **Only primary sources are sources.** Not the draft, not an agent's survey, not a brief, not memory. Agent-written notes are an index. The author's recollection is a claim like any other; testimony the author has confirmed is theirs, whoever typed it, and a source where nothing else can be.
 4. **The author owns the argument and their prose; the agent owns the legwork.** The agent proposes, marks and asks, and every question carries a recommendation so that one reply settles many. It does not decide the framing, does not rewrite what the author wrote, and does not act when asked to look.
 5. **One loop for every reader.** A trace checker, a stylist, a simulated referee, the author with a red pen, a co-author and the journal's referee all produce the same thing, comments on the paper, and one mechanism handles them: numbered points, a disposition for each, the changes, a re-check of what changed.
 6. **Shorter is the default, and length is decided before the prose exists.** A section has a budget in the outline and its paragraph plan is agreed before it is written. Compression after the fact is where errors come in.
@@ -85,7 +85,7 @@ The workspace is its own git repository and the working directory of every sessi
 
 - **`AGENTS.md`** names the installation, says "read `STATE.md`, then the core", and holds the `sources` block, the commit policy, the paper's conventions and how it is run. It is the only instruction file, and it begins at about sixty lines and grows only with what the paper itself teaches. The `sources` block is fenced, with one line per root giving its pin (`git:<rev>`, `fixed` or `-`) and whether it may be cited; a fenced block and not a table, because nothing reflows it, and in this file and not another, because the harness already puts it in front of every agent and a second file would be a second place for a pin.
 
-The memory files, the reference files and the handoff between sessions are in core (*The workspace*, *Start and end of a session*); the toolkit assumes no commit policy, and the author sets it at `start`. A decision recorded only in the agent's paraphrase is the agent's, not the author's, which is why the journal quotes the author.
+The memory files, the reference files and the handoff between sessions are in core (*The workspace*, *Start and end of a session*); the toolkit assumes no commit policy, and the author sets it at `start`. A decision recorded only in the agent's unconfirmed paraphrase is the agent's, not the author's, which is why the journal marks the decisions the author confirmed.
 
 ## 4. Generic and particular
 
@@ -118,7 +118,7 @@ The ai-agent-coder engine carries the boundary in three generic sentences of its
 | A separate brief written for each drafter | With sources and conventions in `AGENTS.md`, intent and budgets in the outline and style in the style sheet, a drafter is told which section to write and what is particular to it |
 | A register of promises between sections | A `\gap{todo}` under the heading it binds is visible in every build and blocks submission |
 | A claims database, an approval registry or a state validator | `claims.md` is a table that nothing validates and nothing depends on; the check stamp is one comment line that git can contradict |
-| Capturing every word the author says | Only what will rest on the words is kept, and the rest goes stale |
+| Capturing every word the author says | Conversation is summarised into confirmed records at key points, because verbatim fragments left beside the current direction go stale and bias later work; git is the history (decision 21) |
 | Running analysis or making data figures | The agent that writes the paper must not also manufacture its results; new results come from the author or from a campaign and arrive as findings |
 | Submission, or anything else that leaves the machine | The author's act |
 | Word, Overleaf, reference managers, formats other than LaTeX | One real need at a time; LaTeX and git are what the trace mechanism rests on |
@@ -146,7 +146,7 @@ The first fourteen were accepted by the owner on 2026-11-19; later decisions car
 
 1. One loop: `review` with four reader briefs, and `revise`; no separate style, referee or respond procedures.
 2. Eight core rules, not five.
-3. The author's words are sorted into testimony, direction, standing instruction and conversation; only testimony makes a verbatim note.
+3. Superseded by 21.
 4. `claims.md` and `paper/reviews/` are core, as a table and a directory convention with nothing that validates them.
 5. `traces.py` with `list`, `lost`, `lint` and `stale`, the small trace format and the check stamp are built now.
 6. The workspace is the working directory, with sources linked into it.
@@ -156,7 +156,7 @@ The first fourteen were accepted by the owner on 2026-11-19; later decisions car
 10. The earlier Plan is archived.
 11. Reader briefs are tested by the seeded recipe in a live workspace, with no fixture in the toolkit.
 12. A second paper, on a different subject, is the test of generic against particular.
-13. The commit policy is one section in the workspace `AGENTS.md`, in the author's words; the toolkit assumes none.
+13. The commit policy is one section in the workspace `AGENTS.md`, as the author confirmed it; the toolkit assumes none.
 14. Model policy is two sentences: the reader is never the writer's context, and at a milestone it is a different model where one is available; which model takes which seat is written in each paper's `AGENTS.md`.
 15. The owner's later decision the same day: the referee brief is written now, from the author's own refereeing instructions and reports (their form only, no content). It judges a paper against its field's culture, accepted practice and tolerances, surveyed once per paper, and against the journal's referee guidelines, fetched once; both are kept in the workspace.
 16. The owner's later decision the same day: no venue files in the toolkit. What a paper can determine once (its journal's facts and referee instructions, its field's norms, its style) is determined at first need and kept in its workspace as a reference file, current for that paper.
@@ -164,3 +164,4 @@ The first fourteen were accepted by the owner on 2026-11-19; later decisions car
 18. The owner's later decision of 2026-11-21: the readers are generalised so that an investigation can commission them under its brief (a Campaign Manager) or plan (a Project Manager), with light touches that leave their paper use unchanged: one rule for what the binding supplies, a source policy for the checker, an early read for the referee on pinned material, and a document mode for the stylist.
 19. The owner's decision of 2026-11-24, from the review of a paper's first milestone read: the style sheet carries an example for every rule and runs to about 2,400 words, some four pages (the owner proposed three, then approved four once an example on every rule took about 2,340 words); a subject that moves under a draft has a delta list; and detail is left to a subject's documentation only where it holds the fact and the release is archived with a persistent identifier.
 20. The owner's decision of 2026-11-26: `traces.py moved` is built now, in the backlog's smallest form (the files `git diff` names on a root, joined to the traces that anchor in them), without waiting for a re-pin to show a trace missed.
+21. The owner's decision of 2026-11-26: what the author says is kept as confirmed records, not verbatim. At a key point (a decision taken, a direction refined to the point of action, a fact only the author knows, a lesson) and at the latest before the session closes, it is written concisely, checked against the live record for conflicts, and repeated back; it is the author's, and a source, only once the author confirms it. Testimony is one current record per subject in `notes/<slug>.md`, with git as the history; the journal states decisions and marks the author's as confirmed. Documents from outside the conversation, and anything the author asks to keep word for word, stay verbatim. Verbatim capture had piled up partial and superseded fragments that sat beside the current direction and biased later work. Supersedes 3.
