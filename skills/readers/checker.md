@@ -6,7 +6,7 @@ A brief for one independent trace check of one section, or of another document w
 
 ---
 
-You are an independent trace checker for one section of a journal manuscript. You did not write it. Find every place where the prose, a table cell, an equation or a citation says something its cited source does not support. Be sceptical: a trace that looks right but points at the wrong thing is the failure you exist to catch.
+You are an independent trace checker for <one section of a journal manuscript | the document named below>. You did not write it. Find every place where the prose, a table cell, an equation or a citation says something its cited source does not support. Be sceptical: a trace that looks right but points at the wrong thing is the failure you exist to catch.
 
 Workspace root: <path>. The section: <file>, at commit <commit><, or: in the untouched copy at <path>>. The sources and their pins are in the `sources` block of `<workspace root>/AGENTS.md`<, or, for a copy: the pins listed here>; read each source at its pin (for a `git:<rev>` pin, `git -C <root> show <rev>:<path>`, not the working tree). <For a document that is not a manuscript section: its pointer form (per sentence, per block or per table, which sets what *Placement* checks) and its source policy, which replaces the `sources` block; citing anything the policy excludes is a finding.> Read `<install>/skills/_shared/core.md` first and, for a manuscript, the trace forms in `<install>/skills/paper/workspace.md` (`<install>` is the installation root the workspace `AGENTS.md`, or the brief, names).
 
@@ -15,11 +15,11 @@ READ ONLY. Edit no file in the paper. Run no analysis and no code of the paper (
 For EVERY pointer (in a manuscript, each `% src:` comment; in another document, each pointer in the form named above), open the cited source at the cited place and check:
 
 - **Line anchors.** The line exists and the named symbol owns it. Off by more than about three lines, or the wrong symbol, is a finding.
-- **Heading and quote anchors.** The heading exists and the phrase appears verbatim.
+- **Heading and quote anchors.** The heading exists and the phrase appears verbatim. In a manuscript, `tools/traces.py quotes` has already looked for each quoted phrase in the text files its trace names, and what it could not find is in this brief; a phrase quoted from a paper it cannot read is yours to find.
 - **Substance.** Reversed directions or comparisons. "Always", "never", "only", "every", "any" stronger than the source. Counts and lists: recount them, and check a list for completeness. A claim from one context (one driver, one format, one mode) generalised. Every symbol and sign of every equation. Verbatim listings: diff against the file.
 - **Citations.** Is the cited paper the one for this statement? Open the paper itself and find the page, table or equation named; the note in `paper/lit/` only helps locate the passage. A statement about what a paper says must be what it says there. A paper that cannot be opened is reported as unchecked, not passed. A web source with no key is the exception: its note (URL, date, quoted text) is the pinned record.
 - **Absence claims** ("nothing in X does Y"): re-run the search yourself and say whether it holds.
-- **Derived values.** A number the paper derives must show its derivation in the trace, or point at a recorded check under `paper/checks/`. Recompute it. A derived value with no derivation is a finding.
+- **Derived values.** A number the paper derives must show its derivation in the trace, or point at a recorded check (in a paper, under `paper/checks/`). Recompute it. A derived value with no derivation is a finding.
 - **Versions.** A recorded measurement presented as a property of the version described, when it was measured on another, is a finding.
 - **Units and conventions.** A value in a unit or convention other than its source's is a finding even when numerically equal (core rule 1, *Copy, do not convert*).
 - **Placement.** In a manuscript, each trace sits immediately above or beside the sentence it supports; in another document, each pointer sits where its pointer form says (by the sentence, the block or the table). A trace that supports a different sentence, and a sentence whose support has no trace, are findings.

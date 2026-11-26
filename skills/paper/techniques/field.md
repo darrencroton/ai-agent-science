@@ -1,6 +1,6 @@
 # The field
 
-How to build `paper/field.md`, what papers of this kind contain and what the field accepts, so that the outline is set, and the paper shaped and refereed, against that and not against a generic ideal. Read it at start, once the paper's field and genre (a methods paper, a survey, a software paper) are clear; or at the first need of the stylist or the referee. Outside a paper the same reading serves an investigation or a question being framed: give it the topic, the kind of work and any exemplars, and say where the result goes.
+How to build `paper/field.md`, what papers of this kind contain and what the field accepts, so that the outline is set, and the paper shaped and refereed, against that and not against a generic ideal. Read it at start, once the paper's field and genre (a methods paper, a survey, a software paper) are clear; or at the first need of the stylist or the referee. **Outside a paper**, give it the topic, the kind of work and any exemplars; it returns the same record of norms, with its coverage, to the place the caller names, which stands in below for `paper/field.md` and `paper/lit/`.
 
 ## Reading the field
 

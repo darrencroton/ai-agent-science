@@ -172,6 +172,48 @@ class Silent(unittest.TestCase):
         )
         self.assertEqual(stub.paths, ["/v1/export/bibtex"])
 
+    def run_export(self, answer, *codes):
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(ads, "_request", side_effect=answer) as req:
+            with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                status = ads.main(["export", *codes])
+        return status, out.getvalue(), err.getvalue(), req.call_count
+
+    @staticmethod
+    def not_found():
+        err = ads.AdsError("HTTP 404 NOT FOUND\nno result from solr")
+        err.code = 404
+        return err
+
+    def test_export_of_a_list_ads_refuses_falls_back_to_one_at_a_time(self):
+        def answer(path, params=None, payload=None):
+            codes = payload["bibcode"]
+            if len(codes) > 1 or codes == ["bad"]:
+                raise self.not_found()
+            return {"export": "@ARTICLE{" + codes[0] + ",\n}\n"}
+
+        status, out, err, calls = self.run_export(answer, "A", "bad", "C")
+        self.assertEqual(status, 3)
+        self.assertEqual(out, "@ARTICLE{A,\n}\n@ARTICLE{C,\n}\n")
+        self.assertEqual(err, "no BibTeX returned for: bad\n")
+        self.assertEqual(calls, 4)
+
+    def test_export_does_not_blame_bibcodes_for_an_outage(self):
+        def all_404(path, params=None, payload=None):
+            raise self.not_found()
+
+        status, out, err, _ = self.run_export(all_404, "A", "B")
+        self.assertEqual((status, out), (2, ""))  # nothing came back at all
+        self.assertIn("HTTP 404", err)
+
+        def limited(path, params=None, payload=None):
+            err = ads.AdsError("HTTP 429 rate limit exhausted")
+            err.code = 429
+            raise err
+
+        status, _, _, calls = self.run_export(limited, "A", "B")
+        self.assertEqual((status, calls), (2, 1))  # not retried
+
 
 if __name__ == "__main__":
     unittest.main()

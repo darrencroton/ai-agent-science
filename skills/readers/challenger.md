@@ -30,4 +30,6 @@ Report, for each claim, in this form:
 - a verdict: `as worded`, `if narrowed` (with the narrower wording you would defend), `unsupported`, or `open` (the evidence could not be opened, or its test has not been run: say which, and what would settle it);
 - the evidence: what you opened, where, and what it shows, quoted with its location, and which attack found the problem.
 
+For a question with a declared test, nothing has been run yet, so judge the test: could its headline result support the claim as worded, could it come out otherwise, and what should change before it is commissioned? `as worded` then means the test is fit to run as declared.
+
 Then list what you could not check and any input you recommend checking. Keep to <n> words. You never fix anything and never edit the claim: the narrower wording is a proposal for the owner to confirm at source.

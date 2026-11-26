@@ -1,6 +1,6 @@
 # The venue
 
-Choosing a journal, recording it in `paper/venue.md`, and switching the manuscript to its class. Read it when the author has no journal yet, and again when one is chosen: `paper/venue.md` is written then, once, so that it is current for this paper. Choosing a journal needs no workspace: given what the work does and the closest papers, it returns the shortlist with each journal's facts. Switching a manuscript to a class is the paper's.
+Choosing a journal, recording it in `paper/venue.md`, and switching the manuscript to its class. Read it when the author has no journal yet, and again when one is chosen: `paper/venue.md` is written then, once, so that it is current for this paper. **Outside a paper**, *Choosing* needs only what the work does and its closest papers, and returns the shortlist, each journal's facts with their URL and date, to the place the caller names. The rest is the paper's.
 
 ## Choosing
 

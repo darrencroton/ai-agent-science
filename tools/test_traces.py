@@ -131,6 +131,23 @@ class TestParsing(unittest.TestCase):
         )
         self.assertEqual([k for k, _, _ in got], ["path", "search"])
 
+    def test_backticked_text_is_quoted_text(self):
+        got = self.kinds("notes/n.md `see code/zzz.c` and ``code/qq.c'' ")
+        self.assertEqual(got, [("path", "notes/n.md", [])])
+
+    def test_verbatim_and_listings_are_not_the_papers_traces(self):
+        text = (
+            "% src: notes/n.md\nA.\n\\begin{lstlisting}[language=TeX]\n"
+            "% src: code/zzz.c\nB \\gap{cite}{shown, not open}\n\\end{lstlisting}\n"
+            "\\begin{verbatim}\n\\gap{q}{also shown}\n\\end{verbatim}\nC \\gap{todo}{real}\n"
+        )
+        clean = traces.blank_verbatim(text)
+        self.assertEqual(clean.count("\n"), text.count("\n"))
+        self.assertEqual([t.line for t in traces.parse_traces("f", clean)], [1])
+        self.assertEqual(
+            [(g[1], g[2]) for g in traces.parse_gaps("f", clean)], [(10, "todo: real")]
+        )
+
     def test_commit_and_key(self):
         got = self.kinds(
             "code@a654c228 (2026) 2021MNRAS.506.4210I Table 1", ["2021MNRAS.506.4210I"]
@@ -237,6 +254,30 @@ class TestLint(Workspace):
         self.assertIn("unknown-commit  code@0123abcd", out)
         self.assertNotIn("good2020", out)
 
+    def test_one_file_can_be_excluded(self):
+        self.write("notes/plans.md", "later\n")
+        self.write(
+            "AGENTS.md",
+            SOURCES.replace(
+                "```\n", "notes/plans.md  -  never  # forward plans\n```\n"
+            ),
+        )
+        self.section("% src: notes/plans.md\n% src: notes/n.md\n% src: notes/*.md\n")
+        code, out, _ = self.run_cmd("lint")
+        self.assertEqual(code, 1)
+        self.assertIn("s.tex:1  never-root  notes/plans.md", out)
+        self.assertIn("s.tex:3  never-root  notes/plans.md", out)  # reached by a glob
+        self.assertNotIn("s.tex:2", out)
+        self.write(
+            "AGENTS.md",
+            SOURCES.replace(
+                "notes/               fixed      cite", "notes/n.md  fixed  cite"
+            ),
+        )
+        code, _, err = self.run_cmd("lint")
+        self.assertEqual(code, 2)  # a file may be excluded, not cited as a root
+        self.assertIn("cannot parse sources line", err)
+
     def test_no_anchor_and_parent_path(self):
         _, out, _ = self.lint(
             "% src: grep somewhere for a thing\n% src: ../code/src/a.c\n"
@@ -249,6 +290,46 @@ class TestLint(Workspace):
         code, _, err = self.lint("% src: code/src/a.c\n")
         self.assertEqual(code, 2)
         self.assertIn("v9", err)
+
+
+class TestQuotes(Workspace):
+    def test_found_missing_and_not_looked_for(self):
+        self.write(
+            "notes/n.md",
+            "# Why\n\nThe fit **converged** after 200\niterations -- as `expected`.\n",
+        )
+        self.section(
+            '% src: notes/n.md "the fit converged after 200 iterations"\n'
+            "% src: notes/n.md ``Converged after 200 ... as expected''\n"
+            '% src: notes/n.md "converged after 300 iterations"\n'
+            '% src: good2020 p. 4 "a phrase in a paper"\n'
+            '% src: search grep -c "nowhere" notes/n.md -> 0\n'
+            '% src: code/src/a.c:1 "two"\n'
+        )
+        code, out, _ = self.run_cmd("quotes")
+        self.assertEqual(code, 1)
+        self.assertIn('s.tex:3  not found  "converged after 300 iterations"', out)
+        self.assertEqual(out.count("not found  "), 1)
+        self.assertIn("4 phrases found, 1 not found, 1 not looked for", out)
+
+    def test_a_phrase_belongs_to_the_anchors_before_it(self):
+        self.write("notes/n.md", "# The fit\n# converged; it is ``stable``.\n")
+        self.section(
+            '% src: good2020 p. 4 "said in the paper"; notes/n.md "the fit converged"'
+            ' "it is stable" "not in the note"\n'
+            '% src: notes/n.md, good2020 Table 1 "in the paper or its note"\n'
+        )
+        code, out, _ = self.run_cmd("quotes")
+        self.assertEqual(code, 1)
+        self.assertEqual(out.count("not found  "), 1)
+        self.assertIn('not found  "not in the note"', out)
+        self.assertIn("2 phrases found, 1 not found, 2 not looked for", out)
+
+    def test_nothing_missing_exits_0(self):
+        self.section('% src: notes/n.md "a"\n')
+        code, out, _ = self.run_cmd("quotes")
+        self.assertEqual(code, 0)
+        self.assertIn("1 phrases found, 0 not found, 0 not looked for", out)
 
 
 class TestListAndLost(Workspace):
@@ -280,7 +361,7 @@ class TestListAndLost(Workspace):
         self.assertIn(
             "moved  manuscript/sections/a.tex:1 -> manuscript/sections/b.tex:1", out
         )
-        self.assertIn("gap closed  manuscript/sections/a.tex:4  q: open", out)
+        self.assertIn("gap removed  manuscript/sections/a.tex:4  q: open", out)
         self.assertNotIn("notes/n.md", out)
 
     def test_copy_left_in_place_is_not_reported_moved(self):
@@ -301,7 +382,7 @@ class TestListAndLost(Workspace):
             "% src: code/src/a.c:1\n% src: notes/n.md\n% src: code/src/a.c:2\n", "a.tex"
         )
         self.write(
-            f".scratch/review/r1/{p}", open(p).read()
+            f".scratch/review/r1/{p}", traces.read(p)
         )  # what the reader was given
         self.section("% src: code/src/a.c:1\n", "a.tex")  # the round drops two traces
         code, out, _ = self.run_cmd("lost", "--copy", ".scratch/review/r1")

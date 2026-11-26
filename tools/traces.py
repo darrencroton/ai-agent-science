@@ -9,6 +9,7 @@ them, from the workspace root (the working directory):
     traces.py lost  [--rev REV | --copy DIR] [files...]
                                              traces and gaps at REV, or in the copy DIR, missing now
     traces.py lint  [files...]               anchors, pins, paths, lines, cites
+    traces.py quotes [files...]              quoted phrases not found in their sources
     traces.py stale [files...]               sections changed since their check stamp
     traces.py moved [--from OLD] [--to NEW] ROOT [files...]
                                              traces anchored in files of ROOT that changed
@@ -16,8 +17,9 @@ them, from the workspace root (the working directory):
 
 Files default to manuscript/main.tex, manuscript/sections/*.tex and
 manuscript/figures/*.tex; a directory stands for its *.tex files (not its
-subdirectories). With --rev the files are read from that git revision of the
-workspace. `lost --copy DIR` compares instead with a copy of those files kept
+subdirectories). Text inside a `verbatim` or `lstlisting` environment is shown
+to the reader, not said by the paper, and is skipped. With --rev the files are
+read from that git revision of the workspace. `lost --copy DIR` compares instead with a copy of those files kept
 at the same paths under DIR, for text a reader was given before it could be
 committed. Only the files the copy holds are compared, so a trace that moved
 to a file outside the copy is reported lost: copy every file.
@@ -30,6 +32,7 @@ for `lost`, is its whitespace-normalised text, qualifier included.
 `lint` needs a fenced block labelled `sources` in AGENTS.md, one line per root:
 
     <root>/  <git:REV | fixed | ->  <cite | never>  [# comment]
+    <file>   -                      never           [# one file nothing may cite]
 
 and checks that each trace holds an anchor it can recognise: a path that begins
 with a declared root (optionally `:<line>`, `:<a>-<b>`, further `:<line>`
@@ -73,10 +76,23 @@ its full check.
 
 Outside a paper workspace: `list` and `sample` need only files that use this
 trace syntax, named on the command line. `lost` also needs git or a copy,
-`stale` needs stamps under git, and `lint` and `moved` need an AGENTS.md with a
-`sources` block in the working directory.
+`stale` needs stamps under git, and `lint`, `quotes` and `moved` need an
+AGENTS.md with a `sources` block in the working directory; `moved` also needs
+its root to be inside a git repository.
 
-Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
+`quotes` takes each phrase a trace gives in double or TeX quotes and looks for
+it in the text files named by the path anchors written just before it (those
+since the phrase before, or the same ones), each read at its pin. It compares
+loosely (case, spacing, quote marks, Markdown emphasis, TeX escapes, comment
+leaders and the kind of dash are ignored; `...` splits a phrase into parts),
+reports each phrase found in none of them, and counts those it could not look
+for: a phrase from a paper named by its key, from a commit, or from a file that
+is not text.
+A `search` trace is skipped, since its quoted text is a pattern. It finds a
+misquotation; whether the source supports the sentence is still a reader's
+judgement.
+
+Exit codes: 0 fine; 1 a finding (lint), a phrase not found (quotes), a lost trace (lost), a stale, unchecked
 or uncommitted file (stale), a trace anchored in a changed file (moved); 2 the
 request, the configuration or git failed.
 """
@@ -104,7 +120,12 @@ CITE_RE = re.compile(
 PATH_RE = re.compile(r"^(?P<p>.+?)(?::(?P<a>\d+)(?:[-\u2013]:?(?P<b>\d+))?)?$")
 LINE_RE = re.compile(r"^:(\d+)(?:[-\u2013]:?(\d+))?$")
 COMMIT_RE = re.compile(r"^([\w./-]+)@([0-9a-f]{7,40})$")
-QUOTED_RE = re.compile(r'"[^"]*"|``.*?\'\'|\u201c[^\u201d]*\u201d')
+QUOTED_RE = re.compile(r'"[^"]*"|``.*?\'\'|\u201c[^\u201d]*\u201d|`[^`]+`')
+PHRASE_RE = re.compile(r'"([^"]*)"|``(.*?)\'\'|\u201c([^\u201d]*)\u201d')
+VERBATIM_RE = re.compile(
+    r"(\\begin\{(verbatim|lstlisting)\*?\}.*?\n)(.*?)(?=[^\n]*\\end\{\2\*?\})",
+    re.DOTALL,
+)
 LEAD, TRAIL = "([\"'`\u201c\u2018", ")]\"'`\u201d\u2019.,:;!?"
 
 Trace = collections.namedtuple("Trace", "file line text body")
@@ -295,11 +316,17 @@ def read(path, rev=None):
         return f.read()
 
 
+def blank_verbatim(text):
+    """The text with the body of each verbatim or lstlisting environment emptied,
+    keeping line numbers: what a listing shows is not a trace or a gap of the paper."""
+    return VERBATIM_RE.sub(lambda m: m.group(1) + "\n" * m.group(3).count("\n"), text)
+
+
 def load(specs, rev=None, strict=True):
     """{file: (traces, gaps, cites)} for the named files."""
     out = {}
     for path in find_files(specs, rev, strict):
-        text = read(path, rev)
+        text = blank_verbatim(read(path, rev))
         out[path] = (
             parse_traces(path, text),
             parse_gaps(path, text),
@@ -389,11 +416,11 @@ def cmd_lost(args):
     for f, l, (nf, nl), t in t_moved:
         print(f"moved  {f}:{l} -> {nf}:{nl}  {short(t)}")
     for f, l, t in g_lost:
-        print(f"gap closed  {f}:{l}  {short(t)}")
+        print(f"gap removed  {f}:{l}  {short(t)}")
     for f, l, (nf, nl), t in g_moved:
         print(f"gap moved  {f}:{l} -> {nf}:{nl}  {short(t)}")
     print(
-        f"{len(t_lost)} lost, {len(t_moved)} moved, {len(g_lost)} gaps closed, "
+        f"{len(t_lost)} lost, {len(t_moved)} moved, {len(g_lost)} gaps removed, "
         f"{len(g_moved)} gaps moved (against {rev})"
     )
     return 1 if t_lost else 0
@@ -422,10 +449,11 @@ def parse_sources(path="AGENTS.md"):
         f = line.split()
         ok = (
             len(f) == 3
-            and f[0].endswith("/")
             and f[2] in ("cite", "never")
             and (f[1] in ("fixed", "-") or re.fullmatch(r"git:\S+", f[1]))
             and (f[1] != "-" or f[2] == "never")
+            # a root is a directory; one file may only be excluded
+            and (f[0].endswith("/") or f[1:] == ["-", "never"])
         )
         if not ok:
             raise Error(
@@ -509,6 +537,33 @@ class Pins:
             data = out.encode()
         return data.count(b"\n") + (0 if data.endswith(b"\n") or not data else 1)
 
+    def text(self, root, match):
+        """The text of a matched file at its pin, or None for a directory or a
+        file that is not UTF-8 text."""
+        if root.pin == "fixed":
+            if not os.path.isfile(match):
+                return None
+            with open(match, "rb") as f:
+                data = f.read()
+        else:
+            top, prefix, files, _, rev = self._tree(root)
+            inner = prefix + match[len(root.name) :]
+            if inner not in files:
+                return None
+            p = subprocess.run(
+                ["git", "cat-file", "blob", f"{rev}:{inner}"],
+                cwd=top,
+                capture_output=True,
+                check=False,
+            )
+            if p.returncode:
+                return None
+            data = p.stdout
+        try:
+            return data.decode("utf-8")
+        except UnicodeDecodeError:
+            return None
+
     def commit_ok(self, root_name, hex_):
         return git("cat-file", "-e", f"{hex_}^{{commit}}", cwd=root_name)[0] == 0
 
@@ -529,7 +584,11 @@ def root_of(path, roots):
     """The declared root with the longest name that `path` lies under, or None."""
     p = path.rstrip("/") + "/"
     return max(
-        (r for r in roots if p.startswith(r.name)),
+        (
+            r
+            for r in roots
+            if (p.startswith(r.name) if r.name.endswith("/") else p == r.name + "/")
+        ),
         key=lambda r: len(r.name),
         default=None,
     )
@@ -628,6 +687,77 @@ def cmd_lint(args):
         print(f"{path}:{line}  {problem}  {tok}")
     print(f"{len(findings)} findings")
     return 1 if findings else 0
+
+
+# ---------------------------------------------------------------- quotes
+
+
+def loose(s):
+    """A text reduced to what a quotation must share with its source: no case,
+    no quote marks, Markdown emphasis or links, TeX escapes or comment leaders,
+    one kind of dash, single spaces."""
+    s = re.sub(r"(?m)^[ \t]*(?://+|#+|\*+|%+|!+|--+|;+)[ \t]?", "", s)
+    s = re.sub(r"\[([^\]]*)\]\([^)\s]*\)", r"\1", s).replace("\u00d7", "x")
+    s = re.sub(r"\s*(?:---?|[\u2013\u2014\u2212])\s*", "-", s)
+    s = re.sub(r"\\([_%&#$])", r"\1", s)
+    s = re.sub(r"[*`~\"'\u201c\u201d\u2018\u2019]|\\(?:,|;| )", "", s)
+    return " ".join(s.split()).casefold()
+
+
+def cmd_quotes(args):
+    roots, keys = parse_sources(), read_keys()
+    names, pins, cache = [r.name for r in roots], Pins(), {}
+
+    def texts_of(path):
+        """The loose text of each readable file a path anchor names at its pin."""
+        if path not in cache:
+            root, out = root_of(path, roots), []
+            if root and root.policy != "never" and plain(path):
+                for hit in pins.matches(root, path):
+                    own = root_of(hit, roots)
+                    if own.policy != "never" and (t := pins.text(own, hit)) is not None:
+                        out.append(loose(t))
+            cache[path] = out
+        return cache[path]
+
+    found = unread = 0
+    missing = []
+    for path, (traces, _, _) in load(args.files).items():
+        for t in traces:
+            if any(a[0] == "search" for a in anchors(t.body, names, keys)):
+                continue
+            # A phrase belongs to the anchors written since the phrase before it,
+            # or, with none, to the anchors that phrase belonged to.
+            pos, own = 0, []
+            for m in PHRASE_RE.finditer(t.body):
+                since = anchors(t.body[pos : m.start()], names, keys)
+                own, pos = since or own, m.end()
+                texts = [
+                    x
+                    for kind, tok, _ in own
+                    if kind == "path"
+                    for p in expand_braces(tok)
+                    for x in texts_of(p)
+                ]
+                # A paper named by its key, or a commit, cannot be read here.
+                paper = any(kind in ("key", "commit") for kind, _, _ in own)
+                phrase = next(g for g in m.groups() if g is not None)
+                for part in re.split(r"\s*(?:\.\.\.|\u2026|\[\.\.\.\])\s*", phrase):
+                    if not loose(part):
+                        continue
+                    if any(loose(part) in x for x in texts):
+                        found += 1
+                    elif texts and not paper:
+                        missing.append((path, t.line, part))
+                    else:
+                        unread += 1
+    for path, line, part in missing:
+        print(f'{path}:{line}  not found  "{part}"')
+    print(
+        f"{found} phrases found, {len(missing)} not found, "
+        f"{unread} not looked for (the trace names no text to read for them)"
+    )
+    return 1 if missing else 0
 
 
 # ---------------------------------------------------------------- stale
@@ -855,6 +985,7 @@ def main(argv=None):
         ("list", cmd_list, True),
         ("lost", cmd_lost, True),
         ("lint", cmd_lint, False),
+        ("quotes", cmd_quotes, False),
         ("stale", cmd_stale, False),
     ):
         p = sub.add_parser(name)

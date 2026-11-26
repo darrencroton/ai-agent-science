@@ -63,7 +63,7 @@ The web does not replace ADS for finding papers: `property:refereed` and the cit
 
 ## The notebook
 
-The notebook is the directory the caller names: `paper/lit/` in a paper, with BibTeX going to `manuscript/refs.bib`. With none named, the answer is given in the conversation and nothing is written; never default to the current directory, which may be someone else's repository. Read `<notebook>/index.md` before running a single query: it records what has already been chased, and re-chasing a paper rejected three months ago is the cheapest waste in a project.
+The notebook is the directory the caller names: `paper/lit/` in a paper, with BibTeX going to `manuscript/refs.bib`. With none named, the answer is given in the conversation and nothing is written; a web source's record (its URL, the date fetched, the confidence, and the words quoted with where on the page) then goes in the reply itself. Never default to the current directory, which may be someone else's repository. Read `<notebook>/index.md` before running a single query: it records what has already been chased, and re-chasing a paper rejected three months ago is the cheapest waste in a project.
 
 ```
 <notebook>/

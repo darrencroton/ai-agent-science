@@ -29,7 +29,7 @@ One page, in this order.
 
 A claim with nothing under it becomes a question with a declared test, written before anything is run, for its owner or for an investigation run elsewhere (a campaign). The question states the claim as a question, the headline result that would answer it and what would count against it; what the literature already says; and what its kind of test needs. For a measurement that is what is measured, on what, and what is held fixed; the effective size of the design; each threshold with its reason; and the holdout, named before the first change. A derivation, a check of what a data release covers or a question of provenance has its own equivalents: choose what applies.
 
-Before the question goes out, the challenger reads it (`skills/readers/challenger.md`): its attacks are the checklist. Where much will be spent on the answer, a referee's angle on the result as it would be worded shows what a journal would ask of it (`skills/readers/referee.md`).
+Before the question goes out, the challenger reads it (`skills/readers/challenger.md`): its attacks are the checklist, and what it is asked is whether the test as declared could tell the claimed outcome from its alternatives. Where much will be spent on the answer, a referee's angle on the result as it would be worded shows what a journal would ask of it (`skills/readers/referee.md`).
 
 ## In a paper
 

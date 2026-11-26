@@ -11,7 +11,11 @@ Five commands over the ADS v1 API:
 
 Everything but `export` prints JSON on stdout. `export` prints BibTeX exactly
 as ADS returned it, because core rule 2 (skills/_shared/core.md) says a
-refs.bib entry is never composed or adjusted, and this is its only path.
+refs.bib entry is never composed or adjusted. It is the path for anything ADS
+holds; the literature skill gives the arXiv and DOI exports for the rest. Where
+ADS answers a list of bibcodes with 404, as it does when it cannot find one of
+them, each is exported on its own, so that the others still arrive and the one
+it does not hold is named.
 
 Token resolution, in order, so it works on a laptop and on OzSTAR or NERSC
 alike:
@@ -58,6 +62,8 @@ FIELDS = (
 
 class AdsError(Exception):
     """Anything that should reach the user as a message rather than a traceback."""
+
+    code = None  # the HTTP status, where the far end answered with one
 
 
 # --------------------------------------------------------------------------
@@ -219,9 +225,11 @@ def _request(path, params=None, payload=None):
         # Scrub first, then truncate: truncating first can cut the token in
         # half, and half a token is still most of a token.
         detail = _scrub(body.decode(errors="replace").strip())[:400]
-        raise AdsError(
+        err = AdsError(
             f"{_safe(url)}: HTTP {exc.code} {_scrub(exc.reason)}{hint}\n{detail}"
         )
+        err.code = exc.code
+        raise err
     except urllib.error.URLError as exc:
         raise AdsError(f"{_safe(url)}: {_scrub(exc.reason)}")
     except TimeoutError:  # a read that stalls raises this bare, not as URLError
@@ -358,9 +366,29 @@ def _resolve(identifier, rows):
 
 def _export(bibcodes):
     """Verbatim BibTeX. Whatever ADS returns is what goes into refs.bib."""
-    bibtex = _request("export/bibtex", payload={"bibcode": list(bibcodes)}).get(
-        "export", ""
-    )
+    try:
+        bibtex = _request("export/bibtex", payload={"bibcode": list(bibcodes)}).get(
+            "export", ""
+        )
+    except AdsError as exc:
+        # ADS answers a whole list with 404 when it cannot find one bibcode in
+        # it. Ask for each alone; if none arrives, the fault is not a bibcode.
+        if exc.code != 404 or len(bibcodes) < 2:
+            raise
+        parts = []
+        for code in bibcodes:
+            try:
+                parts.append(
+                    _request("export/bibtex", payload={"bibcode": [code]}).get(
+                        "export", ""
+                    )
+                )
+            except AdsError as one:
+                if one.code != 404:
+                    raise
+        if not any(parts):
+            raise exc
+        bibtex = "".join(parts)
     # Match the citekey, `@ARTICLE{<bibcode>,`, not the bare string: one bibcode
     # is a prefix of another often enough that a substring test would call a
     # truncated one present and drop the reference silently.
