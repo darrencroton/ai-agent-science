@@ -156,6 +156,14 @@ class TestParsing(unittest.TestCase):
         text = "5\\% \\begin{verbatim}\n% src: notes/n.md\n\\end{verbatim}\n"
         self.assertEqual(traces.parse_traces("f", traces.blank_verbatim(text)), [])
         self.assertEqual(traces.strip_comments("a\\\\% b\nc\\% d"), "a\\\\\nc\\% d")
+        # inline verbatim opens no listing and its % starts no comment
+        text = "See \\verb|\\begin{verbatim}| here.\n% src: notes/n.md\nA \\gap{q}{open}.\n"
+        self.assertEqual(traces.blank_verbatim(text), text)
+        text = "\\begin{verbatim}\n% src: notes/n.md\nnever closed\n"
+        self.assertEqual(traces.blank_verbatim(text), text)
+        text = "\\verb|\\\\%| \\cite{good2020} and \\gap{todo}{real} % \\cite{no}\n"
+        self.assertEqual(traces.parse_cites(text), [(1, "good2020")])
+        self.assertEqual([g[2] for g in traces.parse_gaps("f", text)], ["todo: real"])
 
     def test_commit_and_key(self):
         got = self.kinds(

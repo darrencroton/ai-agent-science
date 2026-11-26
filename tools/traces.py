@@ -17,8 +17,10 @@ them, from the workspace root (the working directory):
 
 Files default to manuscript/main.tex, manuscript/sections/*.tex and
 manuscript/figures/*.tex; a directory stands for its *.tex files (not its
-subdirectories). Text inside a `verbatim` or `lstlisting` environment is shown
-to the reader, not said by the paper, and is skipped. With --rev the files are
+subdirectories). Text inside a `verbatim` or `lstlisting` environment, or in
+`\\verb` or `\\lstinline` between delimiters, is shown to the reader, not said
+by the paper, and is skipped. These four are recognised by pattern and nothing
+else is: a listing made another way is read as the paper's own text. With --rev the files are
 read from that git revision of the workspace. `lost --copy DIR` compares instead with a copy of those files kept
 at the same paths under DIR, for text a reader was given before it could be
 committed. Only the files the copy holds are compared, and the others are
@@ -126,6 +128,8 @@ PHRASE_RE = re.compile(r'"([^"]*)"|``(.*?)\'\'|\u201c([^\u201d]*)\u201d')
 VERBATIM_RE = re.compile(r"\\begin\{((?:verbatim|lstlisting)\*?)\}")
 # a comment starts at a % that an odd number of backslashes does not escape
 COMMENT_RE = re.compile(r"(?<!\\)((?:\\\\)*)%.*")
+# inline verbatim, whose text (a % included) is shown and not said
+INLINE_RE = re.compile(r"\\(?:verb\*?|lstinline)([^A-Za-z\s*{\[])[^\n]*?\1")
 LEAD, TRAIL = "([\"'`\u201c\u2018", ")]\"'`\u201d\u2019.,:;!?"
 
 Trace = collections.namedtuple("Trace", "file line text body")
@@ -161,6 +165,7 @@ def norm(s):
 
 def strip_comments(text):
     """The text with every comment removed, keeping line numbers."""
+    text = INLINE_RE.sub(lambda m: " " * len(m.group(0)), text)
     return COMMENT_RE.sub(r"\1", text)
 
 
@@ -328,22 +333,20 @@ def read(path, rev=None):
 def blank_verbatim(text):
     """The text with the body of each verbatim or lstlisting environment emptied,
     keeping line numbers: what a listing shows is not a trace or a gap of the paper.
-    An environment opens only outside a comment, and closes at the first line
-    that holds its \\end."""
-    out, env = [], None
-    for line in text.split("\n"):
-        if env:
-            if f"\\end{{{env}}}" in line:
-                env = None
-                out.append(line)
-            else:
-                out.append("")
-            continue
-        out.append(line)
-        m = VERBATIM_RE.search(COMMENT_RE.sub("", line))
-        if m and f"\\end{{{m.group(1)}}}" not in line:
-            env = m.group(1)
-    return "\n".join(out)
+    An environment opens only outside a comment and outside inline verbatim, and
+    only where a later line holds its \\end."""
+    lines = text.split("\n")
+    i = 0
+    while i < len(lines):
+        m = VERBATIM_RE.search(COMMENT_RE.sub("", INLINE_RE.sub("", lines[i])))
+        end = f"\\end{{{m.group(1)}}}" if m else None
+        if end and end not in lines[i]:
+            close = next((k for k in range(i + 1, len(lines)) if end in lines[k]), None)
+            if close is not None:
+                lines[i + 1 : close] = [""] * (close - i - 1)
+                i = close
+        i += 1
+    return "\n".join(lines)
 
 
 def load(specs, rev=None, strict=True):
