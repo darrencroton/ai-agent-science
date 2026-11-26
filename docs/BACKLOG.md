@@ -14,6 +14,8 @@ Small, real items that are not being done now and must not be forgotten. The too
 
 **Showing in the PDF which text is unchecked.** A sketch prints its own gap, and `tools/traces.py stale` says which files are checked, but a draft reads in the PDF like checked text. Declined in the review of 2026-11-27 because it needs a build mechanism; the PDF is handed over with `stale`'s report instead (`skills/paper/draft.md`). The trigger is a reader misled by it.
 
+**What the trace tool reads as shown text.** `tools/traces.py` recognises `verbatim`, `lstlisting`, `\verb` and `\lstinline` by pattern, and its help says so. It can misread a closing bracket inside a braced option of `\lstinline`, and a listing made by a custom command is read as the paper's own text. The trigger is a manuscript that uses one.
+
 **The trigger for a check, in use.** A check is due "before anything rests on the text" (`skills/paper/draft.md`, *How settled the text is*). The rule is new and untried: watch whether agents defer checks too long or check too early, and tighten the wording from what happens.
 
 ## Shown by use

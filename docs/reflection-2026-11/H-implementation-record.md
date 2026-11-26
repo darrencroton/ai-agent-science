@@ -15,7 +15,8 @@ What was built from the reflection, how it was reviewed, and what was left out. 
 | `c1c3308` | Version C | Four skills that each work alone: `paper`, `literature`, `readers`, `frame`. The core holds the seven portable rules; `skills/paper/workspace.md` holds what a paper adds. |
 | `0ee7fc7` | Tools | `traces.py quotes`; one file can be excluded; verbatim listings are skipped; `ads.py` falls back to one bibcode at a time. The review of C applied. The backlog brought up to date. |
 | `1e78c71` | Trials | What three live trials showed |
-| the commit that adds this file | Final review | The whole-branch review applied |
+| `15e35ac` | Final review | The whole-branch review applied, and this record |
+| `66e6067`, `201e08e`, `a9a7a4b`, `4db28b4` | Confirmation | Faults the reviewer found in the fixes themselves, each fixed with a test |
 
 The reflection's items map onto these as follows. A1 to A7: `ddb744b` and `de06974`. A8 (the quote check): `0ee7fc7`. B1 to B7: `99ea30c` and `de06974`. C1 to C6: `dc4650b`, `c1c3308` and `0ee7fc7`. The contract faults: `0ee7fc7`. The vision changes: `48785b2`.
 
@@ -35,6 +36,9 @@ Each step was reviewed by Codex CLI on `gpt-6.2-sol` at high effort, in its read
 | Version B | `99ea30c` | 6 | 6 | 0 |
 | Version C, and the fixes to A and B | `dc4650b`, `c1c3308`, `de06974` | 10 | 10 | 0 |
 | The whole branch | `main..0ee7fc7` | 8 | 7 | 1 |
+| Four confirmation passes on the fixes | `15e35ac` to `a9a7a4b` | 8 | 8 | 0 |
+
+The reviewer's verdict after the fifth pass, on the whole branch at `4db28b4`: merge-ready, with no new faults.
 
 Bugs the reviews found in new code, each now covered by a test:
 
@@ -42,6 +46,7 @@ Bugs the reviews found in new code, each now covered by a test:
 - A commented-out `\begin{verbatim}` could hide real traces, and a check stamp printed inside a listing counted as a stamp.
 - A file exclusion with no directory root around it could crash `lint`.
 - The export fallback could join two entries on one line.
+- Inline verbatim (`\verb`, `\lstinline`) could open a listing that hid the rest of a file, hide a citation after a literal `%`, or show a trace that was read as real.
 - The changed-result procedure let a source pin move before the author had decided.
 
 Declined, with the reason:
@@ -63,7 +68,7 @@ Their usability findings were applied in `1e78c71`. They are walk-throughs and s
 
 ## Checks run
 
-- The tools' unit tests: 50 pass (39 on `main`).
+- The tools' unit tests: 50 pass (39 on `main`), and several of the 50 gained cases during the confirmation passes.
 - `traces.py lint` gives the same result as `main`'s on both real workspaces (no findings in either), so the changes to backticks and listings break no existing trace.
 - `traces.py quotes` on the two real workspaces reports 2 of 759 and 11 of 1,057 quoted phrases as not found, and lists the phrases whose source it cannot read.
 - Every toolkit path and section named in the toolkit's own text exists.
