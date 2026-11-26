@@ -12,7 +12,11 @@ Small, real items that are not being done now and must not be forgotten. The too
 
 Gaps that use has already shown; they wait only for the next round of toolkit changes, for the owner's review.
 
-None is open at present.
+**The record VISION promises editors and referees is stated too strongly.** `docs/VISION.md` (*Who It Serves*, "Editors and referees") says the author "can show them the record", but `skills/paper/finish.md` step 6 keeps the traces in the workspace and out of the bundle, and no step prepares a record to share. The workspace's git repository is the record; whether and how it is released is the author's choice at the end of a paper, and VISION should say so rather than promise it (owner, 2026-11-26). Found while starting the framework paper, 2026-11-26.
+
+**Mechanical guarantees worded more strongly than the code delivers.** VISION's *Guaranteed mechanically* and design principle 5 say a reference is exported "byte for byte" and a gap "stops the build". `tools/ads.py` writes the decoded export to stdout, and nothing later checks `refs.bib` against an export or detects a hand-edited entry. `scipaper.sty` raises `\PackageError` in final mode, which fails the build because `latexmk` runs with `-interaction=nonstopmode` (the workspace `AGENTS.md`, *Build*), not by itself. The module docstring of `tools/ads.py` calls export the "only path" for BibTeX, while core rule 2 also allows arXiv and DOI exports. Either the wording narrows to what the code does or the code grows; the smallest fix is the wording. Found while starting the framework paper, 2026-11-26.
+
+**A single file cannot be declared `never`.** `tools/traces.py` (`parse_sources`) requires every root to end in `/`, so a forward-plans file such as `docs/BACKLOG.md` cannot be excluded while `docs/VISION.md` in the same directory stays citable (`skills/paper/techniques/subject-repository.md`, "Forward plans ... are roots marked `never`"). Worked around by a convention line in the workspace `AGENTS.md`, which `lint` does not enforce. Found while starting the framework paper, 2026-11-26.
 
 ## Decided against
 
