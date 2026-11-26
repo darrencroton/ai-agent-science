@@ -302,6 +302,7 @@ class TestQuotes(Workspace):
             '% src: notes/n.md "the fit converged after 200 iterations"\n'
             "% src: notes/n.md ``Converged after 200 ... as expected''\n"
             '% src: notes/n.md "converged after 300 iterations"\n'
+            '% src: notes/n.md "converged after 20"\n'
             '% src: good2020 p. 4 "a phrase in a paper"\n'
             '% src: search grep -c "nowhere" notes/n.md -> 0\n'
             '% src: code/src/a.c:1 "two"\n'
@@ -309,8 +310,11 @@ class TestQuotes(Workspace):
         code, out, _ = self.run_cmd("quotes")
         self.assertEqual(code, 1)
         self.assertIn('s.tex:3  not found  "converged after 300 iterations"', out)
-        self.assertEqual(out.count("not found  "), 1)
-        self.assertIn("4 phrases found, 1 not found, 1 not looked for", out)
+        self.assertIn(
+            's.tex:4  not found  "converged after 20"', out
+        )  # a cut-off number
+        self.assertEqual(out.count("not found  "), 2)
+        self.assertIn("4 phrases found, 2 not found, 1 not looked for", out)
 
     def test_a_phrase_belongs_to_the_anchors_before_it(self):
         self.write("notes/n.md", "# The fit\n# converged; it is ``stable``.\n")
@@ -400,6 +404,10 @@ class TestListAndLost(Workspace):
         self.assertEqual(code, 1)
         self.assertIn(f"lost  {p}:1  code/src/a.c:1", out)
         self.assertNotIn("moved  ", out)
+        self.assertIn(
+            "not in the copy, so not compared: manuscript/main.tex, manuscript/sections/b.tex",
+            out,
+        )
         code, _, err = self.run_cmd("lost", "--copy", "nowhere")
         self.assertEqual(code, 2)
         self.assertIn("no such directory", err)

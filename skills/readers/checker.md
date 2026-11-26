@@ -29,6 +29,6 @@ Then sweep for untraced quantities, including quantities in words ("two", "once"
 
 Specific checks: <what the session wants looked at, for example each \gap{q}: is it justified?>
 
-Re-check form: where the session names the changed sentences, read only those and their traces, plus any sentence whose meaning depends on them. Say so if a change affects text you were not given.
+Re-check and single-claim form: where the session names the sentences (those that changed, or those that state one claim to be checked ahead of its section), read only those and their traces, plus any sentence whose meaning depends on them. Say so if what you find affects text you were not given.
 
 Report, at most <n> words, as numbered points. Each point has: its number; the location (file and line); the sentence; the anchor; what is wrong, with what the source says, quoted; the severity (wrong, overstated, weak anchor, cosmetic); and the change you recommend. Then give the number of anchors checked and how many passed cleanly, the results of the specific checks, and what you could not check or passed with doubt. Fewer, well-evidenced points beat many weak ones.

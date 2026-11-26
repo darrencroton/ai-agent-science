@@ -46,11 +46,11 @@ One result per paragraph, in this order:
 
 ## Framing: conclusions, introduction, abstract, title
 
-Drafted last and in that order, from `paper/outline.md`, the supportable rows of `paper/claims.md` and the literature reports, and after the body they summarise. They are written with `skills/paper/draft.md` like any section.
+Drafted last and in that order, from `paper/outline.md`, the supportable rows of `paper/claims.md` and the literature reports, and after the body they summarise. They are written with `skills/paper/draft.md` like any section. Any of them may be sketched early to help find the argument (`skills/paper/draft.md`, *How settled the text is*): a sketch is mostly gaps, a claim about the field waiting as a `\gap{cite}`, and it is not checked until the body is.
 
 - **Every claim made here maps to a claim id and appears in the body with the same value.** The drafter lists each framing claim with its id and where the body states it, in its report. A number in the abstract that the body does not state is a gap. A framing sentence carries the trace the body's sentence has; it never traces to the body.
 - **A claim is worded no stronger than the claims table's verdict allows** (core rule 4). A claim marked *unsupported* does not appear, and one marked *if narrowed* appears only in its narrowed wording.
 - **Conclusions:** what the body showed and what it does not show. **Nothing appears in the conclusions for the first time**: a conclusion the body does not support is a `\gap{logic}`, not a new paragraph.
-- **Introduction:** the field, in the literature's words with exported citations; the gap, claimed only as far as the `literature` skill's report supports it, with what was searched; what this paper does. Its motive is the author's own, from testimony (`notes/`), so much of it is proposed and marked for the author to rewrite: the first paragraph and the last are the author's. An introduction, like any section, may be sketched early to help find the argument (`skills/paper/draft.md`, *How settled the text is*); it comes back heavily gapped and is not checked until the body is.
+- **Introduction:** the field, in the literature's words with exported citations; the gap, claimed only as far as the `literature` skill's report supports it, with what was searched; what this paper does. Its motive is the author's own, from testimony (`notes/`), so much of it is proposed and marked for the author to rewrite: the first paragraph and the last are the author's.
 - **Abstract:** what was done, found and concluded, with only numbers the body states, and no citation the body does not make.
 - **Not here:** anything the reader needs in order to follow the body but has not yet met; define it in the body.

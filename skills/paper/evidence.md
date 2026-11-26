@@ -27,13 +27,13 @@ An investigation may already have run the checker on its findings and the refere
 
 ## When a result changes
 
-A result the paper already uses can be replaced: a re-run, a corrected data set, a new release of the subject, a change of mind about which result to show. The old receipt is still valid at its pin, since it records what was measured then, and a replacement at a new path changes no file that a trace names. So no tool reports it, and a new pin says which version is read, not which result now stands. The change therefore comes in through its claim, before any prose is edited:
+A result the paper already uses can be replaced: a re-run, a corrected data set, a new release of the subject, a change of mind about which result to show. The tools cannot be relied on to notice. A replacement written to a new path changes no file that a trace names, an old receipt may still be a true record of what was measured then, and moving a pin says which version is read, not which result the paper now stands on. The change therefore comes in through its claim, before any prose is edited:
 
 1. Say what arrived, which rows of `paper/claims.md` it answers and what it supersedes.
-2. Pin the new evidence as above. Where a root's pin would have to move, note the proposed pin and leave the `sources` block alone until the author has decided: every trace under the root is read at the pin, not only those the change concerns.
+2. Pin the new evidence: an investigation's findings as above, the author's own output where the `sources` block reads it. A `fixed` file corrected in place has no pin to move, so record the date and what changed. Where a root's pin would have to move, note the proposed pin and leave the `sources` block alone until the author has decided: every trace under the root is read at the pin, not only those the change concerns.
 3. Reopen each row it touches: the verdict is *open* until the new evidence has been read against the claim as it would now be worded, and the challenger reads any row whose wording changes.
 4. List what rests on the old result: the traces that name what was superseded (search `tools/traces.py list` for its paths; for a root whose pin would move, `tools/traces.py moved --from <the old revision> --to <the proposed one> <root>`, each a bare revision without the `git:` prefix), the sections the outline says carry the claim, the framing sentences that repeat it, the figures made from it, and the promises (`\gap{todo}`) that depend on it. Mark the sections it reaches *draft* in `paper/STATE.md` now: their check no longer covers what they will come to say.
-5. Bring the author the change and its consequences, with a recommendation: a number that moves, a claim that narrows, a section left without its result. The decision is theirs. A pin moves only then, and `skills/paper/revise.md` applies the change, measured against a commit or a copy made before the first edit.
+5. Bring the author the change and its consequences, with a recommendation: a number that moves, a claim that narrows, a section left without its result. The decision is theirs, and no prose changes before it. A pin moves only then, and `skills/paper/revise.md` applies the change, measured against a commit or a copy made before the first edit.
 
 ## Before a results section
 

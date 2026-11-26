@@ -6,7 +6,7 @@ How one section is written from sources, tracing as it goes and marking every ho
 
 Text is in one of three states, shown as its *Status* in `paper/STATE.md`. The state says how much has been spent on the text and what may rest on it.
 
-- **Sketch.** Provisional on purpose: an outline in prose, a sequence of figures, a passage written to find the argument or to show what the paper still needs. Core rule 1 holds (an assertion carries a trace or a gap), and most of a sketch is gaps. It opens with `\gap{todo}{sketch: <what it is for>}` under its heading, so that every build shows its state and the final build refuses it. A sketch needs no plan and no reader, and nothing is built on it.
+- **Sketch.** Provisional on purpose: an outline in prose, a sequence of figures, a passage written to find the argument or to show what the paper still needs. Core rule 1 holds (an assertion carries a trace or a gap), and most of a sketch is gaps. It opens with `\gap{todo}{sketch: <what it is for>}` under its heading, so that every build shows its state and the final build refuses it. A sketch still builds, but it needs no plan, no inventory and no reader, and nothing is built on it.
 - **Draft.** Written by this procedure: every source opened, a trace or a gap beside each checkable sentence, the read-back done, the build clean. Nobody else has yet read whether each source says what its sentence says.
 - **Checked.** An independent reader has re-opened every trace in the file (`skills/readers/SKILL.md`), the stamp says when, and the journal line says at which version. It is a draft again wherever its wording, its evidence or what it is taken to mean changes (`skills/paper/revise.md`, step 8).
 
@@ -14,7 +14,7 @@ A check is due before anything rests on the text: a decision of the author's, an
 
 ## Read first
 
-`skills/_shared/core.md` and `skills/paper/workspace.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative* and the section's own row); `paper/style.md` (the author's voice) and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
+`skills/_shared/core.md` and `skills/paper/workspace.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative* and the section's own row); `paper/style.md` (the author's voice), if the paper has one, and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
 
 Then read the sections already drafted, for the notation and terms the paper already uses and for what it has already said, never as a source (core rule 1). Search them for `\gap{todo}` promises made to this section and keep them. If the section file exists, read it first, with its traces and gaps: filling gaps is edited in place; rewriting author prose is shown to the author and told to go ahead (core rule 5).
 

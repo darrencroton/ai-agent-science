@@ -21,8 +21,9 @@ subdirectories). Text inside a `verbatim` or `lstlisting` environment is shown
 to the reader, not said by the paper, and is skipped. With --rev the files are
 read from that git revision of the workspace. `lost --copy DIR` compares instead with a copy of those files kept
 at the same paths under DIR, for text a reader was given before it could be
-committed. Only the files the copy holds are compared, so a trace that moved
-to a file outside the copy is reported lost: copy every file.
+committed. Only the files the copy holds are compared, and the others are
+named, so a trace that moved to a file outside the copy is reported lost: copy
+every file.
 
 A trace is a comment `% src: ...` or `% src (qualifier): ...`, on its own line
 or beside a sentence. On its own line it continues over the following comment
@@ -85,7 +86,7 @@ it in the text files named by the path anchors written just before it (those
 since the phrase before, or the same ones), each read at its pin. It compares
 loosely (case, spacing, quote marks, Markdown emphasis, TeX escapes, comment
 leaders and the kind of dash are ignored; `...` splits a phrase into parts),
-reports each phrase found in none of them, and counts those it could not look
+reports each phrase found whole in none of them, and counts those it could not look
 for: a phrase from a paper named by its key, from a commit, or from a file that
 is not text.
 A `search` trace is skipped, since its quoted text is a pattern. It finds a
@@ -400,6 +401,9 @@ def cmd_lost(args):
         # must not make a deleted one look moved.
         rev, old = f"the copy {args.copy}", load_copy(args.files, args.copy)
         new = load(sorted(old), None, strict=False) if old else {}
+        absent = [f for f in find_files(args.files, strict=False) if f not in old]
+        if old and absent:
+            print("not in the copy, so not compared: " + ", ".join(absent))
     else:
         rev = args.rev or "HEAD"
         old = load(args.files, rev, strict=False)
@@ -745,7 +749,8 @@ def cmd_quotes(args):
                 for part in re.split(r"\s*(?:\.\.\.|\u2026|\[\.\.\.\])\s*", phrase):
                     if not loose(part):
                         continue
-                    if any(loose(part) in x for x in texts):
+                    whole = re.compile(r"(?<!\w)" + re.escape(loose(part)) + r"(?!\w)")
+                    if any(whole.search(x) for x in texts):
                         found += 1
                     elif texts and not paper:
                         missing.append((path, t.line, part))

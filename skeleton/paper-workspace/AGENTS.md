@@ -33,7 +33,7 @@ _Not yet set. The author's confirmed policy goes here at `start`, and only the a
 
 ## Conventions
 
-_This paper's conventions as they are decided: file names, labels, units, notation, citation keys, the word counter. The style itself is in `paper/style.md`._
+_This paper's conventions as they are decided: file names, labels, units, notation, citation keys, and the one word counter (name it before the first section is drafted: counters differ by a tenth or more). The style itself is in `paper/style.md`, if the paper has one._
 
 ## How we work here
 
