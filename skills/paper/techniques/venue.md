@@ -17,7 +17,7 @@ Publisher sites refuse automated readers. Expect `403`; where text was recovered
 Once a journal is chosen, write `paper/venue.md` (agent-written, never cited). It holds, for that journal only:
 
 - the facts above, each with its URL and the date fetched;
-- its instructions to referees: the criteria referees are asked to judge, the report form, the recommendation categories, and its rules for referees (confidentiality, use of AI), each quoted with its URL and date;
+- its instructions to referees: the criteria referees are asked to judge, the report form, the recommendation categories, and its rules for referees (confidentiality, use of AI), each quoted with its URL and date; where the journal gives no criteria, no form or no categories, the file says so, for the referee brief (`skills/paper/readers/referee.md`);
 - after the switch below, the template and the date fetched, each preamble fix, the bibliography style's fix, characters the class cannot print, the class's baseline warnings, the rules for tables, listings and citations, and greps that check conformance.
 
 Its contents are fetched again when the venue changes, and checked for drift before submission. Record the switch in `paper/STATE.md` and the journal as for any decision.

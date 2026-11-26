@@ -1,10 +1,10 @@
 # Referee brief
 
-A brief for a simulated journal referee, one fresh context per angle, that writes the report the journal would receive. It may also read a result before any paper exists (a findings report, a draft result), asking whether it would survive a journal's referee. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the paper. The protocol is `skills/paper/review.md`; the report goes through `skills/paper/revise.md` like any other reader's.
+A brief for a simulated journal referee, one fresh context per angle, that writes the report the journal would receive. It may also read a result before any paper exists (a findings report, a draft result), asking whether it would survive a journal's referee. The journal's own instructions to referees, recorded in `paper/venue.md`, are the default: they give the criteria, the report form and the recommendation categories, and `paper/field.md` gives the field's norms to judge against. The template in this brief is the fallback for the form: for a journal that prescribes none or whose instructions could not be fetched, and for a paper with no journal yet. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the paper. The protocol is `skills/paper/review.md`; the report goes through `skills/paper/revise.md` like any other reader's.
 
 ## Before the first run
 
-Make sure `paper/field.md` (`skills/paper/techniques/field.md`) and `paper/venue.md` with the journal's instructions to referees (`skills/paper/techniques/venue.md`) exist and are current; where `venue.md` exists without those instructions, fetch them now. With no journal chosen, or instructions that cannot be fetched, say so in the brief: the rubric then rests on `field.md` alone.
+Make sure `paper/field.md` (`skills/paper/techniques/field.md`) and `paper/venue.md` with the journal's instructions to referees (`skills/paper/techniques/venue.md`) exist and are current; where `venue.md` exists without those instructions, fetch them now. With no journal chosen, a journal that gives no criteria, or instructions that cannot be fetched, say so in the brief: the rubric then rests on `field.md` alone.
 
 ## Running it
 
