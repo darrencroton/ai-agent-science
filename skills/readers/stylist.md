@@ -1,5 +1,7 @@
 # Stylist brief
 
+**Give it:** the mode; the text, at a version that will not change while it is read; what the text is for and who reads it; the style sheet and the field file, if there are any; the report's path and length.
+
 A brief for the paper's editor. The stylist reads for how the paper communicates, not whether it is right: the story the whole paper tells, how its ideas are carried from section to section, how each paragraph makes one point and hands on, and how each sentence sounds in the author's voice. It is the one creative reader: it proposes, and the author decides. It never judges accuracy, which is the checker's, and never changes what a claim says (core rules 4 and 7 bind every proposal). The protocol is `skills/readers/SKILL.md`; its points go through `skills/paper/revise.md`.
 
 ## Modes
@@ -10,16 +12,16 @@ The stylist works while text is planned and while it is written, not only at the
 |---|---|---|---|
 | Outline | once the intent and spine exist and `paper/field.md` names its exemplars, before the first paragraph plan (`skills/paper/start.md`, step 4); again when the author chooses or changes the focus | the intent, the spine and the sections' headings and roles in `paper/outline.md` | the author, with the narratives proposed |
 | Plan | the paragraph plan of text that will be kept, before its prose (`skills/paper/draft.md`, step 1); a sketch has no plan | the plan, as a named file the brief gives; the section's row and hand-off; the narrative | the session, within the narrative the author approved; a proposal that changes the narrative or a section's job goes to the author |
-| Section | a drafted section whose shape is settled, before its check, so that an accepted change is checked once (`draft.md`, *How settled the text is*) | the section, built, at a named commit or untouched copy; its row and hand-off; the narrative | as for a plan |
+| Section | a drafted section whose shape is settled, before its check, so that an accepted change is checked once (`skills/paper/draft.md`, *How settled the text is*) | the section, built, at a named commit or untouched copy; its row and hand-off; the narrative | as for a plan |
 | Milestone | a complete draft; before the author's full read; before submission | the built PDF at a named commit, then `paper/outline.md` | the author, in rounds |
-| Document | any document written for a reader other than its writer: an investigation's findings report before the owner reads it, a brief, a plan, an outline, a proposal, a reply (`skills/readers/SKILL.md`, *Outside a paper workspace*) | the document at a named commit; what it is for and who reads it | its commissioner |
+| Document | any document written for a reader other than its writer: an investigation's findings report before the owner reads it, a brief, a plan, an outline, a proposal, a reply (`skills/readers/SKILL.md`, *What a reader is given*) | the document at a named commit; what it is for and who reads it | its commissioner |
 
 Across the modes:
 
 - Every mode also reads `paper/style.md` if the paper has one, and `paper/field.md` if it exists (plan and section modes need only its story lines of the exemplars).
 - Outline and milestone modes may also read the exemplar papers themselves and the author's own papers that `style.md` names, from `paper/lit/pdf/`: voice and narrative are learnt from whole papers, not from a digest.
 - A second or later milestone round names the earlier rounds' `dispositions.md`, so that a proposal the author declined is not made again.
-- A preference the author confirms becomes a line of `paper/outline.md` or a line, with its example, of `paper/style.md` (core, *What the author says*).
+- A preference the author confirms becomes a line of `paper/outline.md` or a line, with its example, of `paper/style.md` (`skills/paper/workspace.md`, *What the author says*).
 - Lengths: a milestone report at most two pages beyond its reverse outline; a section report one page beyond its reverse outline; a plan or outline report half a page.
 - A milestone read leaves a review record; any other read leaves one journal line with how many proposals were taken.
 - The workspace `AGENTS.md` names the model: the strongest available, since a creative read is where a model's strength shows most.

@@ -1,6 +1,6 @@
 # Many drafters
 
-For a paper whose sections are drafted at the same time by fresh contexts (subagents, second sessions or another harness). Read it before commissioning the first drafter. The procedure each drafter follows is `skills/paper/draft.md`; this is what the session does around them.
+For a paper whose sections are drafted at the same time by fresh contexts (subagents, second sessions or another harness). Read it before commissioning the first drafter. The procedure each drafter follows is `skills/paper/draft.md`; this is what the session does around them. The rule under it holds for any writing done in parallel: one writer for each file, shared files written by one owner, and every writer told when an input it read has changed.
 
 ## Who writes what
 

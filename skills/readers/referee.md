@@ -1,5 +1,7 @@
 # Referee brief
 
+**Give it:** the paper (the built PDF, or excerpts of its outline and claims), or a result as worded with its comparison, methods, controls, evidence and limits; the journal, if there is one, and the angle; the venue and field files, if there are any; whether it may search the literature; the report's path and length.
+
 A brief for a simulated journal referee, one fresh context per angle, that writes the report the journal would receive. It may also read a result before any paper exists (a findings report, a draft result), asking whether it would survive a journal's referee. The journal's own instructions to referees, recorded in `paper/venue.md`, are the default: they give the criteria, the report form and the recommendation categories, and `paper/field.md` gives the field's norms to judge against. The template in this brief is the fallback for the form: for a journal that prescribes none or whose instructions could not be fetched, and for a paper with no journal yet. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the paper. The protocol is `skills/readers/SKILL.md`; the report goes through `skills/paper/revise.md` like any other reader's.
 
 ## Before the first run
@@ -8,7 +10,7 @@ Make sure `paper/field.md` (`skills/paper/techniques/field.md`) and `paper/venue
 
 ## Running it
 
-For an investigation (`skills/readers/SKILL.md`, *Outside a paper workspace*), the input is the result as worded, with its comparison, methods, controls, evidence and limits, and without internal verdicts or editorial framing, as for the excerpts below; the field and venue material is what the brief names, pinned. With none, the referee judges on the document's own evidence and says which judgements that left out.
+For an investigation (`skills/readers/SKILL.md`, *What a reader is given*), the input is the result as worded, with its comparison, methods, controls, evidence and limits, and without internal verdicts or editorial framing, as for the excerpts below; the field and venue material is what the brief names, pinned. With none, the referee judges on the document's own evidence and says which judgements that left out.
 
 
 The angles: the specialist (method, controls, what is missing), the sceptical generalist (novelty, significance, place in the literature), the journal's editor (scope, length, the venue's norms), and one chosen for the paper (a statistician, a user of the code, a competitor). The input is the built PDF or, run early, excerpts the session writes into the record: from `paper/outline.md`, the argument and what each section carries, without the intent (the author's own framing) or the budgets; from `paper/claims.md`, each claim as worded and what it rests on, without the verdicts or editorial notes. Each report goes to `paper/reviews/<YYYY-MM-DD>-referee/<NN>-referee-<angle>.md`, and the record's `brief.md` names the commit, the angles and the models.

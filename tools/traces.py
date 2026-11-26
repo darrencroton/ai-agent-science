@@ -71,6 +71,11 @@ files are counted, not compared. Commit anchors never move and are not
 reported. It narrows attention only: a section whose sources moved still gets
 its full check.
 
+Outside a paper workspace: `list` and `sample` need only files that use this
+trace syntax, named on the command line. `lost` also needs git or a copy,
+`stale` needs stamps under git, and `lint` and `moved` need an AGENTS.md with a
+`sources` block in the working directory.
+
 Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
 or uncommitted file (stale), a trace anchored in a changed file (moved); 2 the
 request, the configuration or git failed.

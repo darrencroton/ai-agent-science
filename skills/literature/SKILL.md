@@ -5,11 +5,11 @@ description: Search the astronomical literature through ADS/SciX and answer five
 
 # literature
 
-What a paper needs from the literature, and how to search it so that the answers can be trusted. Read it whenever a question about prior work, a paper's contents or a reference arises. Paths are relative to the installation root; `skills/_shared/core.md` holds here as everywhere, and core rule 2 governs every reference.
+What a paper needs from the literature, and how to search it so that the answers can be trusted. Read it whenever a question about prior work, a paper's contents or a reference arises. It needs no paper: with no notebook named, the answer comes back in the conversation and nothing is written (*The notebook*). Paths are relative to the installation root; `skills/_shared/core.md` holds here as everywhere, and core rule 2 governs every reference.
 
 ## The five questions
 
-They are questions, not modes to invoke: say which one is being asked, or let the question decide. Each exists to prevent one known failure, and the form of its report is what carries the discipline.
+They are questions, not modes to invoke: say which one is being asked, or let the question decide. They serve an idea as well as a result: before anything has been measured, novelty and build-on say what has been tried, by what test, and what is still open. Each exists to prevent one known failure, and the form of its report is what carries the discipline.
 
 | Question | The failure it prevents | The report |
 |---|---|---|
@@ -89,7 +89,7 @@ The notebook is the directory the caller names: `paper/lit/` in a paper, with Bi
 
 **A web source** gets `web-<slug>.md`, with the URL, the date fetched, a statement of confidence (*read from the page itself*, or the lower *recovered only through a search index*: the page was not seen), and the page's words quoted with where on the page (heading, table, line). Pages change, so the date is part of the record.
 
-**Tracing to the literature.** A trace leads with the paper and its location: the `refs.bib` key, then page, table or equation (core trace forms), and it may name the note where the quotation and caveats are recorded. The checker opens the paper, not the note. A web source with no key is the exception: its note, with the URL, the date and the quoted text, is the pinned record, and the trace points at the note.
+**Tracing to the literature.** A trace leads with the paper and its location: the `refs.bib` key, then page, table or equation (`skills/paper/workspace.md`, *Trace forms*), and it may name the note where the quotation and caveats are recorded. The checker opens the paper, not the note. A web source with no key is the exception: its note, with the URL, the date and the quoted text, is the pinned record, and the trace points at the note.
 
 ## BibTeX and fetching
 

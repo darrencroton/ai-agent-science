@@ -14,7 +14,7 @@ A check is due before anything rests on the text: a decision of the author's, an
 
 ## Read first
 
-`skills/_shared/core.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative* and the section's own row); `paper/style.md` (the author's voice) and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
+`skills/_shared/core.md` and `skills/paper/workspace.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative* and the section's own row); `paper/style.md` (the author's voice) and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
 
 Then read the sections already drafted, for the notation and terms the paper already uses and for what it has already said, never as a source (core rule 1). Search them for `\gap{todo}` promises made to this section and keep them. If the section file exists, read it first, with its traces and gaps: filling gaps is edited in place; rewriting author prose is shown to the author and told to go ahead (core rule 5).
 
@@ -26,7 +26,7 @@ One line per paragraph: its point, why it follows the one before, and its source
 
 ## 2. Gather and write
 
-Open every source in this session; write nothing from memory of having read it. Science comes only from the sources the `sources` block allows: the author's notes, figures, tables, code, the subject at its pin, pinned copies and the literature notebook, each cited as core's trace forms say.
+Open every source in this session; write nothing from memory of having read it. Science comes only from the sources the `sources` block allows: the author's notes, figures, tables, code, the subject at its pin, pinned copies and the literature notebook, each cited as `skills/paper/workspace.md` says (*Trace forms*).
 
 - **Notes:** follow the author's stated understanding; what the notes do not settle is a gap. **Tables:** a row is a better source than a value read off a plot.
 - **Code:** write what it does, not what it is named or what a note says it does. A line anchor names the symbol that owns the line; a constant belongs to the line that defines it. Where code and the author's notes describe the method differently, give both traces, mark `\gap{q}` and choose neither.

@@ -8,9 +8,9 @@ What each claim rests on, and how what is missing is got. A scientist who return
 
 ## A claim with nothing under it
 
-It becomes a question with a declared test, written before anything is run, for the author or for an investigation run elsewhere (a campaign). The question states the claim as a question, the headline result that would answer it and what would count against it; what the literature already says (the `literature` skill: has this been done?); and what its kind of test needs. For a measurement that is what is measured, on what, and what is held fixed; the effective size of the design; each threshold with its reason; and the holdout, named before the first change. A derivation, a check of what a data release covers or a question of provenance has its own equivalents: choose what applies. The challenger's attacks (`skills/readers/challenger.md`) are its checklist: run the challenger on the question before it goes out.
+It becomes a question with a declared test, written before anything is run, for the author or for an investigation run elsewhere (a campaign). `skills/frame/SKILL.md`, *The declared test*, says what the question states and who reads it before it goes out.
 
-Until the answer arrives the manuscript carries the gap of the kind core's table gives (a missing value is a `\gap{number}` naming the test). The answer updates the row: supportable, if narrowed, unsupported, or still open with what remains missing. A claim is never reworded softer to avoid a test it failed or never had (core rule 4).
+Until the answer arrives the manuscript carries the gap of the kind `skills/paper/workspace.md` gives (*Gap kinds*) (a missing value is a `\gap{number}` naming the test). The answer updates the row: supportable, if narrowed, unsupported, or still open with what remains missing. A claim is never reworded softer to avoid a test it failed or never had (core rule 4).
 
 ## Findings from an investigation
 
@@ -23,7 +23,7 @@ An investigation returns a findings report whose last section lists every file i
 5. Add the rows to `paper/claims.md` with both verdicts, the investigation's and the paper's, and write the long reading in `paper/ingest/<id>.md`, which opens with the dossier's head, the code's commit and the date read, and closes with what the investigation did not test; if the subject is still moving, update `paper/ingest/subject-delta.md` (`skills/paper/techniques/subject-repository.md`). The challenger's `as worded` is *supportable*, and its `open` is *open*.
 6. Bring the author the results, with a recommendation of which the paper uses.
 
-An investigation may already have run the checker on its findings and the referee on its headline result (`skills/readers/SKILL.md`, *Outside a paper workspace*). That surfaces problems earlier; the paper still checks each verdict against its receipts.
+An investigation may already have run the checker on its findings and the referee on its headline result (`skills/readers/SKILL.md`, *What a reader is given*). That surfaces problems earlier; the paper still checks each verdict against its receipts.
 
 ## When a result changes
 

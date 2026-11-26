@@ -1,6 +1,6 @@
 # The style sheet
 
-How to build `paper/style.md`, the paper's style sheet, from the author's past writing. Read it once per paper, before the first section is drafted (a later paper by the same author may start from an earlier one's sheet), if the author wants the paper to sound like their own work. Not wanting it is a decision; a paper with no sheet is drafted in plain register.
+How to build `paper/style.md`, the paper's style sheet, from the author's past writing. Read it once per paper, before the first section is drafted (a later paper by the same author may start from an earlier one's sheet), if the author wants the paper to sound like their own work. Not wanting it is a decision; a paper with no sheet is drafted in plain register. It needs only samples of the author's writing and a place to put the sheet, so it serves any document written in their voice.
 
 A sheet is at most about 2,400 words (`wc -w`), some four pages, because every drafter must read it whole. Voice is carried by examples, not adjectives: "formal but direct" gives a drafter nothing to act on.
 

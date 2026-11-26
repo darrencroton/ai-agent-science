@@ -4,7 +4,7 @@ The one loop for every reader's points: an independent reader's report, the auth
 
 ## The loop
 
-1. **Save the input verbatim** when it is a reader's report at a milestone or a document from outside the conversation (a co-author, a journal): as a review record (`skills/readers/SKILL.md`, step 8). The author's own reading, given in conversation, becomes the numbered points of step 2, which the author confirms (core, *What the author says*). A routine check of one section needs no record: its dispositions table is kept in the session, and its counts go in one journal line.
+1. **Save the input verbatim** when it is a reader's report at a milestone or a document from outside the conversation (a co-author, a journal): as a review record (`skills/readers/SKILL.md`, step 8). The author's own reading, given in conversation, becomes the numbered points of step 2, which the author confirms (`skills/paper/workspace.md`, *What the author says*). A routine check of one section needs no record: its dispositions table is kept in the session, and its counts go in one journal line.
 2. **Split it into numbered points.** One point, one change or one decision. Keep the reader's numbering where it has one.
 3. **Confirm each point at source before disposing of it** (core rule 3). Open the file, the paper or the count the point is about. A reader's wrong finding must not become a wrong fix: record what you found, even when it agrees.
 4. **Dispose of every point in one table**, `dispositions.md`:
