@@ -48,7 +48,7 @@ The readers are briefs handed to a fresh context that did not write the text, an
 
 **The core** (`skills/_shared/core.md`) is read whole by every session and every subagent. It holds the eight rules, the trace forms, the gap kinds, and how what the author says is recorded once they confirm it.
 
-**The workspace** is the paper's own git repository and the working directory of every session; `skeleton/workspace/` is the scaffold. Three files carry the contract and every drafter reads them:
+**The workspace** is the paper's own git repository and the working directory of every session; `skeleton/paper-workspace/` is the scaffold. Three files carry the contract and every drafter reads them:
 
 - `AGENTS.md` names the installation root, sets the commit policy and holds the `sources` block: what the paper may cite, and at which version.
 - `paper/outline.md` holds the intent, the narrative, the argument and each section's role and budget.
@@ -60,7 +60,7 @@ The paper's other files (its state, claims, open questions and decision journal,
 
 - `tools/ads.py` searches ADS/SciX and exports BibTeX byte for byte. It needs an [ADS/SciX API token](https://ui.adsabs.harvard.edu/user/settings/token).
 - `tools/traces.py` is run from the workspace root. `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check, which a `% checked:` comment line records; `moved` names the traces anchored in files that changed in a source; `sample` draws traces at random for the author to audit. Its `--help` prints the full specification.
-- `skeleton/workspace/manuscript/scipaper.sty` is the gap macro.
+- `skeleton/paper-workspace/manuscript/scipaper.sty` is the gap macro.
 
 Both tools use only the Python standard library. A paper needs `latexmk` and git. The procedures also call `curl` to fetch references and full texts, `latexpand` and `latexdiff` for the bundle sent to the journal and the reply to its referee, and Ghostscript (`gs`) for EPS figures.
 
