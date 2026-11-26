@@ -164,6 +164,15 @@ class TestParsing(unittest.TestCase):
         text = "\\verb|\\\\%| \\cite{good2020} and \\gap{todo}{real} % \\cite{no}\n"
         self.assertEqual(traces.parse_cites(text), [(1, "good2020")])
         self.assertEqual([g[2] for g in traces.parse_gaps("f", text)], ["todo: real"])
+        # a command name printed with \string is not inline verbatim
+        text = "\\texttt{\\string\\verb} \\cite{good2020}\n"
+        self.assertEqual(traces.parse_cites(text), [(1, "good2020")])
+        # a trace shown in inline verbatim is not a trace; one in a comment is
+        text = "Write \\verb|% src: notes/log.md| beside it.\nA. % src: notes/n.md\n"
+        self.assertEqual(
+            [(t.line, t.body) for t in traces.parse_traces("f", text)],
+            [(2, "notes/n.md")],
+        )
 
     def test_commit_and_key(self):
         got = self.kinds(

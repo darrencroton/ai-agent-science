@@ -129,7 +129,10 @@ VERBATIM_RE = re.compile(r"\\begin\{((?:verbatim|lstlisting)\*?)\}")
 # a comment starts at a % that an odd number of backslashes does not escape
 COMMENT_RE = re.compile(r"(?<!\\)((?:\\\\)*)%.*")
 # inline verbatim, whose text (a % included) is shown and not said
-INLINE_RE = re.compile(r"\\(?:verb\*?|lstinline)([^A-Za-z\s*{\[])[^\n]*?\1")
+INLINE_RE = re.compile(
+    # not after \string, which prints the command name; never } or \ as delimiter
+    r"(?<!\\string)\\(?:verb\*?|lstinline)([^A-Za-z\s*{}\[\\])[^\n]*?\1"
+)
 LEAD, TRAIL = "([\"'`\u201c\u2018", ")]\"'`\u201d\u2019.,:;!?"
 
 Trace = collections.namedtuple("Trace", "file line text body")
@@ -169,11 +172,19 @@ def strip_comments(text):
     return COMMENT_RE.sub(r"\1", text)
 
 
+def src_match(line):
+    """The trace a line holds, if any. A `% src:` shown in inline verbatim on a
+    line of text is not one; a line that is a comment is read as it stands."""
+    if not line.lstrip().startswith("%"):
+        line = INLINE_RE.sub(lambda m: " " * len(m.group(0)), line)
+    return SRC_RE.search(line)
+
+
 def parse_traces(path, text):
     lines = text.splitlines()
     out, i = [], 0
     while i < len(lines):
-        m = SRC_RE.search(lines[i])
+        m = src_match(lines[i])
         if not m:
             i += 1
             continue
@@ -182,7 +193,7 @@ def parse_traces(path, text):
             while (
                 i + 1 < len(lines)
                 and lines[i + 1].lstrip().startswith("%")
-                and not SRC_RE.search(lines[i + 1])
+                and not src_match(lines[i + 1])
                 and not STAMP_RE.match(lines[i + 1])
             ):
                 i += 1
