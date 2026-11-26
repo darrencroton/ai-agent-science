@@ -8,7 +8,7 @@ What the paper is for, who must be convinced, and what it is not, as the author 
 _Empty. `start` proposes the first version from the author's answers._
 
 ## Narrative
-The story the paper tells its reader, in one paragraph: what the reader the intent names should come to believe, and in what order. Proposed by the stylist's outline mode once the intent and spine exist (`skills/paper/readers/stylist.md`); the author decides it.
+The story the paper tells its reader, in one paragraph: what the reader the intent names should come to believe, and in what order. Proposed by the stylist's outline mode once the intent and spine exist (`skills/readers/stylist.md`); the author decides it.
 
 _Empty._
 

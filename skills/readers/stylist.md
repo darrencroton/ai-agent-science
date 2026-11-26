@@ -1,6 +1,6 @@
 # Stylist brief
 
-A brief for the paper's editor. The stylist reads for how the paper communicates, not whether it is right: the story the whole paper tells, how its ideas are carried from section to section, how each paragraph makes one point and hands on, and how each sentence sounds in the author's voice. It is the one creative reader: it proposes, and the author decides. It never judges accuracy, which is the checker's, and never changes what a claim says (core rules 4 and 7 bind every proposal). The protocol is `skills/paper/review.md`; its points go through `skills/paper/revise.md`.
+A brief for the paper's editor. The stylist reads for how the paper communicates, not whether it is right: the story the whole paper tells, how its ideas are carried from section to section, how each paragraph makes one point and hands on, and how each sentence sounds in the author's voice. It is the one creative reader: it proposes, and the author decides. It never judges accuracy, which is the checker's, and never changes what a claim says (core rules 4 and 7 bind every proposal). The protocol is `skills/readers/SKILL.md`; its points go through `skills/paper/revise.md`.
 
 ## Modes
 
@@ -12,7 +12,7 @@ The stylist works while text is planned and while it is written, not only at the
 | Plan | the paragraph plan of text that will be kept, before its prose (`skills/paper/draft.md`, step 1); a sketch has no plan | the plan, as a named file the brief gives; the section's row and hand-off; the narrative | the session, within the narrative the author approved; a proposal that changes the narrative or a section's job goes to the author |
 | Section | a drafted section whose shape is settled, before its check, so that an accepted change is checked once (`draft.md`, *How settled the text is*) | the section, built, at a named commit; its row and hand-off; the narrative | as for a plan |
 | Milestone | a complete draft; before the author's full read; before submission | the built PDF at a named commit, then `paper/outline.md` | the author, in rounds |
-| Document | any document written for a reader other than its writer: an investigation's findings report before the owner reads it, a brief, a plan, an outline, a proposal, a reply (`skills/paper/review.md`, *Outside a paper workspace*) | the document at a named commit; what it is for and who reads it | its commissioner |
+| Document | any document written for a reader other than its writer: an investigation's findings report before the owner reads it, a brief, a plan, an outline, a proposal, a reply (`skills/readers/SKILL.md`, *Outside a paper workspace*) | the document at a named commit; what it is for and who reads it | its commissioner |
 
 Across the modes:
 

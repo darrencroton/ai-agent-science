@@ -1,6 +1,6 @@
 # Checker brief
 
-A brief for one independent trace check of one section, or of another document whose statements cite their sources (a findings report, a ledger, a plan) commissioned as `skills/paper/review.md`, *Outside a paper workspace*, says. For such a document the session names its pointer form and its source policy, which replaces the `sources` block: a declared test rests on the frozen brief, a recorded decision on the decision log, and a measured value on its receipt or output. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the section. The protocol is `skills/paper/review.md`.
+A brief for one independent trace check of one section, or of another document whose statements cite their sources (a findings report, a ledger, a plan) commissioned as `skills/readers/SKILL.md`, *Outside a paper workspace*, says. For such a document the session names its pointer form and its source policy, which replaces the `sources` block: a declared test rests on the frozen brief, a recorded decision on the decision log, and a measured value on its receipt or output. The session fills in the angle-bracket items and hands the text below the line to a fresh context that did not write the section. The protocol is `skills/readers/SKILL.md`.
 
 ---
 

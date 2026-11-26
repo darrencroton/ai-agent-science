@@ -1,6 +1,6 @@
 # Challenger brief
 
-A brief for testing claims as worded against what they rest on. The session (or a campaign's brief) fills in the angle-bracket items and hands the text below the line to a fresh context that did not make or word the claims. It works for a paper's `paper/claims.md` and equally for a campaign node given it as a pinned input (`skills/paper/review.md`, *Outside a paper workspace*). The protocol is `skills/paper/review.md`.
+A brief for testing claims as worded against what they rest on. The session (or a campaign's brief) fills in the angle-bracket items and hands the text below the line to a fresh context that did not make or word the claims. It works for a paper's `paper/claims.md` and equally for a campaign node given it as a pinned input (`skills/readers/SKILL.md`, *Outside a paper workspace*). The protocol is `skills/readers/SKILL.md`.
 
 ---
 

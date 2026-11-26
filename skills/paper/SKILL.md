@@ -13,11 +13,11 @@ Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` i
 |---|---|---|
 | Orient | Deciding what the paper is for | `skills/paper/start.md` |
 | Position | Finding its place in the literature and its journal | the `literature` skill; `skills/paper/techniques/field.md`; `skills/paper/techniques/venue.md` |
-| Evidence | Checking each claim has something under it; getting what is missing; taking in a result that has changed | `skills/paper/evidence.md`; `skills/paper/readers/challenger.md` |
+| Evidence | Checking each claim has something under it; getting what is missing; taking in a result that has changed | `skills/paper/evidence.md`; `skills/readers/challenger.md` |
 | Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` and `paper/venue.md` in the workspace |
-| Verify | Having every trace re-opened | `skills/paper/review.md`, `skills/paper/readers/checker.md` |
-| Style and shape | Shaping how the paper reads, from its story to its sentences, while it is planned, written and revised | `skills/paper/readers/stylist.md`, then `skills/paper/revise.md` |
-| Referee | Having it attacked | `skills/paper/readers/referee.md`, then `skills/paper/revise.md` |
+| Verify | Having every trace re-opened | `skills/readers/SKILL.md`, `skills/readers/checker.md` |
+| Style and shape | Shaping how the paper reads, from its story to its sentences, while it is planned, written and revised | `skills/readers/stylist.md`, then `skills/paper/revise.md` |
+| Referee | Having it attacked | `skills/readers/referee.md`, then `skills/paper/revise.md` |
 | Finish | Submitting | `skills/paper/finish.md` |
 | Respond | Answering the referee and co-authors | `skills/paper/revise.md` |
 

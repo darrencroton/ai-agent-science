@@ -21,7 +21,7 @@ Then the norms, each with the papers that show it and where:
 
 Where practice varies, give a range and not a norm; a norm seen in one paper only is marked as such.
 
-Two or three papers of the same genre are the exemplars: they give the stylist its standard of narrative (`skills/paper/readers/stylist.md`) and are the first papers of the referee's reading. For each, record its story line, quoted with locations: what its first paragraph and the introduction's last paragraph do, the order in which it introduces its ideas and why that order serves the reader, how its sections hand on, and how it closes. Each gets a row in `paper/lit/index.md` saying what it is an analogue of.
+Two or three papers of the same genre are the exemplars: they give the stylist its standard of narrative (`skills/readers/stylist.md`) and are the first papers of the referee's reading. For each, record its story line, quoted with locations: what its first paragraph and the introduction's last paragraph do, the order in which it introduces its ideas and why that order serves the reader, how its sections hand on, and how it closes. Each gets a row in `paper/lit/index.md` saying what it is an analogue of.
 
 ## Returning it
 

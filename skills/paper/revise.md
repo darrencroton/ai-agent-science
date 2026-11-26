@@ -1,10 +1,10 @@
 # Revise
 
-The one loop for every reader's points: an independent reader's report, the author's own red pen, an email, a co-author's marked-up PDF, a journal's referee. Read it when any such input arrives. A result that has changed comes in through `skills/paper/evidence.md`, *When a result changes*, and its consequences are then applied here. The readers and their protocol are in `skills/paper/review.md`.
+The one loop for every reader's points: an independent reader's report, the author's own red pen, an email, a co-author's marked-up PDF, a journal's referee. Read it when any such input arrives. A result that has changed comes in through `skills/paper/evidence.md`, *When a result changes*, and its consequences are then applied here. The readers and their protocol are in `skills/readers/SKILL.md`.
 
 ## The loop
 
-1. **Save the input verbatim** when it is a reader's report at a milestone or a document from outside the conversation (a co-author, a journal): as a review record (`skills/paper/review.md`, step 8). The author's own reading, given in conversation, becomes the numbered points of step 2, which the author confirms (core, *What the author says*). A routine check of one section needs no record: its dispositions table is kept in the session, and its counts go in one journal line.
+1. **Save the input verbatim** when it is a reader's report at a milestone or a document from outside the conversation (a co-author, a journal): as a review record (`skills/readers/SKILL.md`, step 8). The author's own reading, given in conversation, becomes the numbered points of step 2, which the author confirms (core, *What the author says*). A routine check of one section needs no record: its dispositions table is kept in the session, and its counts go in one journal line.
 2. **Split it into numbered points.** One point, one change or one decision. Keep the reader's numbering where it has one.
 3. **Confirm each point at source before disposing of it** (core rule 3). Open the file, the paper or the count the point is about. A reader's wrong finding must not become a wrong fix: record what you found, even when it agrees.
 4. **Dispose of every point in one table**, `dispositions.md`:
@@ -20,7 +20,7 @@ The one loop for every reader's points: an independent reader's report, the auth
    Step 7 applies where the manuscript changed, and step 8 also where a source it cites changed; a paragraph plan or the outline has no traces.
 
 7. **Run `tools/traces.py lost --rev <the commit the brief names>`**, or `lost --copy <the copy it names>` (bare `lost` compares `HEAD` and misses what was committed in the round), and name every trace that disappeared or moved to another file, with its new home or the reason it is gone. Nothing may be lost that a disposition does not name.
-8. **Send the changes back to the checker** (`skills/paper/readers/checker.md`, the re-check form).
+8. **Send the changes back to the checker** (`skills/readers/checker.md`, the re-check form).
    - It covers everything changed since the section's last stamp (`git diff <the commit that last changed the stamp line> -- <file>`; `tools/traces.py stale` prints that commit), not only this round's edits. Text that was read from a copy is compared with the copy (`diff -u <copy>/<file> <file>`).
    - A section with no committed stamp, or one whose pinned sources have moved (a pin changed in the `sources` block), gets a full check.
    - A `fixed` source that has changed since the stamp gets the traces that name it re-checked (for a root inside the workspace repository, such as `notes`, `tools/traces.py moved --from <the stamp's commit> <root> <file>` finds them).
@@ -28,7 +28,7 @@ The one loop for every reader's points: an independent reader's report, the auth
    - Then write the check stamp (`% checked: <YYYY-MM-DD> <reader>`) near the top of each re-checked file that needs one (`main.tex`, every section file, and any other file with traces or citations, as `stale` reports), and commit it with the text under the commit policy. Until that commit is made, `stale` reports the stamp as not yet committed, which is true.
    - The new stamp line must differ from the old one: a second check on the same day adds a round (`% checked: <YYYY-MM-DD> r2 <reader>`).
    - `tools/traces.py stale` then shows what has changed since.
-9. **Record.** Rewrite `paper/STATE.md`; append the decisions and their reasons to `paper/journal.md`, marking the decisions the author confirmed. Complete the record or journal line as `skills/paper/review.md`, step 8, says.
+9. **Record.** Rewrite `paper/STATE.md`; append the decisions and their reasons to `paper/journal.md`, marking the decisions the author confirmed. Complete the record or journal line as `skills/readers/SKILL.md`, step 8, says.
 
 ## A journal's referee
 

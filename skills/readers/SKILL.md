@@ -30,10 +30,10 @@ Steps that assume a manuscript (`tools/traces.py`, the check stamp, the record u
 
 | Reader | Brief | Asks |
 |---|---|---|
-| Checker | `skills/paper/readers/checker.md` | does each sentence say what its source says |
-| Challenger | `skills/paper/readers/challenger.md` | does the claim as worded follow from its test |
-| Stylist | `skills/paper/readers/stylist.md` | how the paper reads, from its story to its sentences |
-| Referee | `skills/paper/readers/referee.md` | would a journal accept it, and what would it object to |
+| Checker | `skills/readers/checker.md` | does each sentence say what its source says |
+| Challenger | `skills/readers/challenger.md` | does the claim as worded follow from its test |
+| Stylist | `skills/readers/stylist.md` | how the paper reads, from its story to its sentences |
+| Referee | `skills/readers/referee.md` | would a journal accept it, and what would it object to |
 
 ## Testing a reader brief
 
