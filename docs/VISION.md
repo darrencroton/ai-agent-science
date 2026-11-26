@@ -28,7 +28,7 @@ It works beside the science as the science develops. A paper is often written wh
 
 It finds what is missing. A gap in the literature, a claim with no test, a number that no output produces, a guide that disagrees with its code: each is handed to the scientist as something to act on. That list is an outcome of the toolkit, not a defect of the draft.
 
-Its parts stand alone. Searching the literature, framing a question and each independent reader can be used outside a paper by anyone who needs one of them: a scientist exploring an idea, or the manager of an investigation who wants a claim tested or a result refereed. It favours no kind of paper: what a particular paper needs beyond these parts, its agent supplies in its own workspace.
+Its parts stand alone. Searching the literature, framing a question and each independent reader can be used outside a paper by anyone who needs one of them. It favours no kind of paper: what a particular paper needs beyond these parts, its agent supplies in its own workspace.
 
 Eight commitments define it. The rules that carry them out are in `skills/_shared/core.md`, which every session reads.
 
@@ -42,7 +42,7 @@ Eight commitments define it. The rules that carry them out are in `skills/_share
 
 5. **The author decides.** The agent proposes, marks and asks. The argument, the framing, the choice of results and the voice are the scientist's.
 
-6. **Writing does not produce results.** The agent that writes the paper does not run the analysis it reports. Results come from the scientist, or from a separate investigation whose findings arrive with their records. The agent's own small read-only checks of what is already recorded (a count, a recomputation) are kept with their scripts and checked like any other trace.
+6. **Writing does not produce results.** The agent that writes the paper does not run the analysis it reports. Results come from the scientist, or from a separate investigation whose findings arrive with their records. The agent's own small read-only checks of what is already pinned in the workspace (a count, a recomputation) are kept with their scripts and checked like any other trace.
 
 7. **Shorter, and never by silent omission.** Length is budgeted before the prose exists. A cut keeps every sourced fact or names what it drops, and where what a section must carry will not fit, the author decides.
 
@@ -82,7 +82,7 @@ The parallel is not exact. A test gives the same answer each time it is run. The
 
 **Editors and referees.** The record is the author's to show: the sources used, what the readers found, what the author decided, and a random sample of traces with their sources. Shown, it is evidence where a declaration is only a statement, and it needs no detector. Whether and how it is released is the author's choice at the end of a paper.
 
-**Anyone who needs one part.** A scientist with an idea and no paper yet, or the manager of an investigation: each part takes its inputs from whoever commissions it and does not need a paper around it.
+**Anyone who needs one part.** A scientist with an idea and no paper yet, or the manager of an investigation who wants a claim tested or a result refereed: each part takes its inputs from whoever commissions it and does not need a paper around it.
 
 ## Design Principles
 

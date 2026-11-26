@@ -312,6 +312,13 @@ class TestListAndLost(Workspace):
         )  # never committed, still seen
         self.assertIn("(against the copy .scratch/review/r1)", out)
         self.assertEqual(os.getcwd(), self.root)
+        # a partial copy: the same trace in a file the copy lacks is not a new home
+        self.section("% src: code/src/a.c:1\n", "b.tex")
+        self.section("Text.\n", "a.tex")
+        code, out, _ = self.run_cmd("lost", "--copy", ".scratch/review/r1")
+        self.assertEqual(code, 1)
+        self.assertIn(f"lost  {p}:1  code/src/a.c:1", out)
+        self.assertNotIn("moved  ", out)
         code, _, err = self.run_cmd("lost", "--copy", "nowhere")
         self.assertEqual(code, 2)
         self.assertIn("no such directory", err)

@@ -1,6 +1,6 @@
 # Evidence
 
-What each claim rests on, and how what is missing is got. Read it when a claim has nothing under it, when an investigation's findings arrive, when a result the paper uses has changed, before a section with a results role is planned, and when the author chooses which results the paper shows.
+What each claim rests on, and how what is missing is got. A scientist who returns with something new (a result, a plot, a provisional direction, a change of mind) is asked first what it is meant to establish, what about it is still provisional and what they want the writing to settle; it is then taken in below, as a claim with nothing under it, as findings, or as a change to a result the paper uses. Read it when a claim has nothing under it, when an investigation's findings arrive, when a result the paper uses has changed, before a section with a results role is planned, and when the author chooses which results the paper shows.
 
 ## Claims and what they rest on
 
@@ -30,10 +30,10 @@ An investigation may already have run the checker on its findings and the refere
 A result the paper already uses can be replaced: a re-run, a corrected data set, a new release of the subject, a change of mind about which result to show. The old receipt is still valid at its pin, since it records what was measured then, and a replacement at a new path changes no file that a trace names. So no tool reports it, and a new pin says which version is read, not which result now stands. The change therefore comes in through its claim, before any prose is edited:
 
 1. Say what arrived, which rows of `paper/claims.md` it answers and what it supersedes.
-2. Pin the new evidence as above, or move the pin in the `sources` block.
+2. Pin the new evidence as above. Where a root's pin would have to move, note the proposed pin and leave the `sources` block alone until the author has decided: every trace under the root is read at the pin, not only those the change concerns.
 3. Reopen each row it touches: the verdict is *open* until the new evidence has been read against the claim as it would now be worded, and the challenger reads any row whose wording changes.
-4. List what rests on the old result: the traces that name what was superseded (search `tools/traces.py list` for its paths; `moved` for a root whose pin moved), the sections the outline says carry the claim, the framing sentences that repeat it, the figures made from it, and the promises (`\gap{todo}`) that depend on it.
-5. Bring the author the change and its consequences, with a recommendation: a number that moves, a claim that narrows, a section left without its result. The decision is theirs. `skills/paper/revise.md` then applies it, and the text it touches is a draft again (`skills/paper/draft.md`, *How settled the text is*).
+4. List what rests on the old result: the traces that name what was superseded (search `tools/traces.py list` for its paths; for a root whose pin would move, `tools/traces.py moved --from <the old pin> --to <the proposed pin> <root>`), the sections the outline says carry the claim, the framing sentences that repeat it, the figures made from it, and the promises (`\gap{todo}`) that depend on it. Mark the sections it reaches *draft* in `paper/STATE.md` now: their check no longer covers what they will come to say.
+5. Bring the author the change and its consequences, with a recommendation: a number that moves, a claim that narrows, a section left without its result. The decision is theirs. A pin moves only then, and `skills/paper/revise.md` applies the change, measured against a commit or a copy made before the first edit.
 
 ## Before a results section
 

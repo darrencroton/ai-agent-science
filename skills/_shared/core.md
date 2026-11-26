@@ -51,7 +51,7 @@ The workspace is its own git repository and the working directory of every sessi
 
 | File under `paper/` | Holds |
 |---|---|
-| `STATE.md` | what is true today; rewritten, never appended; two pages at most; no history |
+| `STATE.md` | what is true today, including what the paper still needs and from whom; rewritten, never appended; two pages at most; no history |
 | `outline.md` | the intent, the narrative, the argument and the sections table; changed only on the author's decision |
 | `claims.md` | one row per claim the argument depends on: the claim as the paper may word it, what it rests on and its verdict |
 | `open-questions.md` | open questions only, each with a recommendation; a resolved one becomes a journal line |

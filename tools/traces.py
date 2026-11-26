@@ -19,7 +19,8 @@ manuscript/figures/*.tex; a directory stands for its *.tex files (not its
 subdirectories). With --rev the files are read from that git revision of the
 workspace. `lost --copy DIR` compares instead with a copy of those files kept
 at the same paths under DIR, for text a reader was given before it could be
-committed.
+committed. Only the files the copy holds are compared, so a trace that moved
+to a file outside the copy is reported lost: copy every file.
 
 A trace is a comment `% src: ...` or `% src (qualifier): ...`, on its own line
 or beside a sentence. On its own line it continues over the following comment
@@ -362,12 +363,15 @@ def load_copy(specs, base):
 def cmd_lost(args):
     if args.rev and args.copy:
         raise Error("give --rev or --copy, not both")
-    new = load(args.files, None, strict=False)
     if args.copy:
+        # Only the files the copy holds: an identical trace in a file it lacks
+        # must not make a deleted one look moved.
         rev, old = f"the copy {args.copy}", load_copy(args.files, args.copy)
+        new = load(sorted(old), None, strict=False) if old else {}
     else:
         rev = args.rev or "HEAD"
         old = load(args.files, rev, strict=False)
+        new = load(args.files, None, strict=False)
     if not old:
         raise Error(f"no .tex files at {rev}")
     traces = lambda d: [(t.file, t.line, t.text) for v in d.values() for t in v[0]]
