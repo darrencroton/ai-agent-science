@@ -173,6 +173,15 @@ class TestParsing(unittest.TestCase):
             [(t.line, t.body) for t in traces.parse_traces("f", text)],
             [(2, "notes/n.md")],
         )
+        # the words of a trace beside prose are kept as written, inline verbatim and all
+        text = (
+            'A. % src (b): notes/n.md "\\verb|A|"\n'
+            "\\lstinline[language=TeX]|% src: notes/log.md| B.\n"
+        )
+        self.assertEqual(
+            [(t.line, t.text) for t in traces.parse_traces("f", text)],
+            [(1, '(b) notes/n.md "\\verb|A|"')],
+        )
 
     def test_commit_and_key(self):
         got = self.kinds(

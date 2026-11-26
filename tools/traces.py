@@ -18,7 +18,7 @@ them, from the workspace root (the working directory):
 Files default to manuscript/main.tex, manuscript/sections/*.tex and
 manuscript/figures/*.tex; a directory stands for its *.tex files (not its
 subdirectories). Text inside a `verbatim` or `lstlisting` environment, or in
-`\\verb` or `\\lstinline` between delimiters, is shown to the reader, not said
+`\\verb` or `\\lstinline` between delimiters (options allowed), is shown to the reader, not said
 by the paper, and is skipped. These four are recognised by pattern and nothing
 else is: a listing made another way is read as the paper's own text. With --rev the files are
 read from that git revision of the workspace. `lost --copy DIR` compares instead with a copy of those files kept
@@ -131,7 +131,8 @@ COMMENT_RE = re.compile(r"(?<!\\)((?:\\\\)*)%.*")
 # inline verbatim, whose text (a % included) is shown and not said
 INLINE_RE = re.compile(
     # not after \string, which prints the command name; never } or \ as delimiter
-    r"(?<!\\string)\\(?:verb\*?|lstinline)([^A-Za-z\s*{}\[\\])[^\n]*?\1"
+    r"(?<!\\string)\\(?:verb\*?|lstinline(?:\[[^\]\n]*\])?)"
+    r"([^A-Za-z\s*{}\[\\])[^\n]*?\1"
 )
 LEAD, TRAIL = "([\"'`\u201c\u2018", ")]\"'`\u201d\u2019.,:;!?"
 
@@ -173,11 +174,17 @@ def strip_comments(text):
 
 
 def src_match(line):
-    """The trace a line holds, if any. A `% src:` shown in inline verbatim on a
-    line of text is not one; a line that is a comment is read as it stands."""
+    """(qualifier, body) of the trace a line holds, or None. A `% src:` shown in
+    inline verbatim on a line of text is not one, so the trace is looked for with
+    inline verbatim masked; its words are then taken from the line as written."""
+    seen = line
     if not line.lstrip().startswith("%"):
-        line = INLINE_RE.sub(lambda m: " " * len(m.group(0)), line)
-    return SRC_RE.search(line)
+        seen = INLINE_RE.sub(lambda m: " " * len(m.group(0)), line)
+    m = SRC_RE.search(seen)
+    if not m:
+        return None
+    qual = line[m.start(1) : m.end(1)] if m.group(1) is not None else ""
+    return qual, line[m.start(2) : m.end(2)]
 
 
 def parse_traces(path, text):
@@ -188,7 +195,7 @@ def parse_traces(path, text):
         if not m:
             i += 1
             continue
-        body, start = m.group(2), i
+        (qual, body), start = m, i
         if lines[i].lstrip().startswith("%"):
             while (
                 i + 1 < len(lines)
@@ -198,8 +205,7 @@ def parse_traces(path, text):
             ):
                 i += 1
                 body += " " + lines[i].lstrip().lstrip("%")
-        body = norm(body)
-        qual = norm(m.group(1) or "")
+        body, qual = norm(body), norm(qual)
         out.append(Trace(path, start + 1, (f"({qual}) " if qual else "") + body, body))
         i += 1
     return out
