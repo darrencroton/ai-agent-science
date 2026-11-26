@@ -2,6 +2,16 @@
 
 How one section is written from sources, tracing as it goes and marking every hole. Read it when drafting, whether as a drafter commissioned by the session or as the session itself. A section that reads as finished when it is not is the failure this procedure exists to prevent.
 
+## How settled the text is
+
+Text is in one of three states, shown as its *Status* in `paper/STATE.md`. The state says how much has been spent on the text and what may rest on it.
+
+- **Sketch.** Provisional on purpose: an outline in prose, a sequence of figures, a passage written to find the argument or to show what the paper still needs. Core rule 1 holds (an assertion carries a trace or a gap), and most of a sketch is gaps. It opens with `\gap{todo}{sketch: <what it is for>}` under its heading, so that every build shows its state and the final build refuses it. A sketch needs no plan and no reader, and nothing is built on it.
+- **Draft.** Written by this procedure: every source opened, a trace or a gap beside each checkable sentence, the read-back done, the build clean. Nobody else has yet read whether each source says what its sentence says.
+- **Checked.** An independent reader has re-opened its traces (`skills/paper/review.md`), and the stamp says when. It is a draft again wherever its wording, its evidence or what it is taken to mean changes (`skills/paper/revise.md`, step 8).
+
+A check is due before anything rests on the text: a decision of the author's, another claim, a framing section that repeats it, a reader from outside the session (a co-author, a journal's referee) and submission, which needs everything checked (`skills/paper/finish.md`). Until then the author chooses when. Criticism of a sketch or a draft (the stylist, the challenger on a claim, a referee on excerpts) needs no check first. While the paper's shape is still moving, a full check of a section buys little, because it is spent again when the section is cut or rewritten.
+
 ## Read first
 
 `skills/_shared/core.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative* and the section's own row); `paper/style.md` (the author's voice) and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
@@ -10,9 +20,9 @@ Then read the sections already drafted, for the notation and terms the paper alr
 
 ## 1. The paragraph plan, before any prose
 
-One line per paragraph: its point, why it follows the one before, and its sources. Every item the outline row says the section must carry appears in it, and the plan as a whole delivers the section's hand-off. Sum the lines to an estimate against the budget, and name the lines that may shrink if the section runs long. The plan is written to a file the session names (in `.scratch/` until accepted); the session, not the drafter, sends it to the stylist's plan mode (`skills/paper/readers/stylist.md`) before any prose.
+One line per paragraph: its point, why it follows the one before, and its sources. Keep it to a line each: a plan that quotes its sources or runs to paragraphs is the section written twice. Every item the outline row says the section must carry appears in it, and the plan as a whole delivers the section's hand-off. Sum the lines to an estimate against the budget, and name the lines that may shrink if the section runs long. The plan is written to a file the session names (in `.scratch/` until accepted); the session, not the drafter, sends it to the stylist's plan mode (`skills/paper/readers/stylist.md`) before any prose. A sketch has no plan.
 
-**Coverage beats budget, and the conflict is settled before the prose exists.** If the estimate is over budget the drafter does not choose what to drop (core rule 7). It returns the plan with the overrun and the options: raise the budget; move named items to another section or an appendix; state an item more briefly. The owning session accepts the plan; the author does, for the first section of each role and whenever what the section must carry does not fit its budget. The outline is changed to match. A budget for a section of an unfamiliar kind is a guess, and the plan is where it is corrected cheaply.
+**Coverage beats budget, and the conflict is settled before the prose exists.** If the estimate is over budget the drafter does not choose what to drop (core rule 7). It returns the plan with the overrun and the options: raise the budget; move named items to another section or an appendix; state an item more briefly. The owning session accepts the plan; the author does, for the first section of each role and whenever what the section must carry does not fit its budget. The outline is changed to match. A budget for a section of an unfamiliar kind is a guess, and the plan is where it is corrected cheaply. While the argument is still moving every budget is provisional: report the overrun, and leave the cut until the author has settled the shape, when it is made once (`skills/paper/revise.md`).
 
 ## 2. Gather and write
 
@@ -50,4 +60,4 @@ Report in under 400 words:
 5. Words against the budget, counted with the one counter the workspace `AGENTS.md` names (counters differ by a tenth or more). A section that is running more than about a fifth over its plan's estimate is reported with what the drafter would cut, not cut silently and not padded.
 6. Anything the sources disagreed about, anything unreadable, any statement the session made that proved wrong, and any row of the outline the section now contradicts.
 
-A drafter writes its one section file and nothing else. The session writes everything shared: `main.tex`, `refs.bib`, `paper/open-questions.md`, `paper/STATE.md` and the journal. Every drafted section then goes to the stylist's section mode and, with the changes the session accepts, to an independent check (`skills/paper/review.md`) before it is called drafted.
+A drafter writes its one section file and nothing else. The session writes everything shared: `main.tex`, `refs.bib`, `paper/open-questions.md`, `paper/STATE.md` and the journal. The section is then a draft. Before anything rests on it (*How settled the text is*), it goes to the stylist's section mode, once its shape is settled, and then, with the changes the session accepts, to an independent check (`skills/paper/review.md`).

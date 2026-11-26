@@ -7,7 +7,7 @@ What is true today. Rewritten each session, never appended to; two pages at most
 See `paper/outline.md`, the only authority. Note here only what is currently in flux about it.
 
 ## Sections
-`Checked` is read from `tools/traces.py stale`: the date of the last independent check, `changed since`, `checked, not yet committed`, or `never`.
+`Status` is *not started*, *sketch*, *draft* or *checked* (`skills/paper/draft.md`, *How settled the text is*). `Checked` is read from `tools/traces.py stale`: the date of the last independent check, `changed since`, `checked, not yet committed`, or `never`. Words are by the workspace's one counter, against the outline's budget, which is provisional until the paper's shape is settled.
 
 | Section | Status | Words / budget | Checked | Notes |
 |---|---|---|---|---|

@@ -9,10 +9,10 @@ The stylist works while text is planned and while it is written, not only at the
 | Mode | When the session commissions it | Input | Disposed by |
 |---|---|---|---|
 | Outline | once the intent and spine exist and `paper/field.md` names its exemplars, before the first paragraph plan (`skills/paper/start.md`, step 4); again when the author chooses or changes the focus | the intent, the spine and the sections' headings and roles in `paper/outline.md` | the author, with the narratives proposed |
-| Plan | each paragraph plan, before any prose (`skills/paper/draft.md`, step 1) | the plan, as a named file the brief gives; the section's row and hand-off; the narrative | the session, within the narrative the author approved; a proposal that changes the narrative or a section's job goes to the author |
-| Section | each drafted section, before the checker, so that an accepted change is checked once (`draft.md`, step 4) | the section, built, at a named commit; its row and hand-off; the narrative | as for a plan |
+| Plan | the paragraph plan of text that will be kept, before its prose (`skills/paper/draft.md`, step 1); a sketch has no plan | the plan, as a named file the brief gives; the section's row and hand-off; the narrative | the session, within the narrative the author approved; a proposal that changes the narrative or a section's job goes to the author |
+| Section | a drafted section whose shape is settled, before its check, so that an accepted change is checked once (`draft.md`, *How settled the text is*) | the section, built, at a named commit; its row and hand-off; the narrative | as for a plan |
 | Milestone | a complete draft; before the author's full read; before submission | the built PDF at a named commit, then `paper/outline.md` | the author, in rounds |
-| Document | any document written for a reader other than its writer: an investigation's findings report before the owner reads it, a brief, a plan, a reply (`skills/paper/review.md`, *Outside a paper workspace*) | the document at a named commit; what it is for and who reads it | its commissioner |
+| Document | any document written for a reader other than its writer: an investigation's findings report before the owner reads it, a brief, a plan, an outline, a proposal, a reply (`skills/paper/review.md`, *Outside a paper workspace*) | the document at a named commit; what it is for and who reads it | its commissioner |
 
 Across the modes:
 

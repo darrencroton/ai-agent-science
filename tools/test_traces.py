@@ -293,6 +293,32 @@ class TestListAndLost(Workspace):
         self.assertIn("1 lost, 0 moved", out)
         self.assertNotIn("b.tex", out)
 
+    def test_lost_against_a_copy_of_uncommitted_text(self):
+        p = self.section("% src: code/src/a.c:1\n% src: notes/n.md\n", "a.tex")
+        self.commit()
+        self.section(
+            "% src: code/src/a.c:1\n% src: notes/n.md\n% src: code/src/a.c:2\n", "a.tex"
+        )
+        self.write(
+            f".scratch/review/r1/{p}", open(p).read()
+        )  # what the reader was given
+        self.section("% src: code/src/a.c:1\n", "a.tex")  # the round drops two traces
+        code, out, _ = self.run_cmd("lost", "--copy", ".scratch/review/r1")
+        self.assertEqual(code, 1)
+        self.assertIn(f"lost  {p}:2  notes/n.md", out)
+        self.assertIn(
+            f"lost  {p}:3  code/src/a.c:2", out
+        )  # never committed, still seen
+        self.assertIn("(against the copy .scratch/review/r1)", out)
+        self.assertEqual(os.getcwd(), self.root)
+        code, _, err = self.run_cmd("lost", "--copy", "nowhere")
+        self.assertEqual(code, 2)
+        self.assertIn("no such directory", err)
+        code, _, err = self.run_cmd(
+            "lost", "--rev", "HEAD", "--copy", ".scratch/review/r1"
+        )
+        self.assertEqual(code, 2)
+
     def test_nothing_lost_exits_0(self):
         self.section("% src: code/src/a.c:1\n")
         self.commit()

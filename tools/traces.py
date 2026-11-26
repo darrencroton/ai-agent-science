@@ -6,7 +6,8 @@ primary source (a "trace") or a `\\gap{kind}{note}` marker. Six commands read
 them, from the workspace root (the working directory):
 
     traces.py list  [--rev REV] [files...]   every trace and gap, one per line
-    traces.py lost  [--rev REV] [files...]   traces and gaps at REV missing now
+    traces.py lost  [--rev REV | --copy DIR] [files...]
+                                             traces and gaps at REV, or in the copy DIR, missing now
     traces.py lint  [files...]               anchors, pins, paths, lines, cites
     traces.py stale [files...]               sections changed since their check stamp
     traces.py moved [--from OLD] [--to NEW] ROOT [files...]
@@ -16,7 +17,9 @@ them, from the workspace root (the working directory):
 Files default to manuscript/main.tex, manuscript/sections/*.tex and
 manuscript/figures/*.tex; a directory stands for its *.tex files (not its
 subdirectories). With --rev the files are read from that git revision of the
-workspace.
+workspace. `lost --copy DIR` compares instead with a copy of those files kept
+at the same paths under DIR, for text a reader was given before it could be
+committed.
 
 A trace is a comment `% src: ...` or `% src (qualifier): ...`, on its own line
 or beside a sentence. On its own line it continues over the following comment
@@ -339,11 +342,29 @@ def compare(old, new):
     return lost, moved
 
 
+def load_copy(specs, base):
+    """`load` on the copy of the workspace's files kept under the directory `base`."""
+    if not os.path.isdir(base):
+        raise Error(f"no such directory: {base}")
+    here = os.getcwd()
+    os.chdir(base)
+    try:
+        return load(specs, None, strict=False)
+    finally:
+        os.chdir(here)
+
+
 def cmd_lost(args):
-    rev = args.rev or "HEAD"
-    old, new = load(args.files, rev, strict=False), load(args.files, None, strict=False)
+    if args.rev and args.copy:
+        raise Error("give --rev or --copy, not both")
+    new = load(args.files, None, strict=False)
+    if args.copy:
+        rev, old = f"the copy {args.copy}", load_copy(args.files, args.copy)
+    else:
+        rev = args.rev or "HEAD"
+        old = load(args.files, rev, strict=False)
     if not old:
-        raise Error(f"no .tex files at revision {rev}")
+        raise Error(f"no .tex files at {rev}")
     traces = lambda d: [(t.file, t.line, t.text) for v in d.values() for t in v[0]]
     gaps = lambda d: [g for v in d.values() for g in v[1]]
     t_lost, t_moved = compare(traces(old), traces(new))
@@ -826,6 +847,10 @@ def main(argv=None):
         p.set_defaults(fn=fn)
         if rev:
             p.add_argument("--rev", help="git revision of the workspace to read")
+        if name == "lost":
+            p.add_argument(
+                "--copy", help="a directory holding a copy of the files to compare with"
+            )
         p.add_argument("files", nargs="*")
     p = sub.add_parser("moved")
     p.set_defaults(fn=cmd_moved)

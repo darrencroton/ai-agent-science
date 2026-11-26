@@ -10,7 +10,7 @@ The session works in the workspace, which is its working directory. Ask the auth
 
 1. Copy the scaffold without overwriting anything: `cp -Rn <install>/skeleton/paper-workspace/. <directory>/` (`<install>` is the installation root), then `git init` there. Write the installation root into `AGENTS.md` where the scaffold names it, and the paper's short name where the scaffold has placeholders. Create `manuscript/sections/` and `manuscript/figures/`, which git cannot ship empty. Say which files were already there and left alone.
 2. If the workspace sits inside another repository, add it to that repository's `.git/info/exclude` (local, untracked), never to its tracked files, unless the author asks otherwise. Nothing the toolkit writes may reach another repository's history.
-3. Ask once how commits are to be made here, and write the answer under `## Commit policy` in `AGENTS.md`, once the author has confirmed the text (core, *What the author says*). Make the first commit only under that policy.
+3. Ask once how commits are to be made here, and write the answer under `## Commit policy` in `AGENTS.md`, once the author has confirmed the text (core, *What the author says*). Say what the choice costs: a reader needs text that cannot change under it, so a policy with no commit before a read means reading from copies (`skills/paper/review.md`, step 3), and a check stamp counts as uncommitted until its commit is made. Make the first commit only under that policy.
 4. Link or copy each source inside the workspace, so that no path begins with `../`: a live repository is a symbolic link, a folder of notes or figures may be either. The author's own files are used where they are and never moved or tidied. Write the `sources` block of `AGENTS.md`: one line per source, in the form its *Sources* section gives. Keep the scaffold's lines for the workspace's own directories. Forward plans, archives and anything an agent wrote about the sources are `never`.
 5. A paper whose subject is a repository also reads `skills/paper/techniques/subject-repository.md` now.
 
@@ -47,6 +47,8 @@ Build the reference files (core, *The workspace*) as each is needed. Once the fi
 
 ## 5. What the author sees
 
-One page: the proposed intent and spine, the narratives the stylist proposed (once it has read), the framings considered and why the first was chosen, and the questions with recommendations, most blocking first. Then ask whether the framing feels right: it is the author's decision, and a wrong one found now costs a sentence. Say what to do next: where claims have nothing under them, `skills/paper/evidence.md`; otherwise usually the draft of the section with the most material (`skills/paper/draft.md`).
+One page: the proposed intent and spine, the narratives the stylist proposed (once it has read), the framings considered and why the first was chosen, and the questions with recommendations, most blocking first. Then ask whether the framing feels right: it is the author's decision, and a wrong one found now costs a sentence.
+
+Criticism is cheapest now, while the paper is a page. Where the journal's scope, the novelty or the strength of a claim is in doubt, offer it before anything is drafted: the blind framing read (step 3); the `literature` skill's novelty and build-on questions; the challenger on the claims as worded (`skills/paper/readers/challenger.md`); a referee's angle on excerpts of the outline and the claims, the editor's for scope (`skills/paper/readers/referee.md`). The author chooses which, if any. Say what to do next: where claims have nothing under them, `skills/paper/evidence.md`; otherwise usually the draft of the section with the most material (`skills/paper/draft.md`).
 
 Close as core, *Start and end of a session*, says.
