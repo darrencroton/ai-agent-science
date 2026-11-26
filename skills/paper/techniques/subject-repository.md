@@ -1,6 +1,6 @@
 # A subject repository
 
-For a paper that describes software or an instrument: the repository itself is the main source, and it keeps changing. Read it at the start of the paper, and again whenever a drafter's anchors disagree with the checkout. **Outside a paper**, give it the repository, a revision, the questions and where the report goes. *Pin it and read at the pin*, *Cite only what was delivered* and *Read it whole* then apply, with the revision given standing in for the `sources` block and the report for `paper/ingest/`. The remaining parts concern a manuscript.
+For a paper that describes software or an instrument: the repository itself is the main source, and it keeps changing. Read it at the start of the paper, and again whenever a drafter's anchors disagree with the checkout. **Outside a paper**, give it the repository, a revision, the questions and where the report goes. What then applies is: read every file at the revision given, never from the working tree, and write nothing in the repository; treat forward plans, proposals and archives as not delivered; and read it whole, by question, across every branch, reporting file and place for each finding. The rest of this file, from linking into a workspace to the feature map against an outline, concerns a manuscript.
 
 ## Pin it and read at the pin
 

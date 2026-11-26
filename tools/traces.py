@@ -86,9 +86,9 @@ it in the text files named by the path anchors written just before it (those
 since the phrase before, or the same ones), each read at its pin. It compares
 loosely (case, spacing, quote marks, Markdown emphasis, TeX escapes, comment
 leaders and the kind of dash are ignored; `...` splits a phrase into parts),
-reports each phrase found whole in none of them, and counts those it could not look
-for: a phrase from a paper named by its key, from a commit, or from a file that
-is not text.
+reports each phrase found whole in none of them, and lists as not looked for
+those whose source it cannot read: a paper named by its key, a commit, or a
+file that is not text.
 A `search` trace is skipped, since its quoted text is a pattern. It finds a
 misquotation; whether the source supports the sentence is still a reader's
 judgement.
@@ -124,8 +124,10 @@ COMMIT_RE = re.compile(r"^([\w./-]+)@([0-9a-f]{7,40})$")
 QUOTED_RE = re.compile(r'"[^"]*"|``.*?\'\'|\u201c[^\u201d]*\u201d|`[^`]+`')
 PHRASE_RE = re.compile(r'"([^"]*)"|``(.*?)\'\'|\u201c([^\u201d]*)\u201d')
 VERBATIM_RE = re.compile(
-    r"(\\begin\{(verbatim|lstlisting)\*?\}.*?\n)(.*?)(?=[^\n]*\\end\{\2\*?\})",
-    re.DOTALL,
+    # a \begin that is not in a comment, then the body up to the line of its \end
+    r"^((?:[^%\n]|\\%)*\\begin\{(verbatim|lstlisting)\*?\}[^\n]*\n)(.*?)"
+    r"(?=^[^\n]*\\end\{\2\*?\})",
+    re.DOTALL | re.MULTILINE,
 )
 LEAD, TRAIL = "([\"'`\u201c\u2018", ")]\"'`\u201d\u2019.,:;!?"
 
@@ -246,6 +248,14 @@ def expand_braces(s):
     return [s]
 
 
+def under(tok, name):
+    """Whether a token names something under the root `name`: anything inside a
+    directory root, or exactly the one file an exclusion names (a line allowed)."""
+    if name.endswith("/"):
+        return tok.startswith(name)
+    return PATH_RE.match(tok).group("p") == name
+
+
 def anchors(body, roots, keys):
     """Recognised anchors of a trace body as (kind, token, lines) tuples.
 
@@ -263,7 +273,7 @@ def anchors(body, roots, keys):
             out[-1][2].extend(int(n) for n in m.groups() if n)
         elif (m := COMMIT_RE.match(tok)) and m.group(1) + "/" in roots:
             out.append(("commit", tok, []))
-        elif any(tok.startswith(r) for r in roots):
+        elif any(under(tok, r) for r in roots):
             m = PATH_RE.match(tok)
             lines = [int(n) for n in (m.group("a"), m.group("b")) if n]
             out.append(("path", m.group("p"), lines))
@@ -397,6 +407,9 @@ def cmd_lost(args):
     if args.rev and args.copy:
         raise Error("give --rev or --copy, not both")
     if args.copy:
+        if any(os.path.isabs(f) or ".." in f.split("/") for f in args.files):
+            # an absolute path would be read from the workspace on both sides
+            raise Error("with --copy, name files by their paths in the workspace")
         # Only the files the copy holds: an identical trace in a file it lacks
         # must not make a deleted one look moved.
         rev, old = f"the copy {args.copy}", load_copy(args.files, args.copy)
@@ -545,10 +558,11 @@ class Pins:
         """The text of a matched file at its pin, or None for a directory or a
         file that is not UTF-8 text."""
         if root.pin == "fixed":
-            if not os.path.isfile(match):
+            try:
+                with open(match, "rb") as f:
+                    data = f.read()
+            except OSError:  # a directory, or a file that cannot be read
                 return None
-            with open(match, "rb") as f:
-                data = f.read()
         else:
             top, prefix, files, _, rev = self._tree(root)
             inner = prefix + match[len(root.name) :]
@@ -713,19 +727,24 @@ def cmd_quotes(args):
     names, pins, cache = [r.name for r in roots], Pins(), {}
 
     def texts_of(path):
-        """The loose text of each readable file a path anchor names at its pin."""
+        """(the loose text of each file a path anchor names at its pin, whether any
+        of what it names could not be read as text)."""
         if path not in cache:
-            root, out = root_of(path, roots), []
+            root, out, blind = root_of(path, roots), [], True
             if root and root.policy != "never" and plain(path):
-                for hit in pins.matches(root, path):
+                hits = pins.matches(root, path)
+                blind = not hits
+                for hit in hits:
                     own = root_of(hit, roots)
-                    if own.policy != "never" and (t := pins.text(own, hit)) is not None:
+                    t = pins.text(own, hit) if own.policy != "never" else None
+                    if t is None:
+                        blind = True
+                    else:
                         out.append(loose(t))
-            cache[path] = out
+            cache[path] = (out, blind)
         return cache[path]
 
-    found = unread = 0
-    missing = []
+    found, missing, unread = 0, [], []
     for path, (traces, _, _) in load(args.files).items():
         for t in traces:
             if any(a[0] == "search" for a in anchors(t.body, names, keys)):
@@ -736,15 +755,20 @@ def cmd_quotes(args):
             for m in PHRASE_RE.finditer(t.body):
                 since = anchors(t.body[pos : m.start()], names, keys)
                 own, pos = since or own, m.end()
-                texts = [
-                    x
+                read_ = [
+                    texts_of(p)
                     for kind, tok, _ in own
                     if kind == "path"
                     for p in expand_braces(tok)
-                    for x in texts_of(p)
                 ]
-                # A paper named by its key, or a commit, cannot be read here.
-                paper = any(kind in ("key", "commit") for kind, _, _ in own)
+                texts = [x for out, _ in read_ for x in out]
+                # A phrase may come from anything here that cannot be read: a
+                # paper named by its key, a commit, a file that is not text.
+                blind = (
+                    not texts
+                    or any(b for _, b in read_)
+                    or any(kind in ("key", "commit") for kind, _, _ in own)
+                )
                 phrase = next(g for g in m.groups() if g is not None)
                 for part in re.split(r"\s*(?:\.\.\.|\u2026|\[\.\.\.\])\s*", phrase):
                     if not loose(part):
@@ -752,15 +776,16 @@ def cmd_quotes(args):
                     whole = re.compile(r"(?<!\w)" + re.escape(loose(part)) + r"(?!\w)")
                     if any(whole.search(x) for x in texts):
                         found += 1
-                    elif texts and not paper:
-                        missing.append((path, t.line, part))
+                    elif blind:
+                        unread.append((path, t.line, part))
                     else:
-                        unread += 1
-    for path, line, part in missing:
-        print(f'{path}:{line}  not found  "{part}"')
+                        missing.append((path, t.line, part))
+    for label, rows in (("not looked for", unread), ("not found", missing)):
+        for path, line, part in rows:
+            print(f'{path}:{line}  {label}  "{part}"')
     print(
         f"{found} phrases found, {len(missing)} not found, "
-        f"{unread} not looked for (the trace names no text to read for them)"
+        f"{len(unread)} not looked for (their source is not text this tool can read)"
     )
     return 1 if missing else 0
 
@@ -808,14 +833,18 @@ def cmd_stale(args):
     for path in find_files(args.files):
         text = read(path)
         lines = text.splitlines()
-        n = next((i for i, l in enumerate(lines, 1) if STAMP_RE.match(l)), None)
+        shown = blank_verbatim(text)  # a stamp printed in a listing is not a stamp
+        n = next(
+            (i for i, l in enumerate(shown.splitlines(), 1) if STAMP_RE.match(l)),
+            None,
+        )
         if n is None:
             p = os.path.normpath(path)
             if (
                 p == MAIN
                 or p.startswith(SECTIONS)
-                or parse_traces(path, text)
-                or parse_cites(text)
+                or parse_traces(path, shown)
+                or parse_cites(shown)
             ):
                 print(f"{path}: never checked")
                 bad += 1

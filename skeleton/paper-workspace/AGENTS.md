@@ -11,7 +11,7 @@ A reader commissioned with a brief reads only what its brief allows and skips th
 
 ## Sources
 
-What the paper may cite, at what version, and what it may not. `python3 <install>/tools/traces.py lint` reads this block and stops if it is missing or a line does not parse. One line per root: `<root>/  <pin>  <cite|never>  [# comment]`. The pin is `git:<rev>` (read that repository at that revision), `fixed` (the file as it is here) or `-` (only with `never`). The longest matching root wins. Each source is linked or copied inside this directory.
+What the paper may cite, at what version, and what it may not. `python3 <install>/tools/traces.py lint` reads this block and stops if it is missing or a line does not parse. One line per root: `<root>/  <pin>  <cite|never>  [# comment]`. The pin is `git:<rev>` (read that repository at that revision), `fixed` (the file as it is here) or `-` (only with `never`). The longest matching root wins. One file inside a citable root may be excluded with a line `<file>  -  never`. Each source is linked or copied inside this directory.
 
 ```sources
 # One line per source the paper draws on, for example:

@@ -190,7 +190,7 @@ class Silent(unittest.TestCase):
             codes = payload["bibcode"]
             if len(codes) > 1 or codes == ["bad"]:
                 raise self.not_found()
-            return {"export": "@ARTICLE{" + codes[0] + ",\n}\n"}
+            return {"export": "@ARTICLE{" + codes[0] + ",\n}"}  # no final newline
 
         status, out, err, calls = self.run_export(answer, "A", "bad", "C")
         self.assertEqual(status, 3)

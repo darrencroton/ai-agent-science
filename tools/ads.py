@@ -388,7 +388,8 @@ def _export(bibcodes):
                     raise
         if not any(parts):
             raise exc
-        bibtex = "".join(parts)
+        # one entry to a line start, whatever each answer ended with
+        bibtex = "".join(p if p.endswith("\n") or not p else p + "\n" for p in parts)
     # Match the citekey, `@ARTICLE{<bibcode>,`, not the bare string: one bibcode
     # is a prefix of another often enough that a substring test would call a
     # truncated one present and drop the reference silently.

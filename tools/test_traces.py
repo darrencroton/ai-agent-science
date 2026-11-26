@@ -147,6 +147,9 @@ class TestParsing(unittest.TestCase):
         self.assertEqual(
             [(g[1], g[2]) for g in traces.parse_gaps("f", clean)], [(10, "todo: real")]
         )
+        # a \begin in a comment opens nothing: the lines after it are the paper's
+        text = "% \\begin{verbatim}\n% src: notes/n.md\nA.\n\\end{verbatim}\n"
+        self.assertEqual(traces.blank_verbatim(text), text)
 
     def test_commit_and_key(self):
         got = self.kinds(
@@ -276,6 +279,18 @@ class TestLint(Workspace):
         )
         code, _, err = self.run_cmd("lint")
         self.assertEqual(code, 2)  # a file may be excluded, not cited as a root
+        # an exclusion with no root around it: a longer name is not under it
+        self.write(
+            "AGENTS.md",
+            SOURCES.replace(
+                "notes/               fixed      cite", "notes/n.md  -  never"
+            ),
+        )
+        self.section("% src: notes/n.md.bak and code/src/a.c:1\n% src: notes/n.md:2\n")
+        code, out, _ = self.run_cmd("lint")
+        self.assertEqual(code, 1)
+        self.assertIn("s.tex:2  never-root  notes/n.md", out)
+        self.assertNotIn("s.tex:1", out)
         self.assertIn("cannot parse sources line", err)
 
     def test_no_anchor_and_parent_path(self):
@@ -328,6 +343,22 @@ class TestQuotes(Workspace):
         self.assertEqual(out.count("not found  "), 1)
         self.assertIn('not found  "not in the note"', out)
         self.assertIn("2 phrases found, 1 not found, 2 not looked for", out)
+
+    def test_read_at_the_pin_and_unread_named(self):
+        self.write("code/src/a.c", "changed since the pin\n")  # not committed in code/
+        self.write("notes/blob.bin", "")
+        with open("notes/blob.bin", "wb") as f:
+            f.write(b"\xff\xfe\x00binary")
+        self.section(
+            '% src: code/src/a.c:2 "two"\n'
+            '% src: code/src/a.c "changed since the pin"\n'
+            '% src: notes/n.md, notes/blob.bin "only in the binary"\n'
+        )
+        code, out, _ = self.run_cmd("quotes")
+        self.assertEqual(code, 1)
+        self.assertIn('s.tex:2  not found  "changed since the pin"', out)
+        self.assertIn('s.tex:3  not looked for  "only in the binary"', out)
+        self.assertIn("1 phrases found, 1 not found, 1 not looked for", out)
 
     def test_nothing_missing_exits_0(self):
         self.section('% src: notes/n.md "a"\n')
@@ -408,6 +439,11 @@ class TestListAndLost(Workspace):
             "not in the copy, so not compared: manuscript/main.tex, manuscript/sections/b.tex",
             out,
         )
+        code, _, err = self.run_cmd(
+            "lost", "--copy", ".scratch/review/r1", os.path.abspath(p)
+        )
+        self.assertEqual(code, 2)  # would compare the live file with itself
+        self.assertIn("paths in the workspace", err)
         code, _, err = self.run_cmd("lost", "--copy", "nowhere")
         self.assertEqual(code, 2)
         self.assertIn("no such directory", err)
@@ -549,6 +585,15 @@ class TestSample(Workspace):
 class TestStale(Workspace):
     def stale(self):
         return self.run_cmd("stale", "manuscript/sections/s.tex")
+
+    def test_a_stamp_shown_in_a_listing_is_not_a_stamp(self):
+        self.section(
+            "Text.\n\\begin{lstlisting}\n% checked: 2026-01-01 shown\n\\end{lstlisting}\n"
+        )
+        self.commit()
+        code, out, _ = self.stale()
+        self.assertEqual(code, 1)
+        self.assertIn("never checked", out)
 
     def test_never_checked_and_no_traces(self):
         self.section("Text.\n% src: notes/n.md\n")

@@ -44,7 +44,7 @@ The `paper` skill is a map of what a scientist does, not a pipeline: the stages 
 
 **Effort follows how settled the text is.** Text is a *sketch* (provisional and mostly gaps, written to find the argument or to show what is missing), a *draft* (written from opened sources, traced, not yet read by anyone else) or *checked* (an independent reader has re-opened every trace). A check is due before anything rests on the text: a decision, another claim, a reader from outside, submission. Until then the author chooses, so that a paper whose shape is still moving is not polished and verified section by section only to be cut.
 
-**All feedback goes through one loop.** Whoever reads the paper, the checker, the challenger, the stylist, a simulated referee, the author with a red pen or the journal's own referee, produces comments on it. `revise` splits them into numbered points, confirms each at source, records a disposition for each (accept, accept with a different change, decline with the reason, or leave to the author), brings the author what is theirs to decide, applies the changes, and sends what changed back to the checker where a check is due.
+**All feedback goes through one loop**, whoever the reader is: the checker, the challenger, the stylist, a simulated referee, the author with a red pen or the journal's own referee.
 
 ```mermaid
 flowchart LR

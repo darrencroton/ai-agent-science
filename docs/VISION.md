@@ -102,7 +102,7 @@ The parallel is not exact. A test gives the same answer each time it is run. The
 
 ## What the Toolkit Guarantees, and What It Does Not Claim
 
-**Guaranteed mechanically.** In final mode each gap the typesetter reads raises an error, which fails the build as the workspace runs it. The trace tool checks the structure of traces (anchors, pins, paths and citation keys), reports a quoted phrase it cannot find in the text its trace names, names each trace lost in a change or moved to another file, and flags sections changed since their check stamps. The literature tool writes a reference as the authority returned it; nothing later compares the bibliography with that export. The author can draw a random sample of traces to audit.
+**Guaranteed mechanically.** In final mode each gap the typesetter reads raises an error, which fails the build as the workspace runs it. The trace tool checks the structure of traces (anchors, pins, paths and citation keys), reports, by a loose comparison, a quoted phrase it cannot find in the text its trace names, names each trace lost in a change or moved to another file, and flags sections changed since their check stamps. The literature tool writes a reference as the authority returned it; nothing later compares the bibliography with that export. The author can draw a random sample of traces to audit.
 
 **Claimed as judgement, not mechanism.** Whether a checkable sentence was left with neither trace nor gap, whether a source says what the sentence says, whether a claim follows from its test, whether the paper reads well, and whether a referee would accept it. The readers' findings are leads, and the decisions are the author's.
 

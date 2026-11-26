@@ -2,7 +2,7 @@
 
 Making the paper ready for the author to submit. Read it when the author says the paper is ready, and again before a revision goes back. Each step points to where it is done; submission itself is the author's act.
 
-1. **Every trace checked.** `tools/traces.py lint` reports nothing, each phrase `quotes` reports has been looked at, and `stale` reports every file checked since its last change. A source pinned `git:` or `fixed` that has moved since a stamp has its traces re-checked first (`skills/paper/revise.md`, step 8), since `stale` compares only the manuscript.
+1. **Every trace checked.** `tools/traces.py lint` reports nothing, each phrase `quotes` reports has been looked at, `stale` reports every file checked since its last change, and `paper/STATE.md` marks no section *draft*. A source pinned `git:` or `fixed` that has moved since a stamp has its traces re-checked first (`skills/paper/revise.md`, step 8), since `stale` compares only the manuscript.
 2. **The framing check** (`skills/paper/sections.md`, *Framing*) on the title, abstract, introduction and conclusions.
 3. **The reads.** The stylist's milestone read and the author's full read are disposed of (`skills/paper/revise.md`).
 4. **The author's audit.** `tools/traces.py sample 20` over the whole manuscript, drawn by the author or with a seed the author names first, and read by the author beside the sources. A trace that fails sends its section back for a full check (`skills/paper/revise.md`, step 8), and the sheet is drawn again afterwards.
