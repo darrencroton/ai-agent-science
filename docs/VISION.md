@@ -24,6 +24,12 @@ Instructions and briefs for an agent that writes a journal paper with a scientis
 
 It makes the scientist the orchestrator of the writing, as a software engineer manages a developer. The scientist decides; the agents do the legwork; independent readers check what the agents produced.
 
+It works beside the science as the science develops. A paper is often written while the work is still moving: writing is one way the most interesting questions are found, and whole sections are abandoned or rewritten on the way. The toolkit meets the scientist where they are, with every result in hand or with few. A claim with nothing under it becomes a question for the scientist or for a separate investigation, and what comes back re-enters the paper with its record.
+
+It finds what is missing. A gap in the literature, a claim with no test, a number that no output produces, a guide that disagrees with its code: each is handed to the scientist as something to act on. That list is an outcome of the toolkit, not a defect of the draft.
+
+Its parts stand alone. Searching the literature, framing a question and each independent reader can be used outside a paper by anyone who needs one of them: a scientist exploring an idea, or the manager of an investigation who wants a claim tested or a result refereed. It favours no kind of paper: what a particular paper needs beyond these parts, its agent supplies in its own workspace.
+
 Eight commitments define it. The rules that carry them out are in `skills/_shared/core.md`, which every session reads.
 
 1. **Trace or gap.** Every checkable statement has its primary source beside it, or an open gap that stays visible until it is closed. There is no third option, and a gap fails the final build.
@@ -36,11 +42,13 @@ Eight commitments define it. The rules that carry them out are in `skills/_share
 
 5. **The author decides.** The agent proposes, marks and asks. The argument, the framing, the choice of results and the voice are the scientist's.
 
-6. **Writing does not produce results.** The agent that writes the paper does not run the analysis it reports. Results come from the scientist, or from a separate investigation whose findings arrive with their records.
+6. **Writing does not produce results.** The agent that writes the paper does not run the analysis it reports. Results come from the scientist, or from a separate investigation whose findings arrive with their records. The agent's own small read-only checks of what is already recorded (a count, a recomputation) are kept with their scripts and checked like any other trace.
 
 7. **Shorter, and never by silent omission.** Length is budgeted before the prose exists. A cut keeps every sourced fact or names what it drops, and where what a section must carry will not fit, the author decides.
 
 8. **The record shows who did what.** What the agent did and what the author decided are kept under version control, so that anyone with access can see both.
+
+Four of them carry an engineering practice over to prose: the trace and its independent check (1 and 3), the owner who decides (5) and the history (8). The other four answer what prose needs and code does not: references and results that a model can invent (2 and 6), a claim that outruns its test (4), and a cut that drops a fact unseen (7).
 
 ## The Roles
 
@@ -56,13 +64,15 @@ A programmer whose agent writes most of the code is still responsible for it, an
 
 | In code written with AI | In a paper written with AI |
 |---|---|
-| A test that fails when the code is wrong | A trace beside each claim, and a visible gap where there is none |
+| A test that fails when the code is wrong | A trace beside each claim, compared with its source by an independent reader; a visible gap where there is no trace |
 | Review by someone who did not write the change | An independent reader that did not write the text |
-| A specification agreed before the code | The outline and the claims agreed before the prose |
+| A specification agreed before the code | The outline and the claims agreed before each pass of drafting, and changed as the science changes |
 | Version control: who changed what, and why | The record of sources, checks and decisions |
 | Pinned dependencies and reproducible builds | Sources read at a recorded version |
 
 The engineer is trusted because the code passes tests they understand, has been read by someone else, and has a history they can explain, not because they typed it. A scientist can earn the same trust for a paper.
+
+The parallel is not exact. A test gives the same answer each time it is run. The trace is only the test's fixture: the run is a reader's comparison of the sentence with its source, and that is a judgement.
 
 ## Who It Serves
 
@@ -70,7 +80,9 @@ The engineer is trusted because the code passes tests they understand, has been 
 
 **The scientist who writes by hand.** Nothing here asks them to change. It is a yardstick for the work of those who use agents.
 
-**Editors and referees.** The author can show them the record: the sources used, what the readers found, what the author decided, and a random sample of traces with their sources. That is evidence, not a bare declaration, and needs no detector.
+**Editors and referees.** The record is the author's to show: the sources used, what the readers found, what the author decided, and a random sample of traces with their sources. Shown, it is evidence where a declaration is only a statement, and it needs no detector. Whether and how it is released is the author's choice at the end of a paper.
+
+**Anyone who needs one part.** A scientist with an idea and no paper yet, or the manager of an investigation: each part takes its inputs from whoever commissions it and does not need a paper around it.
 
 ## Design Principles
 
@@ -80,7 +92,7 @@ The engineer is trusted because the code passes tests they understand, has been 
 
 3. **Responsibility, not keystrokes.** What matters is whether the scientist can answer for every sentence, not who typed it.
 
-4. **A map, not a pipeline.** A small core is always read; everything else is read when its case arises.
+4. **A map, not a pipeline.** A small core is always read; everything else is read when its case arises. What a use requires is fixed: a claim is independently checked before anything rests on it, and the whole paper before it is submitted. When and how much is read before then is the scientist's call.
 
 5. **A tool only where failure is silent.** A convention is preferred to a procedure, and a procedure to code, except where a failure would otherwise go unseen (a gap left in a submission, a trace lost in a cut, a composed reference); there a deterministic tool is right. The technology is ordinary: Markdown, LaTeX, git and Python's standard library.
 
@@ -90,7 +102,7 @@ The engineer is trusted because the code passes tests they understand, has been 
 
 ## What the Toolkit Guarantees, and What It Does Not Claim
 
-**Guaranteed mechanically.** In final mode a gap left in the manuscript stops the build. The trace tool checks the structure of traces (anchors, pins, paths and citation keys), names each trace lost in a change or moved to another file, and flags sections changed since their check stamps. The literature tool exports a reference byte for byte. The author can draw a random sample of traces to audit.
+**Guaranteed mechanically.** In final mode each gap the typesetter reads raises an error, which fails the build as the workspace runs it. The trace tool checks the structure of traces (anchors, pins, paths and citation keys), names each trace lost in a change or moved to another file, and flags sections changed since their check stamps. The literature tool writes a reference as the authority returned it; nothing later compares the bibliography with that export. The author can draw a random sample of traces to audit.
 
 **Claimed as judgement, not mechanism.** Whether a checkable sentence was left with neither trace nor gap, whether a source says what the sentence says, whether a claim follows from its test, whether the paper reads well, and whether a referee would accept it. The readers' findings are leads, and the decisions are the author's.
 
@@ -104,7 +116,7 @@ The engineer is trusted because the code passes tests they understand, has been 
 
 ## Non-Goals
 
-- **Not an autonomous AI scientist.** It writes up work that someone has done. It does not choose questions or run analyses.
+- **Not an autonomous AI scientist.** It writes, and it shows what the writing finds missing. The science is done by the scientist or by a separate investigation, finished or still under way. The toolkit does not choose the questions or run the analyses.
 - **Not a detector of AI text.** It makes the work answerable whoever wrote it.
 - **Not a consensus guideline or a journal policy.** It is a proposal for how to work, offered for the community to adopt, test and improve.
 
