@@ -7,13 +7,13 @@ description: Write a journal paper with an agent so that every checkable sentenc
 
 A map of what a scientist does when writing a paper, with one file for each stage. Paths below are relative to the installation root.
 
-Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` in the workspace, then `skills/_shared/core.md`. With no workspace yet, begin at `skills/paper/start.md`.
+Before any work, as the workspace `AGENTS.md` also says: read `paper/STATE.md` in the workspace, then `skills/_shared/core.md`. With no workspace yet, begin at `skills/paper/start.md`. A scientist who returns with something new (a result, a plot, a change of mind) goes to `skills/paper/evidence.md`; comments from any reader go to `skills/paper/revise.md`.
 
 | Stage | What the scientist is doing | Read |
 |---|---|---|
 | Orient | Deciding what the paper is for | `skills/paper/start.md` |
 | Position | Finding its place in the literature and its journal | the `literature` skill; `skills/paper/techniques/field.md`; `skills/paper/techniques/venue.md` |
-| Evidence | Checking each claim has something under it; getting what is missing | `skills/paper/evidence.md`; `skills/paper/readers/challenger.md` |
+| Evidence | Checking each claim has something under it; getting what is missing; taking in a result that has changed | `skills/paper/evidence.md`; `skills/paper/readers/challenger.md` |
 | Draft | Writing a section | `skills/paper/draft.md`, `skills/paper/sections.md`; `paper/style.md` and `paper/venue.md` in the workspace |
 | Verify | Having every trace re-opened | `skills/paper/review.md`, `skills/paper/readers/checker.md` |
 | Style and shape | Shaping how the paper reads, from its story to its sentences, while it is planned, written and revised | `skills/paper/readers/stylist.md`, then `skills/paper/revise.md` |

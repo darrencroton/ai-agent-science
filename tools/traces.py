@@ -5,7 +5,7 @@ Every checkable sentence of the paper carries a `% src:` comment naming its
 primary source (a "trace") or a `\\gap{kind}{note}` marker. Six commands read
 them, from the workspace root (the working directory):
 
-    traces.py list  [--rev REV] [files...]   every trace and gap, one per line
+    traces.py list  [--rev REV] [files...]   every trace and gap, one per line, and the gaps counted by kind
     traces.py lost  [--rev REV | --copy DIR] [files...]
                                              traces and gaps at REV, or in the copy DIR, missing now
     traces.py lint  [files...]               anchors, pins, paths, lines, cites
@@ -307,7 +307,7 @@ def load(specs, rev=None, strict=True):
 
 def cmd_list(args):
     data = load(args.files, args.rev)
-    n_t = n_g = 0
+    n_t, n_g, kinds = 0, 0, collections.Counter()
     for path, (traces, gaps, _) in data.items():
         rows = [(t.line, "src", t.text) for t in traces] + [
             (g[1], "gap", g[2]) for g in gaps
@@ -315,6 +315,11 @@ def cmd_list(args):
         for line, kind, text in sorted(rows):
             print(f"{path}:{line}  {kind}  {text}")
         n_t, n_g = n_t + len(traces), n_g + len(gaps)
+        kinds.update(g[2].split(":")[0] for g in gaps)
+    if kinds:
+        print(
+            "gaps by kind: " + ", ".join(f"{k} {n}" for k, n in sorted(kinds.items()))
+        )
     print(f"{n_t} traces, {n_g} gaps in {len(data)} files")
     return 0
 

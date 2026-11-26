@@ -1,6 +1,6 @@
 # Revise
 
-The one loop for every reader's points: an independent reader's report, the author's own red pen, an email, a co-author's marked-up PDF, a journal's referee. Read it when any such input arrives. The readers and their protocol are in `skills/paper/review.md`.
+The one loop for every reader's points: an independent reader's report, the author's own red pen, an email, a co-author's marked-up PDF, a journal's referee. Read it when any such input arrives. A result that has changed comes in through `skills/paper/evidence.md`, *When a result changes*, and its consequences are then applied here. The readers and their protocol are in `skills/paper/review.md`.
 
 ## The loop
 
@@ -15,7 +15,7 @@ The one loop for every reader's points: an independent reader's report, the auth
 
    `accept, changed` means the reader was right about the problem and the session chose a different fix.
 5. **Bring the author every point that touches the argument, the framing or their own prose** (core rule 5), each with a recommendation; for a journal's referee or a co-author, every disposition goes to the author to decide. A stylist's report is disposed of as its brief's *Modes* table says. Points the author has not decided stay `author`, and nothing is applied for them.
-6. **Apply the accepted changes, and carry each one through** the places that depend on it: `paper/outline.md` where the shape or a budget moved; `paper/claims.md` where a claim's wording or evidence changed; the other sections that rest on or promise the changed text; and the promises between sections, each a `\gap{todo}` under the heading it binds. Say what each change orphans or leaves unsupported. A cut keeps every traced fact or names it as dropped in the dispositions (a cut that leaves detail to the subject's documentation follows `skills/paper/techniques/subject-repository.md`), a merge is re-checked as new text, and a moved paragraph keeps its traces, which `lost` verifies (step 7). New prose follows `paper/style.md`; where the author rewrote a passage for its voice, update the sheet as `skills/paper/techniques/style-sheet.md`, *Testing it*, says.
+6. **Apply the accepted changes, and carry each one through** the places that depend on it: `paper/outline.md` where the shape or a budget moved; `paper/claims.md` where a claim's wording or evidence changed; the other sections that rest on or promise the changed text; and the promises between sections, each a `\gap{todo}` under the heading it binds. Say what each change orphans or leaves unsupported. A cut keeps every traced fact or names it as dropped in the dispositions (a cut that leaves detail to the subject's documentation follows `skills/paper/techniques/subject-repository.md`), a merge is re-checked as new text, and a moved paragraph keeps its traces, which `lost` verifies (step 7). A section that is dropped is a cut of everything in it: each of its claims is withdrawn or given another home in `paper/claims.md`, the promises made to it and by it are resolved, and git keeps the text. New prose follows `paper/style.md`; where the author rewrote a passage for its voice, update the sheet as `skills/paper/techniques/style-sheet.md`, *Testing it*, says.
 
    Step 7 applies where the manuscript changed, and step 8 also where a source it cites changed; a paragraph plan or the outline has no traces.
 

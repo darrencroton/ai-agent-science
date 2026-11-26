@@ -262,6 +262,7 @@ class TestListAndLost(Workspace):
         self.assertIn(f"{p}:2  src  code/src/a.c:1", out)
         self.assertIn(f"{p}:3  gap  todo: later", out)
         self.assertEqual(out.strip().splitlines()[-1], "1 traces, 1 gaps in 1 files")
+        self.assertEqual(out.strip().splitlines()[-2], "gaps by kind: todo 1")
 
     def test_lost_moved_and_gap_closed(self):
         self.section(

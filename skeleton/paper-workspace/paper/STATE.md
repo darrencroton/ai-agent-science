@@ -16,8 +16,8 @@ See `paper/outline.md`, the only authority. Note here only what is currently in 
 ## Settled
 _Nothing yet. Each entry carries the date of the journal line that records its reasoning._
 
-## Open
-_Nothing yet. Ids into `open-questions.md`, and any record the author has not yet confirmed._
+## What the paper needs
+_Nothing yet. Pointers only, for the author or an investigation to act on: from the science, the *open* rows of `claims.md` and what each waits on; from the literature, the questions not yet answered; from the author, ids into `open-questions.md` and any record not yet confirmed; in the manuscript, the gaps by kind (`tools/traces.py list` counts them)._
 
 ## Next
 Run `start` (or describe the paper): read the material, ask why the work was done, and propose an intent, an argument and the open questions.

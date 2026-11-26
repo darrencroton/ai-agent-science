@@ -25,7 +25,7 @@ Count before listing: a data directory may hold millions of files, so count it a
 
 ## 3. Ask before proposing
 
-Before any claim is proposed, ask the author in one message: why was this work done; what surprised you; who must be convinced; who are the authors. Record each answer once, where core says (*What the author says*): the reason for the work and what surprised the author as testimony in `notes/<slug>.md`, the reader to be convinced in the outline's *Intent*, the authors in `manuscript/main.tex`, where the scaffold has the placeholder; the introduction will rest on them. A framing built from the material alone has been wrong where the author's reason was different, however many readers agreed.
+Before any claim is proposed, ask the author in one message: why was this work done; what surprised you; what is settled and what is still open or under way; who must be convinced; who are the authors. Record each answer once, where core says (*What the author says*): the reason for the work and what surprised the author as testimony in `notes/<slug>.md`, the reader to be convinced in the outline's *Intent*, the authors in `manuscript/main.tex`, where the scaffold has the placeholder; the introduction will rest on them. What is still open is normal and is recorded as it is: an *open* row in `paper/claims.md` and a question, never a guess (`skills/paper/evidence.md`). A framing built from the material alone has been wrong where the author's reason was different, however many readers agreed.
 
 Optionally commission a **blind framing read**: a fresh context given the material and no framing, asked what paper it would write and what a referee would say. It costs little and shows whether the framing is in the material or in the session's head.
 

@@ -18,13 +18,14 @@ Try to show that the wording does not follow. Named attacks, each to be tried on
 - **A holdout already seen.** Was the data the claim is confirmed on used in development, tuning or a QA step before the claim was fixed?
 - **A number older than the version described.** Which version or date was it measured on, and is it presented as a property of a later one?
 - **A quantifier wider than what was counted.** "All", "only", "first", "every", "none": recount, and name what was counted.
+- **Evidence chosen from one side.** For a claim about what the field has found, or one that a contrary result would change: does anything record that the other direction was searched (the `literature` skill's support-or-contradict question)? If nothing does, say so and recommend the search.
 
 You may ask for a check of an input, not only re-read the outputs: if a claim turns on the input data (its construction, its coverage, its calibration), say what read-only check would settle it and why. Do not run it.
 
 Report, for each claim, in this form:
 
 - the claim id and the claim as worded;
-- a verdict: `as worded`, `if narrowed` (with the narrower wording you would defend), or `unsupported`;
+- a verdict: `as worded`, `if narrowed` (with the narrower wording you would defend), `unsupported`, or `open` (the evidence could not be opened, or its test has not been run: say which, and what would settle it);
 - the evidence: what you opened, where, and what it shows, quoted with its location, and which attack found the problem.
 
 Then list what you could not check and any input you recommend checking. Keep to <n> words. You never fix anything and never edit the claim: the narrower wording is a proposal for the owner to confirm at source.
