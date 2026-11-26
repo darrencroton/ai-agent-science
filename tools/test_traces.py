@@ -150,6 +150,12 @@ class TestParsing(unittest.TestCase):
         # a \begin in a comment opens nothing: the lines after it are the paper's
         text = "% \\begin{verbatim}\n% src: notes/n.md\nA.\n\\end{verbatim}\n"
         self.assertEqual(traces.blank_verbatim(text), text)
+        # so does one after a line break and a comment sign; an escaped % hides nothing
+        text = "Text\\\\% \\begin{verbatim}\n% src: notes/n.md\n"
+        self.assertEqual(traces.blank_verbatim(text), text)
+        text = "5\\% \\begin{verbatim}\n% src: notes/n.md\n\\end{verbatim}\n"
+        self.assertEqual(traces.parse_traces("f", traces.blank_verbatim(text)), [])
+        self.assertEqual(traces.strip_comments("a\\\\% b\nc\\% d"), "a\\\\\nc\\% d")
 
     def test_commit_and_key(self):
         got = self.kinds(
@@ -286,7 +292,10 @@ class TestLint(Workspace):
                 "notes/               fixed      cite", "notes/n.md  -  never"
             ),
         )
-        self.section("% src: notes/n.md.bak and code/src/a.c:1\n% src: notes/n.md:2\n")
+        self.section(
+            "% src: notes/n.md.bak and code/src/a.c:1 . (a stray full stop)\n"
+            "% src: notes/n.md:2\n"
+        )
         code, out, _ = self.run_cmd("lint")
         self.assertEqual(code, 1)
         self.assertIn("s.tex:2  never-root  notes/n.md", out)

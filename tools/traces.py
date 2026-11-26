@@ -123,12 +123,9 @@ LINE_RE = re.compile(r"^:(\d+)(?:[-\u2013]:?(\d+))?$")
 COMMIT_RE = re.compile(r"^([\w./-]+)@([0-9a-f]{7,40})$")
 QUOTED_RE = re.compile(r'"[^"]*"|``.*?\'\'|\u201c[^\u201d]*\u201d|`[^`]+`')
 PHRASE_RE = re.compile(r'"([^"]*)"|``(.*?)\'\'|\u201c([^\u201d]*)\u201d')
-VERBATIM_RE = re.compile(
-    # a \begin that is not in a comment, then the body up to the line of its \end
-    r"^((?:[^%\n]|\\%)*\\begin\{(verbatim|lstlisting)\*?\}[^\n]*\n)(.*?)"
-    r"(?=^[^\n]*\\end\{\2\*?\})",
-    re.DOTALL | re.MULTILINE,
-)
+VERBATIM_RE = re.compile(r"\\begin\{((?:verbatim|lstlisting)\*?)\}")
+# a comment starts at a % that an odd number of backslashes does not escape
+COMMENT_RE = re.compile(r"(?<!\\)((?:\\\\)*)%.*")
 LEAD, TRAIL = "([\"'`\u201c\u2018", ")]\"'`\u201d\u2019.,:;!?"
 
 Trace = collections.namedtuple("Trace", "file line text body")
@@ -164,7 +161,7 @@ def norm(s):
 
 def strip_comments(text):
     """The text with every comment removed, keeping line numbers."""
-    return re.sub(r"(?<!\\)%.*", "", text)
+    return COMMENT_RE.sub(r"\1", text)
 
 
 def parse_traces(path, text):
@@ -253,7 +250,8 @@ def under(tok, name):
     directory root, or exactly the one file an exclusion names (a line allowed)."""
     if name.endswith("/"):
         return tok.startswith(name)
-    return PATH_RE.match(tok).group("p") == name
+    m = PATH_RE.match(tok)  # no match for a token that cleaned down to nothing
+    return bool(m) and m.group("p") == name
 
 
 def anchors(body, roots, keys):
@@ -329,8 +327,23 @@ def read(path, rev=None):
 
 def blank_verbatim(text):
     """The text with the body of each verbatim or lstlisting environment emptied,
-    keeping line numbers: what a listing shows is not a trace or a gap of the paper."""
-    return VERBATIM_RE.sub(lambda m: m.group(1) + "\n" * m.group(3).count("\n"), text)
+    keeping line numbers: what a listing shows is not a trace or a gap of the paper.
+    An environment opens only outside a comment, and closes at the first line
+    that holds its \\end."""
+    out, env = [], None
+    for line in text.split("\n"):
+        if env:
+            if f"\\end{{{env}}}" in line:
+                env = None
+                out.append(line)
+            else:
+                out.append("")
+            continue
+        out.append(line)
+        m = VERBATIM_RE.search(COMMENT_RE.sub("", line))
+        if m and f"\\end{{{m.group(1)}}}" not in line:
+            env = m.group(1)
+    return "\n".join(out)
 
 
 def load(specs, rev=None, strict=True):
