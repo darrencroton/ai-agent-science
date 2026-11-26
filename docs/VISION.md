@@ -24,7 +24,7 @@ Instructions and briefs for an agent that writes a journal paper with a scientis
 
 It makes the scientist the orchestrator of the writing, as a software engineer manages a developer. The scientist decides; the agents do the legwork; independent readers check what the agents produced.
 
-Eight commitments define it. The rules that carry them out are in `skills/_shared/core.md`, which every session reads. The reasons and the decisions behind them are in `docs/design.md`.
+Eight commitments define it. The rules that carry them out are in `skills/_shared/core.md`, which every session reads.
 
 1. **Trace or gap.** Every checkable statement has its primary source beside it, or an open gap that stays visible until it is closed. There is no third option, and a gap fails the final build.
 
@@ -76,11 +76,17 @@ The engineer is trusted because the code passes tests they understand, has been 
 
 1. **Empower the agent; do not over-prescribe.** We do not build a brittle system in which everything is controlled, or attempted to be. Every paper is different. The goal is to give the agent the workflow and tools to meet the author's intent; over-engineering is the death of many otherwise useful toolkits.
 
-2. **Grow only where use shows a genuine gap or friction.** The toolkit is simple, transparent and connected, and adds a part only when real use shows that something is missing or in the way.
+2. **Grow only where use shows a genuine gap or friction.** The toolkit is simple, transparent and connected, and adds a part only when real use shows that something is missing or in the way. What waits, and what was decided against, is recorded in `docs/BACKLOG.md`.
 
 3. **Responsibility, not keystrokes.** What matters is whether the scientist can answer for every sentence, not who typed it.
 
-The principles of the toolkit's shape (a map, not a pipeline; a tool only where failure is silent; one place for each truth; ordinary technology) are in `docs/design.md` §2.
+4. **A map, not a pipeline.** A small core is always read; everything else is read when its case arises.
+
+5. **A tool only where failure is silent.** A convention is preferred to a procedure, and a procedure to code, except where a failure would otherwise go unseen (a gap left in a submission, a trace lost in a cut, a composed reference); there a deterministic tool is right. The technology is ordinary: Markdown, LaTeX, git and Python's standard library.
+
+6. **One place for each truth.** Anything written twice will disagree. What is true today is kept apart from its history, which git holds.
+
+7. **Generic toolkit, particular workspace.** A sentence belongs in the toolkit only if a paper on a different subject, by a different author, for a different journal would need it; what is particular to one paper lives in its workspace. The toolkit names no subject and holds no paper.
 
 ## What the Toolkit Guarantees, and What It Does Not Claim
 

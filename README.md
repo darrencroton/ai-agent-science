@@ -4,7 +4,7 @@ Agent skills for a scientist who writes a journal paper with an AI agent and wan
 
 ## The idea
 
-A paper is verifiable when every checkable sentence has its source beside it, or a visible gap where the source is missing, and when someone other than the writer has opened those pointers. An agent writes fast and cannot see its own errors, and the author's attention is the scarce resource. So the toolkit makes the unverified visible, keeps what the author must read short, and never certifies anything itself. The author is the gate.
+A paper is verifiable when four things hold: every checkable sentence has its source beside it, reached in one step, or a visible gap where the source is missing; a gap fails the final build; someone other than the writer has opened each source and compared it with the sentence, and the record says when and at which version of the text; and the author can audit a sample of sentences beside their sources in minutes, and see which text has changed since it was checked. An agent writes fast and cannot see its own errors, and the author's attention is the scarce resource. So the toolkit makes the unverified visible, keeps what the author must read short, and never certifies anything itself. The author is the gate.
 
 The mechanism is one comment beside each checkable sentence in the manuscript source, or a gap that prints loudly in a draft and fails the build in final mode:
 
@@ -46,22 +46,20 @@ The readers are briefs handed to a fresh context that did not write the text, an
 
 ## What every session relies on
 
-**The core** (`skills/_shared/core.md`) is read whole by every session and every subagent. It holds eight rules: trace or gap; references are exported, never composed; the writer does not check itself; a claim is worded no stronger than its test; the author owns the argument and their prose; read, do not run, with one exception; shorter, and never by silent omission; and memory. It also holds the trace forms, the gap kinds, and how what the author says is recorded, once they confirm it, as testimony, direction or standing instruction.
+**The core** (`skills/_shared/core.md`) is read whole by every session and every subagent. It holds the eight rules, the trace forms, the gap kinds, and how what the author says is recorded once they confirm it.
 
 **The workspace** is the paper's own git repository and the working directory of every session; `skeleton/workspace/` is the scaffold. Three files carry the contract and every drafter reads them:
 
-- `AGENTS.md` says how we work here, names the installation root, sets the commit policy, and holds the `sources` block: which roots the paper may cite, at which version, and which it may not.
-- `paper/outline.md` holds the intent as the author confirmed it, the narrative, the argument, and each section's role, budget, what it must carry and its hand-off to the next.
-- `paper/style.md` holds the author's voice, distilled from their past papers by `techniques/style-sheet.md`: register, notation, defined terms and verbatim exemplar paragraphs, which the stylist also reads against.
+- `AGENTS.md` names the installation root, sets the commit policy and holds the `sources` block: what the paper may cite, and at which version.
+- `paper/outline.md` holds the intent, the narrative, the argument and each section's role and budget.
+- `paper/style.md` holds the author's voice, distilled from their past papers.
 
-Five memory files keep apart what is true today (`STATE.md`, rewritten each session), what the paper argues (`outline.md`), what each claim rests on (`claims.md`), what the author must decide (`open-questions.md`) and what was decided and why (`journal.md`, append-only). Three reference files, `style.md`, `venue.md` and `field.md`, are each built once at first need by a technique, so that they are current for this paper, and are never a source. Each milestone review leaves a record in `paper/reviews/`.
-
-**The check stamp**, `% checked: <date> <reader>`, is one comment line near the top of a section file, written once the checker has re-read what `revise` changed. `tools/traces.py stale` reports every file changed since its stamp.
+The paper's other files (its state, claims, open questions and decision journal, and its reference files) are listed in core under *The workspace*.
 
 ## The tools
 
 - `tools/ads.py` searches ADS/SciX and exports BibTeX byte for byte. It needs an [ADS/SciX API token](https://ui.adsabs.harvard.edu/user/settings/token).
-- `tools/traces.py` is run from the workspace root. `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check; `moved` names the traces anchored in files that changed in a source; `sample` draws traces at random for the author to audit.
+- `tools/traces.py` is run from the workspace root. `list` collects every trace and gap; `lost` names each trace that disappeared or moved in a change; `lint` checks anchors, pins, paths and citation keys; `stale` reports sections changed since their last independent check, which a `% checked:` comment line records; `moved` names the traces anchored in files that changed in a source; `sample` draws traces at random for the author to audit. Its `--help` prints the full specification.
 - `skeleton/workspace/manuscript/scipaper.sty` is the gap macro.
 
 Both tools use only the Python standard library. A paper needs `latexmk` and git. The procedures also call `curl` to fetch references and full texts, `latexpand` and `latexdiff` for the bundle sent to the journal and the reply to its referee, and Ghostscript (`gs`) for EPS figures.
@@ -70,15 +68,15 @@ The `literature` skill answers five questions through `ads.py`: has this been do
 
 ## Installation
 
-Install once, globally. Clone this repository and link each `skills/<name>/` that holds a `SKILL.md` into the harness's skills directory (a catalogue script may do the linking). `skills/_shared/` is data the skills read and is not linked. The installation root, which holds `skills/`, `skeleton/` and `tools/`, is written once in each workspace's `AGENTS.md`. To develop, edit and commit in a separate clone, then bring the installed copy forward with `git pull --ff-only` in it. Never edit the installed copy.
+Install once, globally. Clone this repository and link each `skills/<name>/` that holds a `SKILL.md` into the harness's skills directory (a catalogue script may do the linking). `skills/_shared/` is data the skills read and is not linked. The installation root, which holds `skills/`, `skeleton/` and `tools/`, is written once in each workspace's `AGENTS.md`. To develop, edit and commit in a separate clone, then bring the installed copy forward with `git pull --ff-only` in it. Never edit the installed copy. The tools' unit tests run from the repository root with `python3 -m unittest discover -s tools -p 'test_*.py'`.
 
 ## Starting a paper
 
 Ask the agent to start one. It follows `skills/paper/start.md`: it copies the scaffold to a new directory, makes it a git repository, links the sources in, and asks why the work was done and who the paper is for before it proposes anything. Commands such as `/paper draft` are shortcuts where a harness offers them; plain conversation works everywhere, and a session that was never given a command starts in the right place by reading `paper/STATE.md`.
 
-## Design
+## Vision and backlog
 
-Why the toolkit exists, who it serves and the commitments that define it are in [`docs/VISION.md`](docs/VISION.md). The reasons for the shape, what is deliberately left out, how components are tested and the decisions settled so far are in [`docs/design.md`](docs/design.md).
+Why the toolkit exists, who it serves, the commitments that define it and the principles that govern its design are in [`docs/VISION.md`](docs/VISION.md). What waits, and what was decided against, is in [`docs/BACKLOG.md`](docs/BACKLOG.md).
 
 ## Licence
 

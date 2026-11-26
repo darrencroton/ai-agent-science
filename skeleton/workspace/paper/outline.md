@@ -18,7 +18,7 @@ The spine: the claims in the order the paper makes them, each pointing at its ro
 _Empty._
 
 ## Sections
-One row per section: its role (methods, results, discussion or framing: `skills/paper/sections.md`), the budget in words, what it must carry (claim ids and named items), and its hand-off (what the reader carries out of it into the next section). What a section must carry is never dropped to meet its budget; a conflict goes to the author before the prose is written (core rule 7).
+One row per section: its heading, its role (methods, results, discussion or framing: `skills/paper/sections.md`; where one section has two roles they are joined by ` + `), the budget in words, what it must carry (claim ids and named items), and its hand-off (what the reader carries out of it into the next section). What a section must carry is never dropped to meet its budget; a conflict goes to the author before the prose is written (core rule 7).
 
 | Section | Role | Budget | Must carry | Hand-off |
 |---|---|---|---|---|

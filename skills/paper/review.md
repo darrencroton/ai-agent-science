@@ -15,7 +15,16 @@ The protocol every reader follows, whichever brief it is given: how a fresh cont
 
 ## Outside a paper workspace
 
-An investigation may commission a reader too: a Campaign Manager under its brief, a Project Manager under its frozen plan. The protocol is the same, and the binding (the brief or plan) supplies what a workspace would: the toolkit's path; the document and its inputs, each at a pin; what may be cited, which replaces the `sources` block; the field and venue material a referee needs, pinned, since a reader in an investigation may have no network; where the report goes, a path or, for a reader that cannot write files, returned whole and filed by the commissioner as it came; and who confirms each finding at source and disposes of it, the commissioner within its brief or plan, with what the brief reserves going to the owner. Steps that assume a manuscript (`tools/traces.py`, the check stamp, the record under `paper/reviews/`) apply only to one.
+An investigation may commission a reader too: a Campaign Manager under its brief, a Project Manager under its frozen plan. The protocol is the same, and the binding (the brief or plan) supplies what a workspace would:
+
+- the toolkit's path;
+- the document and its inputs, each at a pin;
+- what may be cited, which replaces the `sources` block;
+- the field and venue material a referee needs, pinned, since a reader in an investigation may have no network;
+- where the report goes, a path or, for a reader that cannot write files, returned whole and filed by the commissioner as it came;
+- who confirms each finding at source and disposes of it, the commissioner within its brief or plan, with what the brief reserves going to the owner.
+
+Steps that assume a manuscript (`tools/traces.py`, the check stamp, the record under `paper/reviews/`) apply only to one.
 
 ## The readers
 

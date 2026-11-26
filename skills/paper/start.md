@@ -8,10 +8,10 @@ Read `skills/_shared/core.md` first.
 
 The session works in the workspace, which is its working directory. Ask the author which git repository, if any, will contain it, then which directory it is, offering a default: that repository's directory name with `-paper-workspace` appended or, with none, the paper's short name with `-paper-workspace` appended.
 
-1. Copy the scaffold without overwriting anything: `cp -Rn <install>/skeleton/workspace/. <directory>/` (`<install>` is the installation root), then `git init` there. Write the installation root into `AGENTS.md` where the scaffold names it, and the paper's short name and author list where the scaffold has placeholders. Create `manuscript/sections/`, which git cannot ship empty. Say which files were already there and left alone.
+1. Copy the scaffold without overwriting anything: `cp -Rn <install>/skeleton/workspace/. <directory>/` (`<install>` is the installation root), then `git init` there. Write the installation root into `AGENTS.md` where the scaffold names it, and the paper's short name where the scaffold has placeholders. Create `manuscript/sections/` and `manuscript/figures/`, which git cannot ship empty. Say which files were already there and left alone.
 2. If the workspace sits inside another repository, add it to that repository's `.git/info/exclude` (local, untracked), never to its tracked files, unless the author asks otherwise. Nothing the toolkit writes may reach another repository's history.
 3. Ask once how commits are to be made here, and write the answer under `## Commit policy` in `AGENTS.md`, once the author has confirmed the text (core, *What the author says*). Make the first commit only under that policy.
-4. Link or copy each source inside the workspace, so that no path begins with `../`: a live repository is a symbolic link, a folder of notes or figures may be either. The author's own files are used where they are and never moved or tidied. Write the `sources` block of `AGENTS.md`: a root, a pin (`git:<rev>`, `fixed`, or `-` with `never`) and whether it may be cited. Keep the scaffold's lines for the workspace's own directories. Forward plans, archives and anything an agent wrote about the sources are `never`.
+4. Link or copy each source inside the workspace, so that no path begins with `../`: a live repository is a symbolic link, a folder of notes or figures may be either. The author's own files are used where they are and never moved or tidied. Write the `sources` block of `AGENTS.md`: one line per source, in the form its *Sources* section gives. Keep the scaffold's lines for the workspace's own directories. Forward plans, archives and anything an agent wrote about the sources are `never`.
 5. A paper whose subject is a repository also reads `skills/paper/techniques/subject-repository.md` now.
 
 ## 2. Read the material
@@ -25,7 +25,7 @@ Count before listing: a data directory may hold millions of files, so count it a
 
 ## 3. Ask before proposing
 
-Before any claim is proposed, ask the author in one message: why was this work done; what surprised you; who must be convinced; who are the authors. Record each answer once, where core says (*What the author says*): the reason for the work and what surprised the author as testimony in `notes/<slug>.md`, the reader to be convinced in the outline's *Intent*, the authors in `AGENTS.md`; the introduction will rest on them. A framing built from the material alone has been wrong where the author's reason was different, however many readers agreed.
+Before any claim is proposed, ask the author in one message: why was this work done; what surprised you; who must be convinced; who are the authors. Record each answer once, where core says (*What the author says*): the reason for the work and what surprised the author as testimony in `notes/<slug>.md`, the reader to be convinced in the outline's *Intent*, the authors in `manuscript/main.tex`, where the scaffold has the placeholder; the introduction will rest on them. A framing built from the material alone has been wrong where the author's reason was different, however many readers agreed.
 
 Optionally commission a **blind framing read**: a fresh context given the material and no framing, asked what paper it would write and what a referee would say. It costs little and shows whether the framing is in the material or in the session's head.
 
@@ -33,7 +33,12 @@ Optionally commission a **blind framing read**: a fresh context given the materi
 
 Write, as proposals for the author to correct:
 
-- **`paper/outline.md`.** *Intent* first, drawn from step 3's testimony and confirmed by the author before it stands (core, *What the author says*). Then the spine: one line per step of the argument, each naming what it rests on; a step resting on nothing is the paper's real open question. Then the sections table: heading, role (`methods`, `results`, `discussion` or `framing`, joined by ` + ` where one section has two), a budget, what the section must carry (claim ids and named items), and its hand-off (what the reader carries out of it). Budgets are guesses that the first paragraph plan corrects (`skills/paper/draft.md`). The *Narrative*, one paragraph telling the paper's story to the reader the intent names, and the hand-offs come from the stylist's outline mode (`skills/paper/readers/stylist.md`), commissioned once the intent and spine exist and `paper/field.md` names its exemplars, before the first paragraph plan; until then they are left empty.
+- **`paper/outline.md`.**
+  - *Intent* first, drawn from step 3's testimony and confirmed by the author before it stands (core, *What the author says*).
+  - Then the spine: one line per step of the argument, each naming what it rests on; a step resting on nothing is the paper's real open question.
+  - Then the sections table, as the outline's *Sections* header defines it.
+  - Budgets are guesses that the first paragraph plan corrects (`skills/paper/draft.md`).
+  - The *Narrative*, one paragraph telling the paper's story to the reader the intent names, and the hand-offs come from the stylist's outline mode (`skills/paper/readers/stylist.md`), commissioned once the intent and spine exist and `paper/field.md` names its exemplars, before the first paragraph plan; until then they are left empty.
 - **`paper/claims.md`**: first rows, most of them unverified, each with what it would rest on.
 - **`paper/open-questions.md`**: everything that could not be worked out, each with a recommendation and a short `Q<n>` id: a number no figure or code produces, two notes that disagree, a figure nothing explains, an unstated convention, a cut with no reason, the paper's evident point with nothing behind it. **Never invent a result to fill a hole**: if the notes do not say what was found, the paper does not yet know.
 - **A first journal entry** recording the decisions made so far.

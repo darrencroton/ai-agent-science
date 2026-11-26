@@ -32,38 +32,40 @@ with a declared root (optionally `:<line>`, `:<a>-<b>`, further `:<line>`
 tokens, and globs or `{a,b}` alternatives); a commit `<root>@<hex>`; a key of
 manuscript/refs.bib; or the word `search`. Text inside double quotes, backticks
 and TeX quotes is never read for anchors, and any token that is not clearly an
-anchor is free text. It then checks that no path lies under a `never` root, that
-each path exists at its pin (`git:` roots are read through one `git ls-tree`
-per root, `fixed` roots on disk), that a given line is within the file, that
-each commit resolves, that every path is written plainly (no `.`, `..` or
-empty segment), and that each \\cite key is in refs.bib. The `never` policy is applied to what a trace names, not to what
-it is written as: each `{a,b}` alternative is expanded first and judged under
-its own longest-matching root, each file a glob matches is judged likewise and
-must exist at its own root's pin, a glob that can reach another cited
-root is refused (write one anchor per root), and a commit
-anchor `<root>@<hex>` is judged
-under its root.
+anchor is free text. It then checks that no path lies under a `never` root,
+that each path exists at its pin (`git:` roots are read through one
+`git ls-tree` per root, `fixed` roots on disk), that a given line is within the
+file, that each commit resolves, that every path is written plainly (no `.`,
+`..` or empty segment), and that each \\cite key is in refs.bib. The `never`
+policy is applied to what a trace names, not to what it is written as: each
+`{a,b}` alternative is expanded first and judged under its own longest-matching
+root, each file a glob matches is judged likewise and must exist at its own
+root's pin, a glob that can reach another cited root is refused (write one
+anchor per root), and a commit anchor `<root>@<hex>` is judged under its root.
 
 The check stamp is one line, `% checked: <YYYY-MM-DD> <who checked>`. `stale`
 compares the file with the version in the commit that last changed that line,
 so the stamp line must differ from the one it replaces at every check: a second
-check on the same day adds a round, e.g. `% checked: 2026-11-19 r2 checker
-(Sonnet)`. A changed file is reported with that commit, the baseline for its
-re-check, as is an unchanged one (a changed `fixed` source still needs one).
-main.tex and each section file need a stamp whatever they hold; any other file
-needs one only when it holds traces or citations, and is otherwise `no traces`
-and not counted. A stamp whose line is not yet committed is reported as such and counts as not
-clean, since the section can still change under it; `stale` is a submission gate.
+check on the same day adds a round, e.g.
+`% checked: 2026-11-19 r2 checker (Sonnet)`. A changed file is reported with
+that commit, the baseline for its re-check, as is an unchanged one (a changed
+`fixed` source still needs one). main.tex and each section file need a stamp
+whatever they hold; any other file needs one only when it holds traces or
+citations, and is otherwise `no traces` and not counted. A stamp whose line is
+not yet committed is reported as such and counts as not clean, since the
+section can still change under it; `stale` is a submission gate.
 
-`moved` is for a source that changes under a checked trace, which `stale` cannot see.
-ROOT is one declared in AGENTS.md. It takes the files that `git diff --name-only OLD [NEW]`
-names in the repository holding ROOT (a renamed or deleted file under its old path too),
-and reports every trace with a path anchor in ROOT that names one of them: exactly, by
-glob, or as a directory holding one. OLD defaults to a `git:` root's pin; a `fixed`
-root needs --from. NEW defaults to the working tree, so an uncommitted edit counts.
-A root is compared only as far as git tracks it: against the working tree, untracked files
-are counted, not compared. Commit anchors never move and are not reported. It narrows attention only: a section
-whose sources moved still gets its full check.
+`moved` is for a source that changes under a checked trace, which `stale`
+cannot see. ROOT is one declared in AGENTS.md. It takes the files that
+`git diff --name-only OLD [NEW]` names in the repository holding ROOT (a
+renamed or deleted file under its old path too), and reports every trace with a
+path anchor in ROOT that names one of them: exactly, by glob, or as a directory
+holding one. OLD defaults to a `git:` root's pin; a `fixed` root needs --from.
+NEW defaults to the working tree, so an uncommitted edit counts. A root is
+compared only as far as git tracks it: against the working tree, untracked
+files are counted, not compared. Commit anchors never move and are not
+reported. It narrows attention only: a section whose sources moved still gets
+its full check.
 
 Exit codes: 0 fine; 1 a finding (lint), a lost trace (lost), a stale, unchecked
 or uncommitted file (stale), a trace anchored in a changed file (moved); 2 the
@@ -72,11 +74,11 @@ request, the configuration or git failed.
 
 import argparse
 import collections
-import random
 import difflib
 import fnmatch
 import glob
 import os
+import random
 import re
 import subprocess
 import sys
@@ -424,8 +426,7 @@ def repo_of(name):
 class Pins:
     """Existence and length of a path at its root's pin, with every git call cached."""
 
-    def __init__(self, roots):
-        self.roots = {r.name: r for r in roots}
+    def __init__(self):
         self._trees = {}
 
     def _tree(self, root):
@@ -522,54 +523,64 @@ def plain(path):
     return os.path.normpath(path) == path.rstrip("/") and not path.startswith("..")
 
 
+def lint_commit(tok, roots, pins):
+    """Findings for one commit anchor `<root>@<hex>`."""
+    root, hex_ = tok.split("@")
+    if not plain(root):
+        yield "unplain-path", tok
+    elif root_of(root, roots).policy == "never":
+        yield "never-root", tok
+    elif not pins.commit_ok(root + "/", hex_):
+        yield "unknown-commit", tok
+
+
+def lint_path(path, lines, roots, pins):
+    """Findings for one expanded path anchor and the line numbers given for it."""
+    root = root_of(path, roots)
+    if ".." in path.split("/"):
+        yield "parent-path", path
+    elif not plain(path):
+        yield "unplain-path", path
+    elif root.policy == "never":
+        yield "never-root", path
+    elif spans_roots(path, root, roots):
+        yield "glob-spans-roots", path
+    elif not (hits := pins.matches(root, path)):
+        yield "missing-at-pin", path
+    else:
+        forbidden = False
+        for h in hits:
+            own = root_of(h, roots)
+            if own.policy == "never":
+                forbidden = True
+                yield "never-root", h
+            elif own is not root and not pins.matches(own, h):
+                yield "missing-at-pin", h
+        if lines and len(hits) == 1 and not forbidden:
+            n = pins.length(root_of(hits[0], roots), hits[0])
+            if n is not None and max(lines) > n:
+                yield (
+                    "line-beyond-end",
+                    f"{path}:{max(lines)} (file has {n} lines)",
+                )
+
+
 def lint_trace(t, roots, keys, pins):
     if t.body.lstrip(LEAD).startswith("../"):
         yield "parent-path", t.body[:70]
     for kind, tok, lines in (found := anchors(t.body, [r.name for r in roots], keys)):
         if kind == "commit":
-            root, hex_ = tok.split("@")
-            if not plain(root):
-                yield "unplain-path", tok
-            elif root_of(root, roots).policy == "never":
-                yield "never-root", tok
-            elif not pins.commit_ok(root + "/", hex_):
-                yield "unknown-commit", tok
+            yield from lint_commit(tok, roots, pins)
         elif kind == "path":
             for path in expand_braces(tok):
-                root = root_of(path, roots)
-                if ".." in path.split("/"):
-                    yield "parent-path", path
-                elif not plain(path):
-                    yield "unplain-path", path
-                elif root.policy == "never":
-                    yield "never-root", path
-                elif spans_roots(path, root, roots):
-                    yield "glob-spans-roots", path
-                elif not (hits := pins.matches(root, path)):
-                    yield "missing-at-pin", path
-                else:
-                    forbidden = False
-                    for h in hits:
-                        own = root_of(h, roots)
-                        if own.policy == "never":
-                            forbidden = True
-                            yield "never-root", h
-                        elif own is not root and not pins.matches(own, h):
-                            yield "missing-at-pin", h
-                    if lines and len(hits) == 1 and not forbidden:
-                        n = pins.length(root_of(hits[0], roots), hits[0])
-                        if n is not None and max(lines) > n:
-                            yield (
-                                "line-beyond-end",
-                                f"{path}:{max(lines)} (file has {n} lines)",
-                            )
+                yield from lint_path(path, lines, roots, pins)
     if not found:
         yield "no-anchor", t.body[:70]
 
 
 def cmd_lint(args):
     roots, keys = parse_sources(), read_keys()
-    pins, findings = Pins(roots), []
+    pins, findings = Pins(), []
     for path, (traces, _, cites) in load(args.files).items():
         for t in traces:
             findings += [
@@ -585,6 +596,39 @@ def cmd_lint(args):
 
 
 # ---------------------------------------------------------------- stale
+
+
+def stamp_origin(path, n):
+    """(commit, the file's name in it) that last changed line `n` of `path`, or None
+    if the file is not in HEAD or the line is not yet committed."""
+    # Blame can date the stamp line only for a file that is in HEAD.
+    in_head = git("cat-file", "-e", f"HEAD:./{path}")[0] == 0
+    if not in_head:
+        return None
+    rc, out = git("blame", "--porcelain", "-L", f"{n},{n}", "--", path)
+    if rc:
+        raise Error(f"git blame failed for {path}")
+    sha = out.split()[0]
+    if set(sha) == {"0"}:
+        return None
+    return sha, re.search(r"^filename (.*)$", out, re.MULTILINE).group(1)
+
+
+def lines_changed_since(sha, old_name, lines):
+    """How many lines of `lines` differ from the file as it was in commit `sha`,
+    not counting stamp lines."""
+    rc, old = git("show", f"{sha}:{old_name}")
+    if rc:
+        raise Error(f"git show {sha}:{old_name} failed")
+    keep = lambda ls: [l for l in ls if not STAMP_RE.match(l)]
+    ops = difflib.SequenceMatcher(
+        None, keep(old.splitlines()), keep(lines), autojunk=False
+    )
+    return sum(
+        max(i2 - i1, j2 - j1)
+        for tag, i1, i2, j1, j2 in ops.get_opcodes()
+        if tag != "equal"
+    )
 
 
 def cmd_stale(args):
@@ -609,32 +653,12 @@ def cmd_stale(args):
                 print(f"{path}: no traces")
             continue
         date = STAMP_RE.match(lines[n - 1]).group(1)
-        sha = out = None
-        if not git("cat-file", "-e", f"HEAD:./{path}")[
-            0
-        ]:  # in HEAD: blame dates the stamp line
-            rc, out = git("blame", "--porcelain", "-L", f"{n},{n}", "--", path)
-            if rc:
-                raise Error(f"git blame failed for {path}")
-            sha = out.split()[0]
-        if not sha or set(sha) == {"0"}:
+        if not (origin := stamp_origin(path, n)):
             print(f"{path}: checked {date}, not yet committed")
             bad += 1
             continue
-        old_name = re.search(r"^filename (.*)$", out, re.MULTILINE).group(1)
-        rc, old = git("show", f"{sha}:{old_name}")
-        if rc:
-            raise Error(f"git show {sha}:{old_name} failed")
-        keep = lambda ls: [l for l in ls if not STAMP_RE.match(l)]
-        ops = difflib.SequenceMatcher(
-            None, keep(old.splitlines()), keep(lines), autojunk=False
-        )
-        k = sum(
-            max(i2 - i1, j2 - j1)
-            for tag, i1, i2, j1, j2 in ops.get_opcodes()
-            if tag != "equal"
-        )
-        if k:
+        sha, old_name = origin
+        if k := lines_changed_since(sha, old_name, lines):
             print(f"{path}: STALE: checked {date}, changed since {sha[:8]} ({k} lines)")
             bad += 1
         else:
@@ -671,6 +695,38 @@ def anchors_changed(t, root, roots, keys, changed):
     return False
 
 
+def changed_names(top, prefix, old, new):
+    """Paths, relative to repository `top`, that differ under `prefix` between
+    revision `old` and `new` (None: the working tree); None if git fails."""
+    rc, out = git(
+        "--literal-pathspecs",
+        "diff",
+        "--name-only",
+        "--no-renames",
+        "-z",
+        old,
+        *([new] if new else []),
+        "--",
+        prefix or ".",
+        cwd=top,
+    )
+    return None if rc else out.split("\0")[:-1]
+
+
+def untracked_count(top, prefix):
+    """Number of untracked files under `prefix` in repo `top`; None if git fails."""
+    rc, out = git(
+        "--literal-pathspecs",
+        "ls-files",
+        "--others",
+        "-z",
+        "--",
+        prefix or ".",
+        cwd=top,
+    )
+    return None if rc else len(out.split("\0")[:-1])
+
+
 def cmd_moved(args):
     roots, keys = parse_sources(), read_keys()
     name = args.root.rstrip("/") + "/"
@@ -692,25 +748,13 @@ def cmd_moved(args):
         raise Error(f"{name} is missing or not in a git repository")
     top, prefix = repo
     span = f"{old}..{args.to}" if args.to else f"{old}..working tree"
-    rc, out = git(
-        "--literal-pathspecs",
-        "diff",
-        "--name-only",
-        "--no-renames",
-        "-z",
-        old,
-        *([args.to] if args.to else []),
-        "--",
-        prefix or ".",
-        cwd=top,
-    )
-    if rc:
+    if (names := changed_names(top, prefix, old, args.to)) is None:
+        which = f"do {old} and {args.to}" if args.to else f"does {old}"
         raise Error(
             f"git diff {span} failed in {name}: "
-            f"{f'do {old} and {args.to}' if args.to else f'does {old}'} exist in the repository "
-            "holding it?"
+            f"{which} exist in the repository holding it?"
         )
-    files = sorted(name + f[len(prefix) :] for f in out.split("\0")[:-1])
+    files = sorted(name + f[len(prefix) :] for f in names)
     changed = {n for f in files for n in (f, *_parents(f))}
     hits = [
         t
@@ -720,20 +764,11 @@ def cmd_moved(args):
     ]
     untracked = ""
     if not args.to:
-        rc, other = git(
-            "--literal-pathspecs",
-            "ls-files",
-            "--others",
-            "-z",
-            "--",
-            prefix or ".",
-            cwd=top,
-        )
-        if rc:
+        if (k := untracked_count(top, prefix)) is None:
             raise Error(
                 f"git ls-files failed in {name}: the untracked files were not scanned"
             )
-        if k := len(other.split("\0")[:-1]):
+        if k:
             untracked = f"; {k} untracked files not compared"
     for t in hits:
         print(f"{t.file}:{t.line}  src  {t.text}")
@@ -773,7 +808,13 @@ def cmd_sample(args):
 
 def main(argv=None):
     _CACHE.clear()
-    ap = argparse.ArgumentParser(prog="traces.py", description=__doc__.split("\n\n")[0])
+    summary, spec = __doc__.split("\n\n", 1)
+    ap = argparse.ArgumentParser(
+        prog="traces.py",
+        description=summary,
+        epilog=spec,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name, fn, rev in (
         ("list", cmd_list, True),

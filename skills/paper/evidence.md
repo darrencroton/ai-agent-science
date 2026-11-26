@@ -4,7 +4,7 @@ What each claim rests on, and how what is missing is got. Read it when a claim h
 
 ## Claims and what they rest on
 
-`paper/claims.md` holds one row per claim the argument depends on: the claim as the paper may word it (no stronger than its test, core rule 4), what it rests on, and the verdict. A **supportable** row rests on sources the `sources` block lets the paper cite, each openable in one step. An **open** row may name what it has so far, including a root marked `never` (an agent's report, a forward plan), and says so. The verdicts are *supportable*, *if narrowed* (with the narrower wording), *open*, *unsupported* and *withdrawn*. `paper/outline.md` cites rows by id; a claim changes status only in its row.
+`paper/claims.md` holds one row per claim the argument depends on, in the columns its header defines, each claim worded no stronger than its test (core rule 4). A **supportable** row rests on sources the `sources` block lets the paper cite, each openable in one step. An **open** row may name what it has so far, including a root marked `never` (an agent's report, a forward plan), and says so. The verdicts are *supportable*, *if narrowed* (with the narrower wording), *open*, *unsupported* and *withdrawn*. `paper/outline.md` cites rows by id; a claim changes status only in its row.
 
 ## A claim with nothing under it
 
@@ -20,7 +20,7 @@ An investigation returns a findings report whose last section lists every file i
 2. Check that every cited path arrived; a path given with a commit (`path @ <commit>`) is read from that repository at that commit. A missing file that a verdict rests on is named to the investigation's owner, and that verdict stays open until it arrives.
 3. Check each verdict against its receipts, recomputing where a small read-only check can, kept under `paper/checks/` (core rule 6).
 4. Run the challenger on each claim as the investigation worded it.
-5. Add the rows to `paper/claims.md` with both verdicts, the investigation's and the paper's, and write the long reading in `paper/ingest/<id>.md`, which opens with the dossier's head, the code's commit and the date read, and closes with what the investigation did not test; if the subject is still moving, update `paper/ingest/subject-delta.md` (`skills/paper/techniques/subject-repository.md`). The *Checked by* cell names who checked the paper's verdict and against what. The challenger's `as worded` is *supportable*.
+5. Add the rows to `paper/claims.md` with both verdicts, the investigation's and the paper's, and write the long reading in `paper/ingest/<id>.md`, which opens with the dossier's head, the code's commit and the date read, and closes with what the investigation did not test; if the subject is still moving, update `paper/ingest/subject-delta.md` (`skills/paper/techniques/subject-repository.md`). The challenger's `as worded` is *supportable*.
 6. Bring the author the results, with a recommendation of which the paper uses.
 
 An investigation may already have run the checker on its findings and the referee on its headline result (`skills/paper/review.md`, *Outside a paper workspace*). That surfaces problems earlier; the paper still checks each verdict against its receipts.

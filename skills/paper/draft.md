@@ -4,7 +4,7 @@ How one section is written from sources, tracing as it goes and marking every ho
 
 ## Read first
 
-`skills/_shared/core.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative*, and the section's own row: its role, budget, what it must carry and its hand-off); `paper/style.md` (the author's voice) and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
+`skills/_shared/core.md`; the workspace `AGENTS.md` (the `sources` block, the build command); `paper/outline.md` (the *Intent*, the *Narrative* and the section's own row); `paper/style.md` (the author's voice) and, once a journal is chosen, `paper/venue.md` (its rules for tables, listings, characters and citations); the section's rows of `paper/claims.md`; and the section's role in `skills/paper/sections.md`. A section with a results role is preceded by the inventory in `skills/paper/evidence.md`. A framing section (conclusions, introduction, abstract, title) is drafted last: see its role there.
 
 Then read the sections already drafted, for the notation and terms the paper already uses and for what it has already said, never as a source (core rule 1). Search them for `\gap{todo}` promises made to this section and keep them. If the section file exists, read it first, with its traces and gaps: filling gaps is edited in place; rewriting author prose is shown to the author and told to go ahead (core rule 5).
 
@@ -31,7 +31,15 @@ The drafter reads its own traces back against the open sources, and only for wha
 
 ## 4. Build and report
 
-Build with the command in `AGENTS.md`, in a fresh scratch copy of `manuscript/` made outside the workspace, with the section's `\input` added to the copy's `main.tex` (the scaffold's `\input` lines are commented out and `main.tex` is the session's, so the real build may omit the section). The session wires the real `main.tex`. A draft that compiles with gaps is the target; judge the build by what it adds to `paper/venue.md`'s baseline warnings and run its greps, once a journal is chosen; look at the rendered pages too, since a class can drop a character it cannot print without an error; fix only what this edit broke. Where a fix would mean changing author prose, choosing between two versions of a figure or deciding something scientific, stop and report it.
+The build:
+
+- Build with the command in `AGENTS.md`, in a fresh scratch copy of `manuscript/` made outside the workspace, with the section's `\input` added to the copy's `main.tex` (the scaffold's `\input` lines are commented out and `main.tex` is the session's, so the real build may omit the section).
+- The session wires the real `main.tex`.
+- A draft that compiles with gaps is the target.
+- Judge the build by what it adds to `paper/venue.md`'s baseline warnings and run its greps, once a journal is chosen.
+- Look at the rendered pages too, since a class can drop a character it cannot print without an error.
+- Fix only what this edit broke.
+- Where a fix would mean changing author prose, choosing between two versions of a figure or deciding something scientific, stop and report it.
 
 Report in under 400 words:
 

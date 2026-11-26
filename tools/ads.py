@@ -80,8 +80,8 @@ def _scrub(text):
     as written. A host that echoed it back base64- or percent-encoded would
     defeat it. That host is the one the token was deliberately sent to, so it
     already has the cleartext and nothing is lost by the echo -- the leak that
-    matters is to a host that was never meant to see it, and that is what the
-    redirect refusal above prevents.
+    matters is to a host that was never meant to see it, and that is what
+    `_NoRedirect`, below, prevents.
     """
     text = str(text)
     return text.replace(_TOKEN, "<token redacted>") if _TOKEN else text
@@ -166,9 +166,8 @@ def _require_tls(base):
     sees only a CONNECT tunnel, so requiring TLS closes the exposure without
     disabling proxying, which those networks need to reach the internet at all.
 
-    Loopback is excepted so a local stub can be pointed at; `_request` turns
-    proxying off for exactly that case, where it would otherwise send a
-    127.0.0.1 request, and the token with it, out to the proxy.
+    Loopback is excepted so a local stub can be pointed at; `_request` keeps
+    that case away from any proxy.
     """
     parts = urllib.parse.urlsplit(base)
     if parts.scheme == "https" or parts.hostname in LOOPBACK:

@@ -37,7 +37,7 @@ _This paper's conventions as they are decided: file names, labels, units, notati
 
 ## How we work here
 
-_Who drafts and who checks, and on which model (the stylist on the strongest available); the panel's membership; anything this paper teaches. A standing instruction from the author goes here once they have confirmed it, with one journal line recording the decision._
+_Who drafts and who checks, and on which model (the stylist on the strongest available); the panel's membership; where an investigation's dossiers live and the command that copies one; anything this paper teaches. A standing instruction from the author goes here once they have confirmed it, with one journal line recording the decision._
 
 ## Build
 

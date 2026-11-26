@@ -5,7 +5,7 @@ The rules every session and every subagent works under, whatever the task. Read 
 ## The eight rules
 
 1. **Trace or gap.** Every checkable statement carries a trace that names a primary source precisely enough to open in one step, or it is a `\gap{kind}{note}`. There is no third option. *Checkable* means a number, unit, date or count; a named method; a comparison; an absence ("no test covers..."); a quantifier ("every", "only", "first"); and anything said about what another paper says. It applies in the body, a caption, a table and a figure. Connective and qualitative prose carries nothing. Under this rule:
-   - **Primary sources only.** Never the manuscript itself, a note an agent wrote, a brief, a survey or memory; a frozen brief is a source only for what it declares (a test, a threshold, a holdout). The author's recollection is a claim like any other; testimony the author has confirmed (*What the author says*) is theirs, whoever typed it, and a source where nothing else can be.
+   - **Primary sources only.** Never the manuscript itself, a note an agent wrote, a brief, a survey or memory; a frozen brief is a source only for what it declares (a test, a threshold, a holdout), and a web source with no key is cited through its note, which is its pinned record (*Trace forms*). The author's recollection is a claim like any other; testimony the author has confirmed (*What the author says*) is theirs, whoever typed it, and a source where nothing else can be.
    - **Copy, do not convert.** A value is written with the unit and convention its source uses (units and h-scalings, IMF, cosmology, aperture). Typesetting a unit is notation, not conversion; changing its value, scaling or convention is conversion. A value read off a figure is an estimate and is labelled as one.
    - **Derive in the open.** A number the paper derives (a percentage, a ratio) carries its derivation: the arithmetic in the trace, or a recorded check (rule 6).
    - **Pin what moves.** A source that can change is read at a version the workspace records, and the trace is written from that version. A measurement made on an earlier version is quoted with that version.
@@ -27,6 +27,7 @@ A trace is a LaTeX comment `% src: ...` above or beside the sentence it supports
 | A prose document | the path and a heading or a quoted phrase, not a line number: `notes/why.md "why the work was done"` |
 | A commit | `<root>@<hex>`, root without its slash: `code@a654c228 "fix flybys"` |
 | A paper | its `refs.bib` key and the page, equation, table or figure: `2021MNRAS.506.4210I Table 1` |
+| A web source with no key | its note in the literature notebook, `paper/lit/web-<slug>.md`, with a quoted phrase |
 | An absence or a search | `search <command> (<date>, <version>) -> <result>` |
 | A count | the file and how it was counted, with the items nameable: `code/run.cfg (grep -c '^model_' -> 64)` |
 | A pinned copy | a path inside it: `campaign-findings/<id>/findings.md "claim C3"` |
@@ -51,10 +52,10 @@ The workspace is its own git repository and the working directory of every sessi
 | File under `paper/` | Holds |
 |---|---|
 | `STATE.md` | what is true today; rewritten, never appended; two pages at most; no history |
-| `outline.md` | the intent, the narrative, the argument, and the sections table with role, budget, what each must carry and its hand-off; changed only on the author's decision |
-| `claims.md` | one row per claim: id, the claim as the paper may word it, what it rests on, the paper's verdict (and, for a result pinned from an investigation run elsewhere, that investigation's own verdict beside it) |
+| `outline.md` | the intent, the narrative, the argument and the sections table; changed only on the author's decision |
+| `claims.md` | one row per claim the argument depends on: the claim as the paper may word it, what it rests on and its verdict |
 | `open-questions.md` | open questions only, each with a recommendation; a resolved one becomes a journal line |
-| `journal.md` | append-only; one line per decision (the decision, why, by whom; the author's marked confirmed), pointing to the file or record that holds any detail; no list of work done, which git holds |
+| `journal.md` | append-only; one line per decision (the decision, why, by whom; the author's marked confirmed), pointing to the file or record that holds any detail, and one per routine check; no other account of work done, which git holds |
 
 Also three reference files, each built once at first need by its technique in `skills/paper/techniques/`, kept current, and never a source: `style.md` (the paper's style sheet), `venue.md` (the journal: its policies, its class and its instructions to referees) and `field.md` (what papers of this kind contain and what the field accepts). And `lit/` (the literature notebook), `ingest/` (agent-written indexes: never a source), `checks/` (rule 6) and `reviews/` (one directory per milestone review).
 

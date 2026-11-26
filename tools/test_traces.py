@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import traces
@@ -61,8 +62,9 @@ class Workspace(unittest.TestCase):
         self.addCleanup(os.chdir, self._old)
         self.root = os.path.realpath(self._tmp.name)
         os.chdir(self.root)
-        for k, v in GIT_ENV.items():
-            os.environ[k] = v
+        env = mock.patch.dict(os.environ, GIT_ENV)
+        env.start()
+        self.addCleanup(env.stop)
         self.write("code/src/a.c", "one\ntwo\nthree\n")
         self.write("code/models/m1/props.yaml", "a: 1\n")
         self.write("code/models/m2/props.yaml", "a: 2\n")
