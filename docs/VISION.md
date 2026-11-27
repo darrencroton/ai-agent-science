@@ -20,7 +20,7 @@ Each gap has a part of the toolkit that answers it. For context and norms, the a
 
 ## What This Toolkit Is
 
-Instructions and briefs for an agent that writes a journal paper with a scientist, two small programs (one for the literature, one for the traces) and a LaTeX package for gaps, for use in any agent harness that reads skills.
+Instructions and briefs for an agent that writes a journal paper with a scientist, two small programs (one for the literature, one for the traces) and a LaTeX package for gaps, for use in an agent harness that reads skills, works with files and commands, and can give a second, fresh context the part of an independent reader.
 
 It makes the scientist the orchestrator of the writing, as a software engineer manages a developer. The scientist decides; the agents do the legwork; independent readers check what the agents produced.
 
@@ -82,7 +82,7 @@ The parallel is not exact. A test gives the same answer each time it is run. The
 
 **Editors and referees.** The record is the author's to show: the sources used, what the readers found, what the author decided, and a random sample of traces with their sources. Shown, it is evidence where a declaration is only a statement, and it needs no detector. Whether and how it is released is the author's choice at the end of a paper.
 
-**Anyone who needs one part.** A scientist with an idea and no paper yet, or the manager of an investigation who wants a claim tested or a result refereed: each part takes its inputs from whoever commissions it and does not need a paper around it.
+**Anyone who needs one part.** A scientist with an idea and no paper yet, or the manager of an investigation who wants a claim tested or a result refereed: the literature search, the framing and each reader take their inputs from whoever commissions them and need no paper around them.
 
 ## Design Principles
 

@@ -1,6 +1,6 @@
 # ai-agent-science
 
-Agent skills for a scientist who writes a journal paper with an AI agent and wants to be able to answer for every sentence in it. The toolkit is Markdown that tells the agent how to work, two small Python tools (one for the literature, one for checking sources) and one LaTeX package. It runs in an agent harness (the application or command-line tool that hosts the agent) that reads `SKILL.md` skills, can read files and run commands, and can start a second, fresh agent to act as an independent reader.
+Agent skills for a scientist who writes a journal paper with an AI agent and wants to be able to answer for every sentence in it. The toolkit is Markdown that tells the agent how to work, two small Python tools (one for the literature, one for the traces described below) and one LaTeX package. It runs in an agent harness (the application or command-line tool that hosts the agent) that reads `SKILL.md` skills and can read and write files and run commands. It also needs a second, fresh agent to act as an independent reader: a subagent, or a second session you open yourself.
 
 It works beside the science, which is often unfinished when the writing starts: what the paper cannot yet say becomes a list of questions for the scientist to act on. Three of its four skills also work alone, outside any paper.
 
@@ -9,7 +9,7 @@ It works beside the science, which is often unfinished when the writing starts: 
 A paper is verifiable when four things hold:
 
 1. Every checkable sentence has its source beside it, reached in one step, or a visible gap where the source is missing.
-2. A gap left in the text stops the final build.
+2. A gap that reaches the typesetter fails the final build.
 3. Someone other than the writer has opened each source and compared it with the sentence, and the record says when and at which version of the text.
 4. The author can audit a random sample of sentences beside their sources, and see which text has changed since it was checked.
 
@@ -26,7 +26,7 @@ The residual is below the noise \gap{number}{command that would measure the resi
 
 ## What the scientist does
 
-- **Says why the work was done**, what is settled and what is still open. The agent asks before it proposes anything.
+- **Says why the work was done**, what is settled and what is still open. The agent asks before it proposes any claim.
 - **Decides** the argument, which results the paper shows, the framing and the voice. The agent proposes and asks, each question with a recommendation.
 - **Reads and confirms.** The author reads `paper/STATE.md` (what is true today and what the paper still needs), `paper/open-questions.md` and the PDF, and confirms what the agent has written down as theirs: the intent, the argument and each decision. Nothing counts as the author's until they have confirmed it.
 - **Audits** a random sample of sentences beside their sources before submitting.
@@ -62,7 +62,7 @@ The `paper` skill is a map of what a scientist does, not a pipeline. The stages 
 
 - a *sketch*: provisional and mostly gaps, written to find the argument or to show what is missing;
 - a *draft*: written from opened sources and traced, but not yet checked by an independent reader;
-- *checked*: an independent reader has re-opened every trace. It is a draft again wherever it changes.
+- *checked*: an independent reader has re-opened every trace. It is a draft again wherever its wording, its evidence or what it is taken to mean changes.
 
 A check is due before anything rests on the text: a decision, another claim, a reader from outside, submission. Until then the author chooses. A paper whose shape is still moving is not polished and verified section by section only to be cut.
 
@@ -99,22 +99,22 @@ Each brief opens with what it must be given, and `skills/readers/SKILL.md` lists
 **The tools** use only the Python standard library.
 
 - `tools/ads.py` searches ADS/SciX and writes BibTeX as ADS returns it. It needs an [ADS/SciX API token](https://ui.adsabs.harvard.edu/user/settings/token).
-- `tools/traces.py` lists the traces and gaps in a manuscript, checks that each trace names something that exists and may be cited, looks for each quoted phrase in the sources it can read, and reports which traces a change lost and which sections changed since their last independent check. It also draws the random sample for the author's audit. Its `--help` is the full specification.
+- `tools/traces.py` lists the traces and gaps in a manuscript and checks their form: that a path a trace names exists at its recorded version and may be cited, and that each citation key is known. It looks for each quoted phrase in the sources it can read, reports which traces a change lost, and reports which manuscript files have changed since the check stamp last committed in them. It also draws the random sample for the author's audit. It does not judge whether a source supports its sentence: that is the independent reader's job. Its `--help` is the full specification.
 - `skeleton/paper-workspace/manuscript/scipaper.sty` provides the gap.
 
 ## Scope and limits
 
 - **LaTeX and git.** The trace is a LaTeX comment and the record is a git history. Word, Overleaf and reference managers are not supported.
-- **Astronomy first for literature search.** `ads.py` searches ADS/SciX, which also holds arXiv and much of physics. A reference from anywhere else is exported by its DOI or arXiv id, where it has one.
+- **Astronomy first for literature search.** `ads.py` searches ADS/SciX, which also holds arXiv and much of physics. A reference from anywhere else is exported by its DOI or arXiv id, where a BibTeX record is available for it.
 - **It does not make the science right.** A source beside a sentence gives somewhere to check, and an independent reader checks that the source supports it. Neither shows that the source is right. The readers are only as good as the models behind them, and the author's audit is the last check.
-- **Your material passes through a model provider.** Sources, drafts and reviews are sent to whichever model runs the agent. What may be sent, for unpublished data or a manuscript under review, is the author's judgement and the journal's rule.
+- **Your material may pass through a model provider.** Depending on how the agent is run, sources, drafts and reviews may be sent to the provider of its model. What may be sent, for unpublished data or a manuscript under review, is the author's judgement and the journal's rule.
 - **It is in development.** It has been used on two papers in progress, and no paper written with it has yet been submitted. Co-authors, submission and the reply to a journal are untried.
 
 [`docs/VISION.md`](docs/VISION.md) sets out what the toolkit guarantees mechanically, what it leaves to judgement and what it does not claim.
 
 ## Getting started
 
-You need an agent harness as described at the top, Python 3.8 or newer and git. Writing a paper also needs a LaTeX distribution with `latexmk`. The procedures call `curl` (to fetch references and full texts), `latexpand` and `latexdiff` (for the bundle sent to the journal and the reply to its referee) and Ghostscript (for EPS figures).
+You need an agent harness as described at the top, Python 3.8 or newer and git. Writing a paper also needs a LaTeX distribution with `latexmk` and the `xcolor` and `marginnote` packages. The procedures call `curl` (to fetch references and full texts), `latexpand` and `latexdiff` (for the bundle sent to the journal and the reply to its referee) and Ghostscript (for EPS figures).
 
 1. Clone this repository somewhere permanent. That directory is the *installation root*.
 2. Link each of `skills/paper`, `skills/literature`, `skills/readers` and `skills/frame` into your harness's skills directory. `skills/_shared/` is read by the skills and is not linked.
